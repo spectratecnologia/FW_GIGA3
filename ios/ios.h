@@ -56,6 +56,13 @@ bool isTactInputPressed(uint8_t tactNumber);
 
 void setBeepOutput(bool beepOn);
 
+/*
+ * Function: setIgnitionOutput
+ * Ignition Number must be 1 or 2.
+ *
+ */
+void setIgnitionOutput (uint8_t ignNumber, bool ignOn);
+
 /* Test Function */
 void toggleBeep ();
 void printIgnitionStatus();

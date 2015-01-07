@@ -166,7 +166,6 @@ void initADCs(){
 
 	/* Start ADC1 Software Conversion */
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);
-
 }
 
 void setStatusLed(){
@@ -202,6 +201,11 @@ void toggleCPULED(){
 
 void setBeepOutput(bool beepOn){
 	GPIO_WriteBit(IO_BEEP_PORT,IO_BEEP_PIN,beepOn);
+}
+
+void setIgnitionOutput (uint8_t ignNumber, bool ignOn) {
+	if(ignNumber >= 1 && ignNumber <= 2)
+		GPIO_WriteBit(IO_IGNITION_CMD_PORT,IO_IGNITION_CMD1_PIN >> (ignNumber-1),ignOn);
 }
 
 float convert12bitsAdcTo3_3(uint16_t adcValue){
