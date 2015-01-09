@@ -3,15 +3,20 @@
 #include "usart/usart.h"
 #include "multitask/multitask.h"
 #include "ios/ios.h"
+#include "rtc/rtc.h"
 
 int main(void)
 {
 
 	initUSART();
 
+	initRTC();
+
 	initMultiTask();
 
 	initIOs();
+
+	initTactButtons();
 
     while(1)
     {

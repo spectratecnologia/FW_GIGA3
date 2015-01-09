@@ -1,8 +1,5 @@
 #include "ios.h"
 #include "multitask/multitask.h"
-//#include "functions/functions.h"
-//#include "functions/functions_config.h"
-
 
 /* Struct to store ADC conversions using DMA.
  * The  Rank parameter of ADC_RegularChannelConfig  **MUST** be
@@ -18,7 +15,7 @@ static uint8_t tactInputStatus[4];
 void initADCs();
 void initStatusLeds();
 void initIgnitionCmd();
-void initTactButtonsStatus();
+void initTactButtons();
 void initBeep();
 
 void initIOs(){
@@ -31,7 +28,7 @@ void initIOs(){
 
 	initIgnitionCmd();
 
-	initTactButtonsStatus();
+	initTactButtons();
 
 	initADCs();
 #if DEBUG != 0
@@ -78,7 +75,7 @@ void initIgnitionCmd(){
 	GPIO_Init(IO_IGNITION_CMD_PORT, &gpio_InitTypeDef);
 }
 
-void initTactButtonsStatus(){
+void initTactButtons(){
 	GPIO_InitTypeDef 		gpio_InitTypeDef;
 
 	/* Enable GPIOs clock  */
