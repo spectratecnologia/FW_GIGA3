@@ -52,10 +52,11 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 /*Current state		Event			Next state					callback */
 {ST_MAIN			,EV_REFRESH       ,ST_MAIN           		,&LCD_vMainScreen			},
 {ST_MAIN			,EV_LINE1         ,ST_ADJUST_TIME    		,&LCD_vAdjustTime			},
-{ST_MAIN			,EV_LINE2		  ,ST_ADJUST_TEMPERATURE_0	,&LCD_vAdjustTemperature0	},
-{ST_MAIN			,EV_LINE3		  ,ST_ADJUST_TEMPERATURE_1	,&LCD_vAdjustTemperature1	},
-{ST_MAIN			,EV_KBD_CANCEL    ,ST_MAIN           		,&LCD_vMainScreen			},
 
+};
+
+
+/*
 {ST_ADJUST_TIME			,EV_REFRESH         ,ST_ADJUST_TIME    ,&LCD_vAdjustTime	},
 {ST_ADJUST_TIME			,EV_PREVIOUS_FIELD  ,ST_ADJUST_TIME    ,&LCD_vAdjustTime	},
 {ST_ADJUST_TIME			,EV_NEXT_FIELD      ,ST_ADJUST_TIME    ,&LCD_vAdjustTime	},
@@ -63,33 +64,7 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_ADJUST_TIME			,EV_DOWN     		,ST_ADJUST_TIME    ,&LCD_vAdjustTime	},
 {ST_ADJUST_TIME			,EV_BACK_TO_MAIN    ,ST_MAIN    	   ,&LCD_vMainScreen	},
 
-{ST_ADJUST_TEMPERATURE_0			,EV_REFRESH         ,ST_ADJUST_TEMPERATURE_0    		,&LCD_vAdjustTemperature0	},
-{ST_ADJUST_TEMPERATURE_0			,EV_PREVIOUS_FIELD  ,ST_MAIN    	  					,&LCD_vMainScreen			},
-{ST_ADJUST_TEMPERATURE_0			,EV_NEXT_FIELD      ,ST_MAIN    						,&LCD_vMainScreen			},
-{ST_ADJUST_TEMPERATURE_0			,EV_UP      		,ST_ADJUST_TEMPERATURE_0    		,&LCD_vAdjustTemperature0	},
-{ST_ADJUST_TEMPERATURE_0			,EV_DOWN     		,ST_ADJUST_TEMPERATURE_0    		,&LCD_vAdjustTemperature0	},
-{ST_ADJUST_TEMPERATURE_0			,EV_BACK_TO_MAIN    ,ST_MAIN    	    				,&LCD_vMainScreen			},
-
-{ST_ADJUST_TEMPERATURE_1			,EV_REFRESH         ,ST_ADJUST_TEMPERATURE_1    		,&LCD_vAdjustTemperature1	},
-{ST_ADJUST_TEMPERATURE_1			,EV_PREVIOUS_FIELD  ,ST_MAIN    	  					,&LCD_vMainScreen			},
-{ST_ADJUST_TEMPERATURE_1			,EV_NEXT_FIELD      ,ST_MAIN    						,&LCD_vMainScreen			},
-{ST_ADJUST_TEMPERATURE_1			,EV_UP      		,ST_ADJUST_TEMPERATURE_1    		,&LCD_vAdjustTemperature1	},
-{ST_ADJUST_TEMPERATURE_1			,EV_DOWN     		,ST_ADJUST_TEMPERATURE_1    		,&LCD_vAdjustTemperature1	},
-{ST_ADJUST_TEMPERATURE_1			,EV_BACK_TO_MAIN    ,ST_MAIN    	    				,&LCD_vMainScreen			},
-
 {ST_MENU_DEBUG			,EV_LINE1       ,ST_PAGE1           ,&LCD_vManualMode		},
-{ST_MENU_DEBUG			,EV_LINE2       ,ST_PAGE2           ,&LCD_vUserSettings 	},
-{ST_MENU_DEBUG			,EV_LINE3       ,ST_PAGE3           ,&LCD_vIOsScreen		},
-{ST_MENU_DEBUG			,EV_LINE4       ,ST_PAGE4           ,&LCD_vCANScreen		},
-{ST_MENU_DEBUG			,EV_LINE5       ,ST_PAGE5           ,&LCD_vRTCScreen		},
-{ST_MENU_DEBUG			,EV_LINE6       ,ST_PAGE6           ,&LCD_vADCScreen		},
-{ST_MENU_DEBUG			,EV_LINE7       ,ST_PAGE7		    ,&LCD_vTimingScreen 	},
-{ST_MENU_DEBUG			,EV_LINE8       ,ST_PAGE8		    ,&LCD_vAdjustUSBMode 	},
-{ST_MENU_DEBUG			,EV_LINE9       ,ST_PAGE9		    ,&LCD_vEditBusName		},
-{ST_MENU_DEBUG			,EV_LINE10      ,ST_PAGE10		    ,&LCD_vUIDScreen		},
-{ST_MENU_DEBUG			,EV_LINE11      ,ST_PAGE11		    ,&LCD_vReboot			},
-{ST_MENU_DEBUG			,EV_KBD_CANCEL  ,ST_MENU_DEBUG      ,&LCD_vMenuDebug		},
-{ST_MENU_DEBUG 			,EV_REFRESH		,ST_MENU_DEBUG		,&LCD_vMenuDebug		},
 
 //Page1
 {ST_PAGE1			,EV_REFRESH         ,ST_PAGE1    	,&LCD_vManualMode	},
@@ -100,63 +75,10 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_PAGE1			,EV_BACK_TO_MAIN    ,ST_MENU_DEBUG  ,&LCD_vMenuDebug	},
 
 //Page2
-{ST_PAGE2	     	,EV_REFRESH   	 ,ST_PAGE2       	,&LCD_vUserSettings },//MENU
-{ST_PAGE2	     	,EV_LINE1   	 ,ST_PAGE2       	,&LCD_vUserSettings },//MENU
-{ST_PAGE2		 	,EV_KBD_CANCEL	 ,ST_MENU_DEBUG		,&LCD_vMenuDebug  	},
-
-//Page3
-{ST_PAGE3	     	,EV_REFRESH   	 ,ST_PAGE3       	,&LCD_vIOsScreen    },//MENU
-{ST_PAGE3		 	,EV_KBD_CANCEL	 ,ST_MENU_DEBUG		,&LCD_vMenuDebug  	},
-
-//Page4
-{ST_PAGE4	     	,EV_REFRESH   	 ,ST_PAGE4       	,&LCD_vCANScreen    },//MENU
-{ST_PAGE4		 	,EV_KBD_CANCEL	 ,ST_MENU_DEBUG		,&LCD_vMenuDebug  	},
-
-//Page5
-{ST_PAGE5	     	,EV_REFRESH   	 ,ST_PAGE5       	,&LCD_vRTCScreen    },//MENU
-{ST_PAGE5		 	,EV_KBD_CANCEL	 ,ST_MENU_DEBUG		,&LCD_vMenuDebug  	},
-
-//Page6
-{ST_PAGE6	     	,EV_REFRESH   	 ,ST_PAGE6       	,&LCD_vADCScreen    },//MENU
-{ST_PAGE6		 	,EV_KBD_CANCEL	 ,ST_MENU_DEBUG		,&LCD_vMenuDebug  	},
-
-//Page7
-{ST_PAGE7	     	,EV_REFRESH   	 ,ST_PAGE7       	,&LCD_vTimingScreen },//MENU
-{ST_PAGE7		 	,EV_KBD_CANCEL	 ,ST_MENU_DEBUG		,&LCD_vMenuDebug  	},
-
-//Page8
-{ST_PAGE8	     	,EV_REFRESH   	 	,ST_PAGE8       	,&LCD_vAdjustUSBMode	    },//MENU
-{ST_PAGE8		 	,EV_KBD_CANCEL	 	,ST_MENU_DEBUG		,&LCD_vMenuDebug  			},
-{ST_PAGE8			,EV_UP      		,ST_PAGE8    		,&LCD_vAdjustUSBMode		},
-{ST_PAGE8			,EV_DOWN     		,ST_PAGE8    		,&LCD_vAdjustUSBMode		},
-{ST_PAGE8			,EV_BACK_TO_MAIN    ,ST_MENU_DEBUG    	,&LCD_vMenuDebug			},
-
-//Page9
-{ST_PAGE9	     	,EV_REFRESH   	 	,ST_PAGE9       	,&LCD_vEditBusName	    },//MENU
-{ST_PAGE9		 	,EV_PREVIOUS_FIELD	,ST_PAGE9			,&LCD_vEditBusName  	},
-{ST_PAGE9		 	,EV_NEXT_FIELD	 	,ST_PAGE9			,&LCD_vEditBusName  	},
-{ST_PAGE9			,EV_UP      		,ST_PAGE9    		,&LCD_vEditBusName	    },
-{ST_PAGE9			,EV_DOWN     		,ST_PAGE9    		,&LCD_vEditBusName		},
-{ST_PAGE9			,EV_BACK_TO_MAIN    ,ST_MENU_DEBUG    	,&LCD_vMenuDebug		},
-
-//Page10
-{ST_PAGE10	     	,EV_REFRESH   	 ,ST_PAGE10       		,&LCD_vUIDScreen    	},//MENU
-{ST_PAGE10			,EV_UP      	 ,ST_PAGE10    			,&LCD_vUIDScreen	    },
-{ST_PAGE10			,EV_DOWN     	 ,ST_PAGE10    			,&LCD_vUIDScreen		},
-{ST_PAGE10		 	,EV_KBD_CANCEL	 ,ST_MENU_DEBUG			,&LCD_vMenuDebug  		},
-
-//Page10
-{ST_PAGE11	     	,EV_REFRESH   	 ,ST_PAGE11       		,&LCD_vReboot	    	},//MENU
-{ST_PAGE11		 	,EV_KBD_CANCEL	 ,ST_MENU_DEBUG			,&LCD_vMenuDebug  		},
-
-//Log Menu
-{ST_SAVE_LOG     	,EV_REFRESH   	 	,ST_SAVE_LOG       ,&LCD_vLogUploadMenu	},
-{ST_SAVE_LOG     	,EV_UP   	 	 	,ST_SAVE_LOG       ,&LCD_vLogUploadMenu	},
-{ST_SAVE_LOG     	,EV_DOWN   			,ST_SAVE_LOG       ,&LCD_vLogUploadMenu	},
-{ST_SAVE_LOG     	,EV_NEXT_FIELD   	,ST_SAVE_LOG       ,&LCD_vLogUploadMenu	},
-{ST_SAVE_LOG     	,EV_PREVIOUS_FIELD  ,ST_SAVE_LOG       ,&LCD_vLogUploadMenu	},
-
+{ST_PAGE2	     	,EV_REFRESH   	 ,ST_PAGE2       		,&LCD_vReboot	    	},//MENU
+{ST_PAGE2		 	,EV_KBD_CANCEL	 ,ST_MENU_DEBUG			,&LCD_vMenuDebug  		},
 };
+*/
 
 #define TRANS_COUNT (sizeof(smTrans)/sizeof(*smTrans))
 
@@ -394,8 +316,6 @@ void LCD_vMainScreen(void){
 		currentLine = lcd.sbLine;
 	}
 
-	//readRTC();
-
 	time_t rawtime;
 	time ( &rawtime );
 
@@ -404,12 +324,6 @@ void LCD_vMainScreen(void){
 	currentTime.currentDay = getDay(rawtime);
 	currentTime.currentMonth = getMonth()(rawtime);
 	currentTime.currentYear = getYear(rawtime);
-
-	/* Display CPU heartbeat in LCD */
-	snprintf(lines[0],LINE_SIZE,"   MULTIPLEX 3     ");
-
-	//snprintf(lines[1],LINE_SIZE," %02d%c%02d %02d/%02d/%02d ",currentTime.currentHour,getCPULEDstatus()?':':' ',
-	//			currentTime.currentMinute, currentTime.currentDay, currentTime.currentMonth, currentTime.currentYear);
 
 	char timerSeparationChar=' ';
 	/* 500 ms blink time */
@@ -420,58 +334,12 @@ void LCD_vMainScreen(void){
 	snprintf(lines[1],LINE_SIZE,"     %02d%c%02d      ",currentTime.currentHour,timerSeparationChar,
 							currentTime.currentMinute);
 
-
-
 	/* Print currentLine */
 	LCD_CursorBlink(false);
 	LCD_printLine(0,lines[0]);
 	LCD_printLine(1,lines[currentLine]);
 
 	LCD_vSetNextEvent(EV_REFRESH);
-}
-
-void LCD_vAdjustTemperature0() {
-	LCD_vAdjustTemperature (0);
-}
-
-void LCD_vAdjustTemperature1() {
-	LCD_vAdjustTemperature (1);
-}
-
-void LCD_vAdjustTemperature (int temp_num) {
-	char lines[][LINE_SIZE]={"  AJUSTAR TEMP   "
-				                   ,"      __ C      "};
-
-	uint32_t currentTemperature = multiplex.currentPtc.memory[MEMORY_INDEX_CALEFACION_0_TURN_ON + 2*temp_num] + TEMPERATURE_HALF_DEADBAND;
-
-	static uint8_t rangeValues[2]={15,30};
-
-	LCD_vSetNextEvent(EV_REFRESH);
-
-	if (sm.event == EV_UP){
-		currentTemperature++;
-		if (currentTemperature>=rangeValues[1]){
-			currentTemperature=rangeValues[0];
-		}
-	}
-
-	if (sm.event == EV_DOWN){
-		if (currentTemperature<=rangeValues[0]){
-			currentTemperature=rangeValues[1];
-		}
-		currentTemperature--;
-	}
-
-	multiplex.currentPtc.memory[MEMORY_INDEX_CALEFACION_0_TURN_ON + 2*temp_num] = currentTemperature - TEMPERATURE_HALF_DEADBAND;
-	multiplex.currentPtc.memory[MEMORY_INDEX_CALEFACION_0_TURN_OFF + 2*temp_num] = currentTemperature + TEMPERATURE_HALF_DEADBAND;
-
-	snprintf(lines[0],LINE_SIZE," AJUSTAR TEMP %1d ", temp_num+1);
-	snprintf(lines[1],LINE_SIZE,"       %02dC       ",currentTemperature);
-
-	LCD_CursorBlink(true);
-	LCD_printLine(0,lines[0]);
-	LCD_printLine(1,lines[1]);
-	LCD_MoveCursor(0x48);
 }
 
 void LCD_vAdjustTime(void){
@@ -496,24 +364,6 @@ void LCD_vAdjustTime(void){
 		if (currentField<0){
 			currentField=0;
 
-			newTime.tm_sec = 0;
-			newTime.tm_hour = currentTime.currentHour;
-			newTime.tm_min = currentTime.currentMinute;
-			newTime.tm_mday = currentTime.currentDay;
-			newTime.tm_mon = currentTime.currentMonth;
-			newTime.tm_year = currentTime.currentYear;
-			time_t newTimeStamp = mktime(&newTime);
-
-			oldTimestamp.tm_sec = 0;
-			oldTimestamp.tm_hour = getHours();
-			oldTimestamp.tm_min = getMinutes();
-			oldTimestamp.tm_mday = getDay();
-			oldTimestamp.tm_mon = getMonth();
-			oldTimestamp.tm_year = getYear();
-			rawtime = mktime(&oldTimestamp);
-
-			logThisValue(&rawtime, LOG_TYPE_TIME_CHANGE, &newTimeStamp);
-
 			writeTime(currentTime.currentYear,currentTime.currentMonth,currentTime.currentDay,
 					currentTime.currentHour,currentTime.currentMinute,0);
 
@@ -525,24 +375,6 @@ void LCD_vAdjustTime(void){
 		currentField++;
 		if (currentField>numFields){
 			currentField=numFields;
-
-			newTime.tm_sec = 0;
-			newTime.tm_hour = currentTime.currentHour;
-			newTime.tm_min = currentTime.currentMinute;
-			newTime.tm_mday = currentTime.currentDay;
-			newTime.tm_mon = currentTime.currentMonth;
-			newTime.tm_year = currentTime.currentYear;
-			time_t newTimeStamp = mktime(&newTime);
-
-			oldTimestamp.tm_sec = 0;
-			oldTimestamp.tm_hour = getHours();
-			oldTimestamp.tm_min = getMinutes();
-			oldTimestamp.tm_mday = getDay();
-			oldTimestamp.tm_mon = getMonth();
-			oldTimestamp.tm_year = getYear();
-			rawtime = mktime(&oldTimestamp);
-
-			logThisValue(&rawtime, LOG_TYPE_TIME_CHANGE, &newTimeStamp);
 
 			writeTime(currentTime.currentYear,currentTime.currentMonth,currentTime.currentDay,
 					currentTime.currentHour,currentTime.currentMinute,0);
@@ -606,161 +438,6 @@ void LCD_vAdjustUSBMode() {
 	LCD_printLine(1,lines[1]);
 }
 
-
-static uint8_t currentLogSaveMsg = 0;
-
-void LCD_vLogUploadMenu() {
-
-
-	char linesLogUpload [2][LINE_SIZE] = {"GRAVAR DATA LOG ",
-										  "MAIS RECENTES ? "};
-	LCD_vSetNextEvent(EV_REFRESH);
-
-	/* Message transition  - handles user message state machine transitions*/
-	/*
-	 * msg0: Gravar Data Log \ mais recente ?
-	 * msg1: Gravar Data Log \ completo ?
-	 * msg2: Não retire \ o pendrive
-	 * msg3: Gravando \ ************ (status bar)
-	 * msg4: Fim Gravacao \ Num Paginas: ##
-	 * msg5  Erro de Timout \ Save Porcess
-	 * msg6: Erro Tentando \ savlvar Logs
-	 */
-	switch(currentLogSaveMsg) {
-		case LCD_USB_MSG_NEW_LOGS:
-			if(sm.event == EV_UP || sm.event == EV_DOWN) {
-				currentLogSaveMsg = LCD_USB_MSG_ALL_LOGS;
-			}
-			else if(sm.event == EV_NEXT_FIELD) {
-				usbSaveMode = USB_SAVE_NEW;
-				currentLogSaveMsg = LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE;
-			}
-			else if(sm.event == EV_PREVIOUS_FIELD) {
-				LCD_vSetNextEvent(EV_REFRESH);
-				lcd.sbLine = 1;
-				LCD_vJumpToState(ST_MAIN);
-			}
-			break;
-		case LCD_USB_MSG_ALL_LOGS:
-			if(sm.event == EV_UP || sm.event == EV_DOWN) {
-				currentLogSaveMsg = LCD_USB_MSG_NEW_LOGS;
-			}
-			else if(sm.event == EV_NEXT_FIELD) {
-				usbSaveMode = USB_SAVE_ALL;
-				currentLogSaveMsg = LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE;
-			}
-			else if(sm.event == EV_PREVIOUS_FIELD) {
-				LCD_vSetNextEvent(EV_REFRESH);
-				lcd.sbLine = 1;
-				LCD_vJumpToState(ST_MAIN);
-			}
-			break;
-		case LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE:
-			if(msgTimoutReached(MSG_DONT_DISCONNECT_TIMEOUT)) currentLogSaveMsg = LCD_USB_MSG_SAVING;
-			break;
-		case LCD_USB_MSG_SAVING:
-
-			break;
-		case LCD_USB_MSG_FINISHED:
-			if(msgTimoutReached(MSG_FINISHED_TIMEOUT)) {
-				currentLogSaveMsg = LCD_USB_MSG_NEW_LOGS;
-				LCD_vSetNextEvent(EV_REFRESH); /* Forces EV_REFRESH */
-				lcd.sbLine = 1;
-				LCD_vJumpToState(ST_MAIN);
-			}
-			break;
-		case LCD_USB_MSG_SAVE_TIMEOUT_ERROR:
-			if(msgTimoutReached(MSG_ERROR_TIMEOUT)) {
-				currentLogSaveMsg = LCD_USB_MSG_NEW_LOGS;
-				LCD_vSetNextEvent(EV_REFRESH); /* Forces EV_REFRESH */
-				lcd.sbLine = 1;
-				LCD_vJumpToState(ST_MAIN);
-			}
-			break;
-		case LCD_USB_MSG_SAVE_ERROR :
-		case LCD_USB_MSG_ERROR_CANT_CLOSE :
-		case LCD_USB_MSG_ERROR_CANT_MOUNT :
-		case LCD_USB_MSG_ERROR_CANT_WRITE :
-		case LCD_USB_MSG_ERROR_CANT_CREATE_FILE:
-			if(msgTimoutReached(MSG_ERROR_TIMEOUT)) {
-				currentLogSaveMsg = LCD_USB_MSG_NEW_LOGS;
-				LCD_vSetNextEvent(EV_REFRESH); /* Forces EV_REFRESH */
-				lcd.sbLine = 1;
-				LCD_vJumpToState(ST_MAIN);
-			}
-			break;
-		default:
-				break;
-	}
-
-	/* Print Messages on LCD Display*/
-	switch (currentLogSaveMsg) {
-		case LCD_USB_MSG_NEW_LOGS:
-			strncpy(linesLogUpload[0], "Testar Escrita/  ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "Leitura Pendrive ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_ALL_LOGS:
-			strncpy(linesLogUpload[0], "Testar Escrita/  ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "Leitura Pendrive ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE:
-			strncpy(linesLogUpload[0], "Nao desconecte   ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "o pendrive !     ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_SAVING:
-			strncpy(linesLogUpload[0], "Testando         ", LINE_SIZE);
-			//strncpy(linesLogUpload[1], "                 ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_FINISHED:
-			strncpy(linesLogUpload[0], "Teste Realizado  ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "com sucesso !    ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_SAVE_TIMEOUT_ERROR:
-			strncpy(linesLogUpload[0], "Error USB        ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "Timeout          ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_SAVE_ERROR:
-			strncpy(linesLogUpload[0], "Erro SALVAR      ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "USB              ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_ERROR_CANT_CLOSE:
-			strncpy(linesLogUpload[0], "ERRO AO FECHAR   ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "ARQUIVO          ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_ERROR_CANT_MOUNT:
-			strncpy(linesLogUpload[0], "ERRO AO MONTAR  ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "FAT-FS          ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_ERROR_CANT_CREATE_FILE:
-			strncpy(linesLogUpload[0], "ERRO AO TENTAR  ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "CRIAR ARQUIVO   ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_ERROR_CANT_WRITE:
-			strncpy(linesLogUpload[0], "ERRO AO TENTAR   ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "ESCREVER ARQUIVO ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_RM_ERROR:
-			strncpy(linesLogUpload[0], "ERRO AO TENTAR   ", LINE_SIZE);
-			strncpy(linesLogUpload[1], "REMOVER ARQUIVO  ", LINE_SIZE);
-			break;
-		case LCD_USB_MSG_ERROR_CANT_OPEN_FILE:
-				strncpy(linesLogUpload[0], "ERRO AO TENTAR   ", LINE_SIZE);
-				strncpy(linesLogUpload[1], "ABRIR ARQUIVO    ", LINE_SIZE);
-				break;
-		default:
-			break;
-	}
-
-	LCD_printLine(0,linesLogUpload[0]);
-
-	/*
-	 * Let the function LCD_vSetProgressBar to print the second line when
-	 * currentLogSaveMsg is LCD_USB_MSG_SAVING
-	 */
-	if(currentLogSaveMsg != LCD_USB_MSG_SAVING)
-		LCD_printLine(1,linesLogUpload[1]);
-}
-
 static inline bool msgTimoutReached (uint32_t timeout) {
 	static int64_t msgTimeout=0;
 	if(msgTimeout == 0)
@@ -770,45 +447,6 @@ static inline bool msgTimoutReached (uint32_t timeout) {
 		return true;
 	}
 	return false;
-}
-
-void LCD_vLogSaveStart() {
-	usbSaveMode = USB_SAVE_MODE_NOT_CHOSEN;
-	LCD_vSetNextEvent(EV_REFRESH);
-	LCD_vJumpToState(ST_SAVE_LOG);
-}
-
-void LCD_vLogSaveDone() {
-	if(currentLogSaveMsg == LCD_USB_MSG_SAVING || currentLogSaveMsg == LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE) {
-		currentLogSaveMsg = LCD_USB_MSG_FINISHED;
-		LCD_vSetNextEvent(EV_REFRESH);
-	}
-}
-
-void LCD_vLogSaveInterrupted(uint8_t reason) {
-	if(currentLogSaveMsg == LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE ||
-			currentLogSaveMsg == LCD_USB_MSG_SAVING) {
-
-		if(reason <= LCD_USB_MSG_ERROR_CANT_CLOSE && reason >= LCD_USB_MSG_ERROR_CANT_MOUNT)
-			currentLogSaveMsg = reason;
-
-		else /* Default message error */
-			currentLogSaveMsg = LCD_USB_MSG_SAVE_ERROR;
-	}
-	/* Executed when the pendrive is removed before
-	 * user chooses an option.
-	 */
-	else if(currentLogSaveMsg == LCD_USB_MSG_NEW_LOGS || currentLogSaveMsg == LCD_USB_MSG_ALL_LOGS) {
-		currentLogSaveMsg = LCD_USB_MSG_NEW_LOGS;
-		lcd.sbLine = 1;
-		LCD_vJumpToState(ST_MAIN);
-	}
-
-	LCD_vSetNextEvent(EV_REFRESH);
-}
-
-bool LCD_vLogSaveCanceled () {
-	return sm.state == ST_MAIN;
 }
 
 /* progress must be between 0 and 10 */
@@ -894,9 +532,7 @@ void LCD_vUIDScreen(void) {
 void LCD_vADCScreen(void){
 	char lines[][LINE_SIZE]={"    Menu ADC    ",
 			                        "Vbb:            ",
-			                        "Temp:           ",
-			                        "Vvext1:         ",
-			                        "Vvext2:         "};
+			                        "Temp:           ", };
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
 	/* Memorize current line */
@@ -913,10 +549,8 @@ void LCD_vADCScreen(void){
 
 	snprintf(lines[1],LINE_SIZE,"Vbb:%.3f           ",getVbbVoltage());
 	snprintf(lines[2],LINE_SIZE,"Temp:%.3f          ",getTemperatureVoltage());
-	snprintf(lines[3],LINE_SIZE,"Vvext1:%.3f        ",getVvext1Voltage());
-	snprintf(lines[4],LINE_SIZE,"Vvext2:%.3f        ",getVvext2Voltage());
 
-	/* Print currentLine */
+	/* Print currentLine */s
 	LCD_printLine(0,lines[0]);
 	LCD_printLine(1,lines[currentLine]);
 
@@ -944,8 +578,6 @@ void LCD_vCANScreen(void){
 
 
 	snprintf(lines[1],LINE_SIZE,"Error code:0x%x    ",CAN_GetLastErrorCode(CAN1));
-	//snprintf(lines[2],LINE_SIZE,"R Pkts:%lu         ",receivedCanPacketsCount());
-	//snprintf(lines[3],LINE_SIZE,"T Errors:%lu       ",transmitErrorsCount());
 
 	/* Print currentLine */
 	LCD_printLine(0,lines[0]);
@@ -1037,39 +669,9 @@ void LCD_vTimingScreen(void){
 	LCD_vSetNextEvent(EV_REFRESH);
 }
 
-void LCD_vUserSettings(void){
-	char lines[][LINE_SIZE]={"  Master/Slave  ",
-									"Master:         "};
-	uint8_t numLines = sizeof(lines)/LINE_SIZE;
-
-	/* Memorize current line */
-	static uint8_t currentLine=1;
-	if(EV_REFRESH != sm.event){
-		lcd.sbLine = currentLine;
-		lcd.sbLineMin = 1;
-		lcd.sbLineMax = numLines-1;
-	}
-	else{
-		currentLine = lcd.sbLine;
-	}
-
-	snprintf(lines[1],LINE_SIZE,"Master: %lu       ",multiplex.isMaster);
-
-	if(sm.event==EV_LINE1){
-		multiplex.isMaster = !multiplex.isMaster;
-		saveMasterFromRamToFlash(&multiplex);
-	}
-
-
-	/* Print currentLine */
-	LCD_printLine(0,lines[0]);
-	LCD_printLine(1,lines[currentLine]);
-
-	LCD_vSetNextEvent(EV_REFRESH);
-}
-
 
 #define NO_MPX_SELECTED -1
+
 
 void LCD_vManualMode(void){
 	static int8_t selectedMpx=NO_MPX_SELECTED;
@@ -1367,9 +969,6 @@ void setLCDAsTurnedOff(bool value){
 	showLCDAsTurnedOff = value;
 }
 
-void setLCDTemperature(int temperature){
-	ptcTemperature = temperature;
-}
 
 /*******************************************************/
 /* 					Interrupt Handler 				   */
