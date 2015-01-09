@@ -49,8 +49,6 @@ void toggleCPULED();
 
 float getTemperatureVoltage();
 float getVbbVoltage();
-float getVvext1Voltage();
-float getVvext2Voltage();
 
 bool isTactInputPressed(uint8_t tactNumber);
 

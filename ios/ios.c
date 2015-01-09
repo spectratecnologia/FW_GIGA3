@@ -185,7 +185,8 @@ void toggleStatusLed(){
 }
 
 void readCurrentTactsStatus () {
-	 for(i=IO_TACT_UP; i<=IO_TACT_CANCEL; i++) {
+	uint32_t i;
+	for(i=IO_TACT_UP; i<=IO_TACT_CANCEL; i++) {
 		 tactInputStatus[i] =  GPIO_ReadInputDataBit(IO_TACT_PORT, IO_TACT_UP_PIN << i);
 	 }
 }
@@ -218,14 +219,6 @@ float getTemperatureVoltage(){
 
 float getVbbVoltage(){
 	return convert12bitsAdcTo3_3(adcValues.v_vbb);
-}
-
-float getVvext1Voltage(){
-	return convert12bitsAdcTo3_3(adcValues.v_vext1);
-}
-
-float getVvext2Voltage(){
-	return convert12bitsAdcTo3_3(adcValues.v_vext2);
 }
 
 bool isTactInputPressed(uint8_t tactNumber) {
