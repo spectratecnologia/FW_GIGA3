@@ -87,6 +87,7 @@ void processKeysAndDeadTime() {
 				printf("[TACTS]Tact key %d pressed\n",i);
 
 				//Add tact key status here - This function is only producer, for Someone must consume the key state and change it back to false.
+				setVirtualKeyState(i, 1);
 
 				if(tactPressTable[i].triggerCounter < MIIN_KEY_TRIGGERS_TO_SHORT_TIME) /* avoid overflow */
 					tactPressTable[i].triggerCounter++;

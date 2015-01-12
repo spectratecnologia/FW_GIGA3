@@ -34,11 +34,6 @@ enum KEYS {
 	KEY_CANCEL = 3
 };
 
-typedef struct {
-	uint8_t numStates;
-	uint8_t state;
-}VirtualKeyBoard;
-
 void initKeys();
 void processKeysAndDeadTime ();
 

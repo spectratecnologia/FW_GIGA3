@@ -4,6 +4,8 @@
 #include "multitask/multitask.h"
 #include "ios/ios.h"
 #include "rtc/rtc.h"
+#include "beep/beep.h"
+#include "virtual_keyboard/virtual_keyboard.h"
 
 int main(void)
 {
@@ -16,11 +18,17 @@ int main(void)
 
 	initIOs();
 
-	initTactButtons();
+	initVitualKeyboard();
+
+	initBeepIO()();
 
     while(1)
     {
     	executeEveryInterval(0, 1000, &toggleCPULED);
+
+    	executeEveryInterval(1, 1, &processKeysAndDeadTime);
+
+    	executeEveryInterval(2, 1, &processBeeps);
 
     }
 }
