@@ -65,6 +65,21 @@ int _read(int file, char *ptr, int len)
 __attribute__ ((used))
 int _write(int file, char *ptr, int len)
 {
+  if (isUSARTAvailableToWrite()){
+    return writeBytesToUSART(ptr,len);
+  }
+  else{
+   return 0;
+  }
+
+  /* To Debugger use */
+  	/*int i;
+  	for (i = 0; i < len; ++i) {
+  		SH_SendChar(ptr[i]);
+  	}
+  	return len;
+  */
+
   return len;
 }
 

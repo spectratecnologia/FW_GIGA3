@@ -4,13 +4,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 
+//#include "virtual_keyboard/virtual_keyboard.h"
+
 #define TACTS_NUM_USER_KEYS 4
 
 #define PRESS_TIME 20
 #define LONG_DEAD_TIME 700
 #define SHORT_DEAD_TIME 100
 
-#define SHORT_DEAD_TIME_SCREEN LONG_DEAD_PERIOD*3+ 200
+#define SHORT_DEAD_TIME_SCREEN LONG_DEAD_TIME*3+200
 #define MIIN_KEY_TRIGGERS_TO_SHORT_TIME 3
 
 #define NOT_PRESSED 0
@@ -32,7 +34,12 @@ enum KEYS {
 	KEY_CANCEL = 3
 };
 
-void initTactKeys ();
-void processTactKeysAndDeadTime ();
+typedef struct {
+	uint8_t numStates;
+	uint8_t state;
+}VirtualKeyBoard;
+
+void initKeys();
+void processKeysAndDeadTime ();
 
 #endif

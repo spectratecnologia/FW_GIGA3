@@ -2,6 +2,7 @@
 #include "ios/ios.h"
 #include "multitask/multitask.h"
 #include "rtc/rtc.h"
+
 #include <time.h>
 
 struct{
@@ -112,6 +113,9 @@ static uint64_t errorStringStartTime=0;
 static uint64_t errorStringTimeToDisplay=0;
 static uint8_t lastWarningMessageConfigExecuted=0;
 
+#define WARNING_MSG_PRIORITY_MASK 0xFF
+#define IGNORE_ALL_NO_ERROR_MESSAGES 6
+
 /* Display message if no message is displayed. Otherwise, display only if it has more displayTime and higher priority than current message */
 void displayErrorMessage(char *firstLine, char *secondLine, uint32_t displayTime, uint8_t priority){
 
@@ -161,18 +165,7 @@ StEvents LCD_vGetNextEvent(void){
 	else if(getVirtualKeyState(KEY_DOWN)){
 		setVirtualKeyState(KEY_DOWN,0); //consumer
 
-		if((sm.state == ST_MAIN) && (lcd.sbLine == LINE1_TIME) &&  (multiplex.currentPtc.memory[MEMORY_INDEX_NUM_TEMPERATURE_ON_DISPLAY] > 0))
-			lcd.sbLine++; //If #temp_sensors > 0 and lcd is showing line 1 (Time) - go to Temperature 1 exhibition
-		else if ((sm.state == ST_MAIN) && (lcd.sbLine == LINE1_TIME) &&  (multiplex.currentPtc.memory[MEMORY_INDEX_NUM_TEMPERATURE_ON_DISPLAY] < 1))
-			lcd.sbLine+=3; //If #temp_sensors == 0 and lcd is showing line 1 (Time) - skip temperature 1 and 2 exhibition
-		else if((sm.state == ST_MAIN) && (lcd.sbLine == LINE2_TEMP_0) &&  (multiplex.currentPtc.memory[MEMORY_INDEX_NUM_TEMPERATURE_ON_DISPLAY] > 1) &&
-				!(multiplex.currentPtc.memory[MEMORY_INDEX_COUPLED_TEMPERATURE]))
-			lcd.sbLine++; //if #temp_sensor > 1 and lcd is showing line 2 (Temp Calef 1) - go to Temperature 2 exhibition
-		else if((sm.state == ST_MAIN) && (lcd.sbLine == LINE2_TEMP_0) &&  ((multiplex.currentPtc.memory[MEMORY_INDEX_NUM_TEMPERATURE_ON_DISPLAY] < 2) ||
-						(multiplex.currentPtc.memory[MEMORY_INDEX_COUPLED_TEMPERATURE])))
-			lcd.sbLine+=2; //if lcd is showing line 2 (Temp Calef 1) and (#temp_sensor < 2 or temps are coupled) - skip temperature 2 exhibition
-		else
-			lcd.sbLine++; //Handles others state transitions.
+		lcd.sbLine++; //Handles others state transitions.
 
 		if(lcd.sbLine > lcd.sbLineMax ) (lcd.sbLine = lcd.sbLineMin);
 
@@ -186,18 +179,7 @@ StEvents LCD_vGetNextEvent(void){
 	else if(getVirtualKeyState(KEY_UP)){
 		setVirtualKeyState(KEY_UP,0); //consumer
 
-		//lcd.sbLine--; //só roda linha quando o x for zero.
-
-		if((sm.state == ST_MAIN) && (lcd.sbLine == LINE4_FIRMWARE) &&  (multiplex.currentPtc.memory[MEMORY_INDEX_NUM_TEMPERATURE_ON_DISPLAY] >= 2)
-				&& (!multiplex.currentPtc.memory[MEMORY_INDEX_COUPLED_TEMPERATURE]))
-					lcd.sbLine--;
-		else if ((sm.state == ST_MAIN) && (lcd.sbLine == LINE4_FIRMWARE) &&  ((multiplex.currentPtc.memory[MEMORY_INDEX_NUM_TEMPERATURE_ON_DISPLAY] == 1)
-				|| (multiplex.currentPtc.memory[MEMORY_INDEX_COUPLED_TEMPERATURE] && (multiplex.currentPtc.memory[MEMORY_INDEX_NUM_TEMPERATURE_ON_DISPLAY] != 0) )))
-			lcd.sbLine-=2;
-		else if((sm.state == ST_MAIN) && (lcd.sbLine == LINE4_FIRMWARE) &&  (multiplex.currentPtc.memory[MEMORY_INDEX_NUM_TEMPERATURE_ON_DISPLAY] <= 0))
-			lcd.sbLine-=3;
-		else
-			lcd.sbLine--;
+		lcd.sbLine--;
 
 		if (lcd.sbLine < lcd.sbLineMin) (lcd.sbLine = lcd.sbLineMax);
 
@@ -264,7 +246,7 @@ void  LCD_vStateMachineLoop(void){ // STATE MACHINE LOOP{
 	}
 	/* Display messages if not in error state and if message is different from priority 6(ignore all no error messages) */
 	else if(hasErrorToDisplay() && !inDebugMode &&
-			((lastWarningMessageConfigExecuted & WARNING_MSG_PRIORITY_MASK)!=PRIORITY_6_IGNORE_ALL_NO_ERROR_MESSAGES) ){
+			((lastWarningMessageConfigExecuted & WARNING_MSG_PRIORITY_MASK)!=IGNORE_ALL_NO_ERROR_MESSAGES) ){
 		static char lines[][LINE_SIZE]={"                "
 									   ,"                "};
 		snprintf(lines[0],LINE_SIZE,"%-16.16s",errorStringFirstLine);
@@ -322,7 +304,7 @@ void LCD_vMainScreen(void){
 	currentTime.currentHour = getHours(rawtime);
 	currentTime.currentMinute = getMinutes(rawtime);
 	currentTime.currentDay = getDay(rawtime);
-	currentTime.currentMonth = getMonth()(rawtime);
+	currentTime.currentMonth = getMonth(rawtime);
 	currentTime.currentYear = getYear(rawtime);
 
 	char timerSeparationChar=' ';
@@ -462,9 +444,9 @@ void LCD_vSetProgressBar (uint8_t progress) {
 
 	if(progress <= 10) {
 		progressStart = &progressBar[LINE_SIZE-1-percentages[progress]];
-		if(currentLogSaveMsg == LCD_USB_MSG_SAVING) {
+		//if(currentLogSaveMsg == LCD_USB_MSG_SAVING) {
 			sniprintf(line[0], LINE_SIZE, "%s                 ", progressStart);
-		}
+		//}
 			LCD_printLine(1,line[0]);
 	}
 }
@@ -530,143 +512,24 @@ void LCD_vUIDScreen(void) {
 }
 
 void LCD_vADCScreen(void){
-	char lines[][LINE_SIZE]={"    Menu ADC    ",
-			                        "Vbb:            ",
-			                        "Temp:           ", };
-	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
-	/* Memorize current line */
-	static uint8_t currentLine=1;
-	if(EV_REFRESH != sm.event){
-
-		lcd.sbLine = currentLine;
-		lcd.sbLineMin = 1;
-		lcd.sbLineMax = numLines-1;
-	}
-	else{
-		currentLine = lcd.sbLine;
-	}
-
-	snprintf(lines[1],LINE_SIZE,"Vbb:%.3f           ",getVbbVoltage());
-	snprintf(lines[2],LINE_SIZE,"Temp:%.3f          ",getTemperatureVoltage());
-
-	/* Print currentLine */s
-	LCD_printLine(0,lines[0]);
-	LCD_printLine(1,lines[currentLine]);
-
-	LCD_vSetNextEvent(EV_REFRESH);
 }
 
 
 void LCD_vCANScreen(void){
-	static char lines[][LINE_SIZE]={"    Menu CAN    ",
-									"Error code:     ",
-									"R Pkts:         ",
-									"T Errors:       "};
-	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
-	/* Memorize current line */
-	static uint8_t currentLine=1;
-	if(EV_REFRESH != sm.event){
-		lcd.sbLine = currentLine;
-		lcd.sbLineMin = 1;
-		lcd.sbLineMax = numLines-1;
-	}
-	else{
-		currentLine = lcd.sbLine;
-	}
-
-
-	snprintf(lines[1],LINE_SIZE,"Error code:0x%x    ",CAN_GetLastErrorCode(CAN1));
-
-	/* Print currentLine */
-	LCD_printLine(0,lines[0]);
-	LCD_printLine(1,lines[currentLine]);
-
-	LCD_vSetNextEvent(EV_REFRESH);
 }
 
 void LCD_vRTCScreen(void){
-	char lines[][LINE_SIZE]={"    Menu RTC    ",
-									"RTC:            "};
-	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
-	/* Memorize current line */
-	static uint8_t currentLine=1;
-	if(EV_REFRESH != sm.event){
-		lcd.sbLine = currentLine;
-		lcd.sbLineMin = 1;
-		lcd.sbLineMax = numLines-1;
-	}
-	else{
-		currentLine = lcd.sbLine;
-	}
-
-
-	snprintf(lines[1],LINE_SIZE,"RTC:%lus          ",RTC_GetCounter());
-
-	/* Print currentLine */
-	LCD_Clear();
-	LCD_printLine(0,lines[0]);
-	LCD_printLine(1,lines[currentLine]);
-
-	LCD_vSetNextEvent(EV_REFRESH);
 }
 
 void LCD_vIOsScreen(void){
-	char lines[][LINE_SIZE]={"    Entradas    ",
-									"+15:            ",
-									"User Tact:      ",
-									"TACO:           ",
-									"ODO:            "};
-	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
-	/* Memorize current line */
-	static uint8_t currentLine=1;
-	if(EV_REFRESH != sm.event){
-		lcd.sbLine = currentLine;
-		lcd.sbLineMin = 1;
-		lcd.sbLineMax = numLines-1;
-	}
-	else{
-		currentLine = lcd.sbLine;
-	}
-
-	snprintf(lines[1],LINE_SIZE,"+15: %d          ",isInginitionHigh());
-	snprintf(lines[2],LINE_SIZE,"User Tact: %d    ",isTactButtonPressed());
-	snprintf(lines[3],LINE_SIZE,"TACO: %d         ",isTacoHigh());
-	snprintf(lines[4],LINE_SIZE,"ODO: %d          ",isOdoHigh());
-
-	/* Print currentLine */
-	LCD_printLine(0,lines[0]);
-	LCD_printLine(1,lines[currentLine]);
-
-	LCD_vSetNextEvent(EV_REFRESH);
 }
 
 void LCD_vTimingScreen(void){
-	char lines[2][LINE_SIZE]={" Tempo tarefas  "};
-	uint8_t numLines = MAX_VIRTUAL_TIMERS+1;
 
-	/* Memorize current line */
-	static uint8_t currentLine=1;
-	if(EV_REFRESH != sm.event){
-		lcd.sbLine = currentLine;
-		lcd.sbLineMin = 1;
-		lcd.sbLineMax = numLines-1;
-	}
-	else{
-		currentLine = lcd.sbLine;
-	}
-
-
-	snprintf(lines[1],LINE_SIZE,"Tarefa %d: %lums    ",currentLine-1,getMaxExecutionTime(currentLine-1));
-
-	/* Print currentLine */
-	LCD_printLine(0,lines[0]);
-	LCD_printLine(1,lines[1]);
-
-	LCD_vSetNextEvent(EV_REFRESH);
 }
 
 
@@ -674,203 +537,7 @@ void LCD_vTimingScreen(void){
 
 
 void LCD_vManualMode(void){
-	static int8_t selectedMpx=NO_MPX_SELECTED;
 
-	LCD_vSetNextEvent(EV_REFRESH);
-
-	/* If no MPX selected */
-	if (selectedMpx==NO_MPX_SELECTED){
-		uint8_t numMpx=multiplex.numberOfConfiguredMpx;
-		static int8_t currentMpx=0;
-
-		if(sm.event == EV_NEXT_FIELD){
-			selectedMpx=currentMpx;
-		}
-
-
-		if(sm.event == EV_PREVIOUS_FIELD){
-				LCD_vSetNextEvent(EV_BACK_TO_MAIN);
-		}
-
-		if (sm.event == EV_UP){
-			currentMpx--;
-			if (currentMpx<0){
-				currentMpx=numMpx-1;
-			}
-		}
-
-		if (sm.event == EV_DOWN){
-			currentMpx++;
-			if (currentMpx>=numMpx){
-				currentMpx=0;
-			}
-		}
-
-		static char mpxName[LINE_SIZE];
-		snprintf(mpxName,LINE_SIZE,"%s                ",multiplex.mpx[currentMpx].mpxName);
-
-		/* Print currentLine */
-		LCD_printLine(0,"  Diag. Manual  ");
-		LCD_printLine(1,mpxName);
-	}
-	else{
-		uint8_t numPorts=multiplex.mpx[selectedMpx].numPorts;
-		static char lines[NUM_PORTS+1][LINE_SIZE]={"MPX:            "};
-		static int8_t currentPort=0;
-
-		snprintf(lines[0],LINE_SIZE,"MPX:%s            ",multiplex.mpx[selectedMpx].mpxName);
-
-		int i;
-		for(i=0;i<numPorts;i++){
-
-				char cPortState='_';
-				char iPortState='_';
-				char sPortState='_';
-				if (multiplex.mpx[selectedMpx].portOutput[i].mode==3){
-					cPortState='H';
-				}
-				else if (multiplex.mpx[selectedMpx].portOutput[i].mode==1) {
-					cPortState='L';
-				}
-				if(multiplex.mpx[selectedMpx].portType[i] == PORT_TYPE_LO_DIGITAL_INPUT) {
-					if(multiplex.mpx[selectedMpx].portInput[i] & INPUT_LOW_MASK){
-						iPortState='L';
-					}
-					else{
-						iPortState='H';
-					}
-				}
-				else {
-					if(multiplex.mpx[selectedMpx].portInput[i] & INPUT_HIGH_MASK){
-						iPortState='H';
-					}
-					else{
-						iPortState='L';
-					}
-				}
-
-				bool shortFlag = multiplex.mpx[selectedMpx].portInput[i] & INPUT_SHORT_MASK;
-				bool openFlag = multiplex.mpx[selectedMpx].portInput[i] & INPUT_OPEN_MASK;
-
-
-				if(shortFlag && openFlag){
-					sPortState='E';
-				}
-				else if (shortFlag){
-					sPortState='S';
-				}
-				else if (openFlag){
-					sPortState='O';
-				}
-
-				snprintf(lines[i+1],LINE_SIZE,"%-13.13s%c%c%c",
-						multiplex.mpx[selectedMpx].portName[i],
-						sPortState,
-						iPortState,
-						cPortState);
-			
-		}
-
-		if(sm.event == EV_NEXT_FIELD){
-
-			uint8_t portType = multiplex.mpx[selectedMpx].portType[currentPort];
-			uint8_t currentMode = multiplex.mpx[selectedMpx].portOutput[currentPort].mode;
-
-			if(portType == PORT_TYPE_PUSH_PULL_10A){
-				currentMode++;
-				if (currentMode>=4){
-					currentMode = 0;
-				}
-
-
-				/* On and off intercalated */
-				if(currentMode%2){
-					multiplex.mpx[selectedMpx].portOutput[currentPort].duty = 10;
-
-					multiplex.mpx[selectedMpx].portOutput[currentPort].fastSoftUp = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].fastSoftDown = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].ton = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].toff = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].slowSoftUp = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].slowSoftDown = 0;
-				}
-				else{
-					multiplex.mpx[selectedMpx].portOutput[currentPort].duty = 0;
-
-					multiplex.mpx[selectedMpx].portOutput[currentPort].fastSoftUp = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].fastSoftDown = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].ton = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].toff = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].slowSoftUp = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].slowSoftDown = 0;
-				}
-
-				multiplex.mpx[selectedMpx].portOutput[currentPort].mode = currentMode;
-
-
-				multiplex.mpx[selectedMpx].outputChanged[currentPort] = true;
-			}
-			else if ((portType == PORT_TYPE_BIDI_10A) || (portType == PORT_TYPE_BIDI_2A)){
-				currentMode+=3;
-				if (currentMode>=4){
-					currentMode = 0;
-				}
-
-				multiplex.mpx[selectedMpx].portOutput[currentPort].mode = currentMode;
-
-				/* On and off intercalated */
-				if (currentMode==3){
-					multiplex.mpx[selectedMpx].portOutput[currentPort].duty = 10;
-
-					multiplex.mpx[selectedMpx].portOutput[currentPort].fastSoftUp = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].fastSoftDown = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].ton = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].toff = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].slowSoftUp = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].slowSoftDown = 0;
-				}
-				else{
-					multiplex.mpx[selectedMpx].portOutput[currentPort].duty = 0;
-
-					multiplex.mpx[selectedMpx].portOutput[currentPort].fastSoftUp = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].fastSoftDown = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].ton = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].toff = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].slowSoftUp = 0;
-					multiplex.mpx[selectedMpx].portOutput[currentPort].slowSoftDown = 0;
-				}
-
-				multiplex.mpx[selectedMpx].outputChanged[currentPort] = true;
-			}
-			else if (portType == PORT_TYPE_LO_DIGITAL_INPUT){
-
-			}
-
-		}
-
-		if(sm.event == EV_PREVIOUS_FIELD){
-				selectedMpx=NO_MPX_SELECTED;
-				currentPort=0;
-		}
-
-		if (sm.event == EV_UP){
-			currentPort--;
-			if (currentPort<0){
-				currentPort=numPorts-1;
-			}
-		}
-
-		if (sm.event == EV_DOWN){
-			currentPort++;
-			if (currentPort>=numPorts){
-				currentPort=0;
-			}
-		}
-
-		/* Print currentLine */
-		LCD_printLine(0,lines[0]);
-		LCD_printLine(1,lines[currentPort+1]);
-	}
 }
 
 
@@ -880,89 +547,6 @@ void LCD_vReboot(void){
 
 void LCD_vEditBusName(void) {
 
-	char *busName = multiplex.busName;
-	char line[LINE_SIZE];
-	static int8_t currentField=0;
-	uint8_t numFields = 11;
-	char maxChar = 'Z', minChar = ' ';
-	char emptyFields[] = {"____________"};
-
-	LCD_vSetNextEvent(EV_REFRESH);
-
-	if(sm.event == EV_PREVIOUS_FIELD){
-		currentField--;
-		if (currentField<0){
-			currentField=11;
-			LCD_vSetNextEvent(EV_BACK_TO_MAIN);
-			saveBusNameFromRamToFlash(&multiplex);
-		}
-	}
-
-	if(sm.event == EV_NEXT_FIELD){
-		currentField++;
-		if (currentField>numFields){
-			currentField=0;
-			LCD_vSetNextEvent(EV_BACK_TO_MAIN);
-			saveBusNameFromRamToFlash(&multiplex);
-		}
-	}
-
-	if (sm.event == EV_UP){
-		busName[currentField]++;
-
-		if (busName[currentField]>=maxChar){
-			busName[currentField] = minChar;
-		}
-
-		if (busName[currentField]<=minChar){
-			busName[currentField] = ' ';
-		}
-
-		if(busName[currentField] == ('9' + 1)) { //ASCII('9') + 1
-			busName[currentField] = 'A';
-		}
-		if(busName[currentField] == (' ' + 1)) {
-			busName[currentField] = '0';
-		}
-	}
-
-	if (sm.event == EV_DOWN){
-		if (busName[currentField]<=minChar){
-			busName[currentField] = maxChar + 1;
-		}
-
-		if(busName[currentField] == '0') {
-			busName[currentField] = (' ' + 1);
-		}
-		if(busName[currentField] == 'A') { //ASCII - A
-			busName[currentField] = ('9' + 1);
-		}
-		busName[currentField]--;
-	}
-
-	uint8_t busNameLen = strlen(busName);
-	uint8_t i=0;
-	emptyFields[12 -  busNameLen] = '\0';
-
-	/* Prevents trash after \0 character */
-	if(currentField > busNameLen - 1) {
-		busName[currentField] = '\0';
-	}
-
-	/* Erase white spaces after last letter */
-	for(i=busNameLen-1; i>=0; i--) {
-		if(busName[i] == ' ')
-			busName[i] = '\0';
-		else
-			break;
-	}
-
-	snprintf(line, LINE_SIZE, "  %s%s   ", busName, emptyFields);
-
-	LCD_CursorBlink(true);
-	LCD_printLine(0," NOME DO ONIBUS  ");
-	LCD_printLine(1,line);
-	LCD_MoveCursor(currentField + 0x42);
 }
 
 void setLCDAsTurnedOff(bool value){

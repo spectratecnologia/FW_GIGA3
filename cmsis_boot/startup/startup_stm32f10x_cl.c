@@ -132,8 +132,8 @@ void (* const g_pfnVectors[])(void) =
   (void *)&pulStack[STACK_SIZE],     /*!< The initial stack pointer         */
   Reset_Handler,                /*!< Reset Handler                            */
   NMI_Handler,                  /*!< NMI Handler                              */
-  HardFault_Handler,            /*!< Hard Fault Handler                       */
   MemManage_Handler,            /*!< MPU Fault Handler                        */
+  HardFault_Handler,            /*!< Hard Fault Handler                       */
   BusFault_Handler,             /*!< Bus Fault Handler                        */
   UsageFault_Handler,           /*!< Usage Fault Handler                      */
   0,0,0,0,                      /*!< Reserved                                 */

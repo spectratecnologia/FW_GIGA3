@@ -2,11 +2,13 @@
 #include "ios/ios.h"
 #include "multitask/multitask.h"
 
+#include "virtual_keyboard/virtual_keyboard.h"
+
 static KeyPress tactPressTable[TACTS_NUM_USER_KEYS] = { 0, 0, 0, 0 };
 
-uint32_t getDeadPeriod(uin8_t key);
+uint32_t getDeadTime(uint8_t key);
 
-void initTactKeys () {
+void initKeys () {
 
 #if DEBUG != 0
 	printf("[TACTKEYS]Tactskeys Setup\n");
@@ -25,7 +27,7 @@ void initTactKeys () {
 #endif
 }
 
-void processTactKeysAndDeadTime() {
+void processKeysAndDeadTime() {
 
 	static uint64_t lastCall=0;
 
@@ -50,7 +52,7 @@ void processTactKeysAndDeadTime() {
 		if(tactPressTable[i].triggerCounter == 0)
 			tactPressTable[i].shortDeadTimeScreen = 0;
 
-		deadTime = getDeadPeriod(i);
+		deadTime = getDeadTime(i);
 		/* Process dead time in all keys */
 		if(tactPressTable[i].state == DEAD_TIME) {
 			tactPressTable[i].elapsedTime += elapsedSinceLastCall;
@@ -91,7 +93,6 @@ void processTactKeysAndDeadTime() {
 
 				tactPressTable[i].state = deadTime;
 				tactPressTable[i].elapsedTime = 0;
-
 			}
 		}
 
@@ -100,7 +101,7 @@ void processTactKeysAndDeadTime() {
 	}
 }
 
-uint32_t getDeadPeriod(uin8_t key) {
+uint32_t getDeadTime(uint8_t key) {
 	if(tactPressTable[key].shortDeadTimeEnabled == false)
 		return LONG_DEAD_TIME;
 

@@ -159,7 +159,8 @@ void finishDateTimeDownload(){
 uint32_t writeBytesToUSART(char *data, uint32_t len){
 	int i=0;
 	while (i < len) {
-		VCP_DataTx((uint8_t*)(data+i),1);
+		/* take this comment out when VCP is implemented */
+		//VCP_DataTx((uint8_t*)(data+i),1);
 		USART_SendData(USART2, (uint8_t) data[i++]);
 
 		/* Loop until the end of transmission */
