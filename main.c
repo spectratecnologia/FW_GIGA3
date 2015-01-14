@@ -29,6 +29,5 @@ int main(void)
     	executeEveryInterval(1, 1, &processKeysAndDeadTime);
 
     	executeEveryInterval(2, 1, &processBeeps);
-
     }
 }
