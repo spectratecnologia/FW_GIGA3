@@ -27,15 +27,15 @@ void setBeep (uint8_t numOfBeeps, uint32_t periodInMs) {
 }
 
 void cancelBeep () {
-	beepConfig.numBeeps = 0;
+	beepConfig.numOfBeeps = 0;
 }
 
 inline void processBeeps() {
-	if(beepConfig.numBeeps > 0) {
+	if(beepConfig.numOfBeeps > 0) {
 
 		uint16_t currentPeriodNumber = (sysTickTimer - beepConfig.startTime)/beepConfig.periodInMs;
 
-		if (currentPeriodNumber<beepConfig.numBeeps*2){
+		if (currentPeriodNumber<beepConfig.numOfBeeps*2){
 			/* +1 to start with beep */
 			setBeepOutput((currentPeriodNumber+1)%2);
 		}

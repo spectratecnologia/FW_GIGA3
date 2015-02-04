@@ -20,7 +20,7 @@ int main(void)
 
 	initVitualKeyboard();
 
-	initBeepIO()();
+	initBeepIO();
 
     while(1)
     {
