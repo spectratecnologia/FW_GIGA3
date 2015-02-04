@@ -109,6 +109,7 @@ void NMI_Handler(void)
   * @param  None
   * @retval None
   */
+/*
 void HardFault_Handler(void)
 {
 	/*__asm("TST LR, #4\n"
@@ -117,13 +118,13 @@ void HardFault_Handler(void)
 	      "MRSNE R0, PSP\n"
 	      "B hard_fault_handler_c\n");*/
 
-	printf("HardFault_Handler\n");
+	//printf("HardFault_Handler\n");
 
   /* Go to infinite loop when Hard Fault exception occurs */
-  while (1)
-  {
-  }
-}
+  //while (1)
+  //{
+  //}
+//}
 
 /**
   * @brief  This function handles Memory Manage exception.
