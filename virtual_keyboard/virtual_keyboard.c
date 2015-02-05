@@ -42,15 +42,3 @@ inline void nextVirtualKeyState(uint8_t key, bool beep) {
 		virtualKeyboard[key].currentState++;
 	}
 }
-
-void initKeys() {
-#if DEBUG != 0
-	printf("[VIRTUAL_KEYBOARD] Specific hardware function initKeys() not specified\n");
-#endif
-}
-
-void processKeysAndDeadTime () {
-#if DEBUG != 0
-	printf("[TACTKEYS]Specific hardware function processKeysAndDeadTime() not specified\n");
-#endif
-}

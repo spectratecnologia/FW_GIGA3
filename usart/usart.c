@@ -175,7 +175,7 @@ void rebootToBootloader(void){
 	/* This magic is explained in the startup_assembly */
 	*((unsigned long *)0x2000FFF0) = 0xDEADBEEF; // STM32F407
 
-  NVIC_SystemReset();
+	NVIC_SystemReset();
 }
 
 /* Reboot PTC */

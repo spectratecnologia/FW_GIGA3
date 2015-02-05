@@ -25,8 +25,13 @@
 #include "stm32f10x_it.h"
 #include "multitask/multitask.h"
 
-//extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
-//extern uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
+/* USB includes */
+#include "usb_core.h"
+#include "usbd_core.h"
+#include "usbd_cdc_core.h"
+
+extern USB_OTG_CORE_HANDLE           USB_OTG_dev;
+extern uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
 
 //extern inline void LCD_ClockTick();
 //extern inline void updateLedScan();
@@ -227,7 +232,7 @@ void OTG_FS_WKUP_IRQHandler(void)
   */
 void OTG_FS_IRQHandler(void)
 {
-  //USBD_OTG_ISR_Handler (&USB_OTG_dev);
+  USBD_OTG_ISR_Handler (&USB_OTG_dev);
 }
 
 /**

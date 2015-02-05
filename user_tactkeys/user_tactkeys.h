@@ -4,16 +4,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 
-//#include "virtual_keyboard/virtual_keyboard.h"
 
 #define TACTS_NUM_USER_KEYS 4
 
-#define PRESS_TIME 20
+#define PRESS_TIME 10
 #define LONG_DEAD_TIME 700
 #define SHORT_DEAD_TIME 100
 
-#define SHORT_DEAD_TIME_SCREEN LONG_DEAD_TIME*3+200
-#define MIIN_KEY_TRIGGERS_TO_SHORT_TIME 3
+#define SHORT_DEAD_TIME_SCREEN LONG_DEAD_TIME*3+50
+#define MIN_KEY_TRIGGERS_TO_SHORT_TIME 3
 
 #define NOT_PRESSED 0
 #define PRESSED 1

@@ -18,6 +18,8 @@ void initIgnitionCmd();
 void initTactButtons();
 void initBeep();
 
+#define DEBUG 1
+
 void initIOs(){
 #if DEBUG != 0
 	printf("[IOs]Starting Setup\n");
@@ -185,6 +187,7 @@ void readCurrentTactsStatus () {
 	uint32_t i;
 	for(i=IO_TACT_UP; i<=IO_TACT_CANCEL; i++) {
 		 tactInputStatus[i] =  GPIO_ReadInputDataBit(IO_TACT_PORT, IO_TACT_UP_PIN << i);
+		 //printf("K %d - St: %d\n", i, tactInputStatus[i]);
 	 }
 }
 

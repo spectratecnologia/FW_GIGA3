@@ -1,6 +1,8 @@
 #ifndef __VIRTUAL_KEYBOARD_H__
 #define __VIRTUAL_KEYBOARD_H__
 
+/* Includes ------------------------------------------------------------------*/
+#include "stm32f10x.h"
 #include "user_tactkeys/user_tactkeys.h"
 
 #define MAX_NUM_KEYS 4
@@ -21,8 +23,10 @@ inline uint8_t getVirtualKeyState(uint8_t key);
  * Default interface functions to the low-level specific hardware functions.
  * These functions must be redefined elsewhere.
  */
-#define WEAK __attribute__ ((weak))
-void WEAK initKeys ();
-void WEAK processKeysAndDeadTime ();
+
+extern void initKeys ();
+extern void processKeysAndDeadTime ();
+
+
 
 #endif

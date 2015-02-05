@@ -163,7 +163,7 @@ void writeTime(uint32_t year, uint8_t month, uint8_t day, uint8_t hours, uint8_t
 	uint32_t rtc_seconds = 0;
 
 	realtime.tm_year = year - 1900;
-	realtime.tm_mon = month;
+	realtime.tm_mon = month-1;
 	realtime.tm_mday = day;
 	realtime.tm_hour = hours;
 	realtime.tm_min = minutes;
@@ -197,7 +197,7 @@ uint8_t getDay(time_t now){
 
 uint8_t getMonth(time_t now){
 	struct tm* ltime = localtime(&now);
-	return ltime->tm_mon;
+	return ltime->tm_mon+1;
 }
 
 uint32_t getYear(time_t now){
