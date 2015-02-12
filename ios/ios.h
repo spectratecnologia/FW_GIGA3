@@ -40,6 +40,7 @@ enum {
 /* Exported functions ------------------------------------------------------- */
 void initIOs();
 
+void initSHWRHSPI2();
 void setStatusLed();
 void resetStatusLed();
 void readCurrentTactsStatus ();

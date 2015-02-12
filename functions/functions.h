@@ -486,7 +486,7 @@ inline void setVirtualKeyState(uint8_t key, uint8_t state);
 inline uint8_t getVirtualKeyState(uint8_t key);
 
 inline void processKeyBlink();
-void setBeep(uint16_t beepPeriodInMs, uint16_t numberOfBeeps);
+//void setBeep(uint16_t beepPeriodInMs, uint16_t numberOfBeeps);
 inline void processBeepBlink();
 inline void processWarningLights();
 inline void sendChangedOutputsToMPXs();

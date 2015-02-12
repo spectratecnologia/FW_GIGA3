@@ -220,6 +220,20 @@ void (* const g_pfnVectors[])(void) =
   */
 void Default_Reset_Handler(void)
 {
+  // Reset handler WITH AUTOREBOOT TO BOOTLOADER
+  // Credits to user clive1, from ST forum
+  //https://my.st.com/public/STe2ecommunities/mcu/Lists/cortex_mx_stm32/Flat.aspx?RootFolder=/public/STe2ecommunities/mcu/Lists/cortex_mx_stm32/Jump%20to%20internal%20bootloader&FolderCTID=0x01200200770978C69A1141439FE559EB459D7580009C4E14902C3CDE46A77F0FFD06506F5B&currentviews=1396
+
+  //Compare 0x2000FFF0 initial value with arbitrary value
+  //If memory position 0x2000FFF0 has value 0xDEADBEEF, reboot
+  if (*((unsigned long *)0x2000FFF0) == 0xDEADBEEF){
+	  *(unsigned long *)0x2000FFF0 = 0x0;
+	  __asm("LDR        R0, =0x1FFFB000 \n");//System memory region, extracted from ST AN2606  page 19
+	  __asm("LDR        SP,[R0, #0]     \n");//
+	  __asm("LDR        R0,[R0, #4]     \n");//
+	  __asm("BX         R0              \n");//
+  }
+
   /* Initialize data and bss */
   unsigned long *pulSrc, *pulDest;
 

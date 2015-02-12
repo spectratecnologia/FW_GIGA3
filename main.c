@@ -3,47 +3,46 @@
 #include "usart/usart.h"
 #include "multitask/multitask.h"
 #include "ios/ios.h"
+#include "can/can.h"
 #include "rtc/rtc.h"
 #include "beep/beep.h"
 #include "virtual_keyboard/virtual_keyboard.h"
 #include "usb/user/usbd_cdc_vcp.h"
+#include "MPX/mpx.h"
+
 
 void teste () {
 
-	setBeep(3, 1000);
+	uint8_t data[8]={0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
 
+	sendCanPacket(CAN1, 0xFF, 0xAB, 0xFF, 0xFF, &data, 8);
+	//toggleCPULED();
 }
 
 int main(void)
 {
+	/* Functions already working - Pedro */
 	initUSART();
-
 	initUSBVCP();
-
 	initRTC();
-
 	initMultiTask();
-
-	initIOs();
-
+	initSPIs();
+	initMPXconfig();
 	initLCD();
-
+	initIOs();
 	initVitualKeyboard();
-
-	initBeepIO();
-
-	writeTime(2015, 2, 5, 11, 20, 0);
-
-	teste();
+	/* --------------------------------- */
+	initCANs();
 
     while(1)
     {
-
     	executeEveryInterval(0, 1000, &toggleCPULED);
 
-    	executeEveryInterval(1, 1, &processKeysAndDeadTime);
+  //  	GPIO_WriteBit(IO_BEEP_PORT,IO_BEEP_PIN, 1);
 
-    	executeEveryInterval(2, 1, &processBeeps);
+ //   	executeEveryInterval(1, 1, &processKeysAndDeadTime);
+
+    	//executeEveryInterval(1, 500, &teste);
 
 
     	//executeEveryInterval(3, 1000, &teste);

@@ -26,13 +26,14 @@ void initIOs(){
 #endif
 	initStatusLeds();
 
-	initBeep();
+//	initBeep();
 
 	initIgnitionCmd();
 
 	initTactButtons();
 
 	initADCs();
+
 #if DEBUG != 0
 	printf("[IOs]Setup complete\n");
 #endif

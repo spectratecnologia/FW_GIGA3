@@ -52,16 +52,20 @@ void processKeysAndDeadTime() {
 		 * pressed
 		 */
 
-		if(tactPressTable[i].triggerCounter == 0) {
+		if(tactPressTable[i].triggerCounter == 0)
+		{
 			tactPressTable[i].shortDeadTimeScreen = 0;
 			//printf("K %d - Scr %d\n", tactPressTable[i].shortDeadTimeScreen);
 		}
 
 		deadTime = getDeadTime(i);
+
 		/* Process dead time in all keys */
-		if(tactPressTable[i].state == DEAD_TIME) {
+		if(tactPressTable[i].state == DEAD_TIME)
+		{
 			tactPressTable[i].elapsedTime += elapsedSinceLastCall;
-			if(tactPressTable[i].elapsedTime > deadTime) {
+			if(tactPressTable[i].elapsedTime > deadTime)
+			{
 				printf("K: %d - t: %d\n", i, tactPressTable[i].elapsedTime);
 				tactPressTable[i].state = NOT_PRESSED;
 				tactPressTable[i].elapsedTime = 0;

@@ -72,6 +72,7 @@ bool isAllDateTimeDownloaded(){
 
 inline void onUSART2Interrupt(){
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET){
+		setBeep(2, 200);
 		/* Read one byte from the receive data register */
 		processReceivedChar(USART_ReceiveData(USART2));
 	}
