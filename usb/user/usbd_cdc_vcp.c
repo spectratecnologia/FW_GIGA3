@@ -225,6 +225,7 @@ static uint16_t VCP_DataRx (uint8_t* Buf, uint32_t Len){
   //printf("[VCP]Downloaded packet..\n");
   uint32_t i;
   for (i = 0; i < Len; i++){
+	  toggleCPULED();
 	  processReceivedChar(Buf[i]);
   } 
  

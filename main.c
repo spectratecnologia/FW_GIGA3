@@ -15,7 +15,7 @@ void teste () {
 
 	uint8_t data[8]={0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
 
-	sendCanPacket(CAN1, 0xFF, 0xAB, 0xFF, 0xFF, &data, 8);
+	activeMPXports(0, PP10A_HIGH);
 	//toggleCPULED();
 }
 
@@ -24,25 +24,25 @@ int main(void)
 	/* Functions already working - Pedro */
 	initUSART();
 	initUSBVCP();
-	initRTC();
+	//initRTC();
 	initMultiTask();
-	initSPIs();
-	initMPXconfig();
-	initLCD();
+	//initSPIs();
+	//initMPXconfig();
+	//initLCD();
 	initIOs();
-	initVitualKeyboard();
+	//initVitualKeyboard();
 	/* --------------------------------- */
-	initCANs();
+	//initCANs();
 
     while(1)
     {
-    	executeEveryInterval(0, 1000, &toggleCPULED);
+    	//executeEveryInterval(0, 1000, &toggleCPULED);
 
   //  	GPIO_WriteBit(IO_BEEP_PORT,IO_BEEP_PIN, 1);
 
  //   	executeEveryInterval(1, 1, &processKeysAndDeadTime);
 
-    	//executeEveryInterval(1, 500, &teste);
+    	//executeEveryInterval(1, 5000, &teste);
 
 
     	//executeEveryInterval(3, 1000, &teste);
