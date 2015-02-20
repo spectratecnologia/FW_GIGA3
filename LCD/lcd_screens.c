@@ -1,5 +1,4 @@
 #include "lcd_screen.h"
-#include "ios/ios.h"
 #include "multitask/multitask.h"
 #include "rtc/rtc.h"
 
@@ -15,7 +14,7 @@ StateMachine sm;
 
 static volatile int8_t nextEvent;
 
-static volatile bool showLCDAsTurnedOff=true;
+static volatile bool showLCDAsTurnedOff=false;
 
 static bool inDebugMode=false;
 
@@ -28,14 +27,13 @@ static inline bool msgTimoutReached (uint32_t timeout);
 
 void LCD_vMainScreen();
 void LCD_vAdjustTime();
-void LCD_vEditBusName();
 
-void LCD_vAdjustTemperature0();
-void LCD_vAdjustTemperature1();
-void LCD_vAdjustTemperature(int temp_num);
+void LCD_vTestMPX();
+void LCD_vTestMPXAuto();
+void LCD_vTestMPXManual();
 
-void LCD_vAdjustUSBMode();
-void LCD_vLogUploadMenu();
+void LCD_vTestPTC24();
+void LCD_vTestPTC16();
 
 void LCD_vMenuDebug();
 void LCD_vADCScreen();
@@ -50,21 +48,38 @@ void LCD_vUIDScreen();
 
 const Transition smTrans[] =  		//TABELA DE ESTADOS
 {
-/*Current state		Event			Next state					callback */
-{ST_MAIN			,EV_REFRESH       ,ST_MAIN           		,&LCD_vMainScreen			},
-{ST_MAIN			,EV_LINE1         ,ST_ADJUST_TIME    		,&LCD_vAdjustTime			},
+/*Current state		Event				Next state				callback */
+{ST_MAIN			,EV_REFRESH       	,ST_MAIN           		,&LCD_vMainScreen	},
+{ST_MAIN			,EV_LINE1         	,ST_ADJUST_TIME    		,&LCD_vAdjustTime	},
+{ST_MAIN			,EV_LINE2		  	,ST_TEST_MPX          	,&LCD_vTestMPX		},
+{ST_MAIN			,EV_LINE3		  	,ST_TEST_PTC24			,&LCD_vTestPTC24    },
+{ST_MAIN			,EV_LINE4		  	,ST_TEST_PTC16			,&LCD_vTestPTC16    },
+{ST_MAIN			,EV_KBD_CANCEL    	,ST_MAIN           		,&LCD_vMainScreen	},
 
-};
+{ST_ADJUST_TIME		,EV_REFRESH         ,ST_ADJUST_TIME	 	  	,&LCD_vAdjustTime	},
+{ST_ADJUST_TIME		,EV_PREVIOUS_FIELD  ,ST_ADJUST_TIME    		,&LCD_vAdjustTime	},
+{ST_ADJUST_TIME		,EV_NEXT_FIELD      ,ST_ADJUST_TIME    		,&LCD_vAdjustTime	},
+{ST_ADJUST_TIME		,EV_UP      		,ST_ADJUST_TIME    		,&LCD_vAdjustTime	},
+{ST_ADJUST_TIME		,EV_DOWN     		,ST_ADJUST_TIME    		,&LCD_vAdjustTime	},
+{ST_ADJUST_TIME		,EV_BACK_TO_MAIN    ,ST_MAIN    	   		,&LCD_vMainScreen	},
 
+{ST_TEST_MPX 		,EV_REFRESH		  	,ST_TEST_MPX          	,&LCD_vTestMPX		},
+{ST_TEST_MPX 		,EV_LINE2		  	,ST_TEST_MPX_AUTO      	,&LCD_vTestMPXAuto	},
+{ST_TEST_MPX 		,EV_LINE3		  	,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManual},
+{ST_TEST_MPX 		,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen	},
 
+{ST_TEST_MPX_AUTO 	,EV_REFRESH		  	,ST_TEST_MPX_AUTO      	,&LCD_vTestMPXAuto	},
+{ST_TEST_MPX_AUTO 	,EV_KBD_CANCEL	  	,ST_TEST_MPX  	     	,&LCD_vTestMPX		},
+
+{ST_TEST_MPX_MANUAL	,EV_REFRESH		  	,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManual},
+{ST_TEST_MPX_MANUAL	,EV_KBD_CANCEL	  	,ST_TEST_MPX  	     	,&LCD_vTestMPX		},
+
+{ST_TEST_PTC24 		,EV_REFRESH		  	,ST_TEST_PTC24          ,&LCD_vTestPTC24	},
+{ST_TEST_PTC24 		,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen	},
+
+{ST_TEST_PTC16 		,EV_REFRESH		  	,ST_TEST_PTC16          ,&LCD_vTestPTC16	},
+{ST_TEST_PTC16 		,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen	}};
 /*
-{ST_ADJUST_TIME			,EV_REFRESH         ,ST_ADJUST_TIME    ,&LCD_vAdjustTime	},
-{ST_ADJUST_TIME			,EV_PREVIOUS_FIELD  ,ST_ADJUST_TIME    ,&LCD_vAdjustTime	},
-{ST_ADJUST_TIME			,EV_NEXT_FIELD      ,ST_ADJUST_TIME    ,&LCD_vAdjustTime	},
-{ST_ADJUST_TIME			,EV_UP      		,ST_ADJUST_TIME    ,&LCD_vAdjustTime	},
-{ST_ADJUST_TIME			,EV_DOWN     		,ST_ADJUST_TIME    ,&LCD_vAdjustTime	},
-{ST_ADJUST_TIME			,EV_BACK_TO_MAIN    ,ST_MAIN    	   ,&LCD_vMainScreen	},
-
 {ST_MENU_DEBUG			,EV_LINE1       ,ST_PAGE1           ,&LCD_vManualMode		},
 
 //Page1
@@ -94,9 +109,12 @@ bool isInDebugMode(){
 	return inDebugMode;
 }
 
-struct{
-	union{
-		struct {
+struct
+{
+	union
+	{
+		struct
+		{
 			uint32_t currentMinute;
 			uint32_t currentHour;
 			uint32_t currentYear;
@@ -124,12 +142,15 @@ void displayErrorMessage(char *firstLine, char *secondLine, uint32_t displayTime
 
 	if (hasErrorToDisplay()){
 		/* Verify Priority and displayTime */
-		if(((lastWarningMessageConfigExecuted & WARNING_MSG_PRIORITY_MASK) < priorityMask)) {
+		if(((lastWarningMessageConfigExecuted & WARNING_MSG_PRIORITY_MASK) < priorityMask))
+		{
 			return;
 		}
 
-		if(((lastWarningMessageConfigExecuted & WARNING_MSG_PRIORITY_MASK) == priorityMask)) {
-			if ((displayTime<errorStringTimeToDisplay)) {
+		if(((lastWarningMessageConfigExecuted & WARNING_MSG_PRIORITY_MASK) == priorityMask))
+		{
+			if ((displayTime<errorStringTimeToDisplay))
+			{
 				return;
 			}
 		}
@@ -145,63 +166,79 @@ void displayErrorMessage(char *firstLine, char *secondLine, uint32_t displayTime
 	lastWarningMessageConfigExecuted = priorityMask;
 }
 
-bool hasErrorToDisplay(){
+bool hasErrorToDisplay()
+{
 	return ( sysTickTimer - errorStringStartTime < errorStringTimeToDisplay);
 }
 
 
 StEvents LCD_vGetNextEvent(void){
 	//Eventos gerados pelas Key.
-	if(getVirtualKeyState(KEY_CANCEL)){
+	//LCD_vSetNextEvent(EV_REFRESH);
+
+	if(getVirtualKeyState(KEY_CANCEL))
+	{
 		setVirtualKeyState(KEY_CANCEL,0); //consumer
 
 		LCD_vSetNextEvent(EV_KBD_CANCEL);
 
-		if(sm.state == ST_ADJUST_TIME || (sm.state == ST_PAGE1) || (sm.state == ST_ADJUST_TEMPERATURE_0) || (sm.state == ST_ADJUST_TEMPERATURE_1) || (sm.state == ST_SAVE_LOG) ||
-				(sm.state == ST_PAGE9)){
+		if(sm.state == ST_ADJUST_TIME)
+		{
 			LCD_vSetNextEvent(EV_PREVIOUS_FIELD);
 		}
 	}
+
 	else if(getVirtualKeyState(KEY_DOWN)){
 		setVirtualKeyState(KEY_DOWN,0); //consumer
 
 		lcd.sbLine++; //Handles others state transitions.
 
-		if(lcd.sbLine > lcd.sbLineMax ) (lcd.sbLine = lcd.sbLineMin);
+		if(lcd.sbLine > lcd.sbLineMax )
+		{
+			lcd.sbLine = lcd.sbLineMin;
+		}
 
 		LCD_vSetNextEvent(EV_REFRESH);
 
-		if(sm.state == ST_ADJUST_TIME || (sm.state == ST_PAGE1) || (sm.state == ST_ADJUST_TEMPERATURE_0) || (sm.state == ST_ADJUST_TEMPERATURE_1)
-				|| (sm.state == ST_PAGE8) || (sm.state == ST_SAVE_LOG) || (sm.state == ST_PAGE9)){
+		if (sm.state == ST_ADJUST_TIME)
+		{
 			LCD_vSetNextEvent(EV_DOWN);
 		}
 	}
+
 	else if(getVirtualKeyState(KEY_UP)){
 		setVirtualKeyState(KEY_UP,0); //consumer
 
 		lcd.sbLine--;
 
-		if (lcd.sbLine < lcd.sbLineMin) (lcd.sbLine = lcd.sbLineMax);
+		if (lcd.sbLine < lcd.sbLineMin)
+		{
+			lcd.sbLine = lcd.sbLineMax;
+		}
 
 		LCD_vSetNextEvent(EV_REFRESH);
 
-		if(sm.state == ST_ADJUST_TIME || (sm.state == ST_PAGE1) || (sm.state == ST_ADJUST_TEMPERATURE_0) || (sm.state == ST_ADJUST_TEMPERATURE_1)
-				|| (sm.state == ST_PAGE8) || (sm.state == ST_SAVE_LOG) || (sm.state == ST_PAGE9)){
+		if (sm.state == ST_ADJUST_TIME)
+		{
 			LCD_vSetNextEvent(EV_UP);
 		}
+
 	}
+
 	else if(getVirtualKeyState(KEY_ENTER)){
 		setVirtualKeyState(KEY_ENTER,0); //Consumer
 
 		/* Allow enter only on Main, Debug menu or UserSettings */
-		if ((sm.state == ST_MAIN) || (sm.state == ST_MENU_DEBUG)||(sm.state == ST_PAGE2)){
+		if (sm.state == ST_MAIN || sm.state == ST_TEST_MPX)
+		{
 			LCD_vSetNextEvent(lcd.sbLine);
 		}
 
-		if(sm.state == ST_ADJUST_TIME || (sm.state == ST_PAGE1) || (sm.state == ST_ADJUST_TEMPERATURE_0) || (sm.state == ST_ADJUST_TEMPERATURE_1) || (sm.state == ST_SAVE_LOG) ||
-				(sm.state == ST_PAGE9)){
+		if (sm.state == ST_ADJUST_TIME)
+		{
 			LCD_vSetNextEvent(EV_NEXT_FIELD);
 		}
+
 	}
 
 	return nextEvent;
@@ -246,7 +283,8 @@ void  LCD_vStateMachineLoop(void){ // STATE MACHINE LOOP{
 	}
 	/* Display messages if not in error state and if message is different from priority 6(ignore all no error messages) */
 	else if(hasErrorToDisplay() && !inDebugMode &&
-			((lastWarningMessageConfigExecuted & WARNING_MSG_PRIORITY_MASK)!=IGNORE_ALL_NO_ERROR_MESSAGES) ){
+			((lastWarningMessageConfigExecuted & WARNING_MSG_PRIORITY_MASK)!=IGNORE_ALL_NO_ERROR_MESSAGES) )
+	{
 		static char lines[][LINE_SIZE]={"                "
 									   ,"                "};
 		snprintf(lines[0],LINE_SIZE,"%-16.16s",errorStringFirstLine);
@@ -261,12 +299,16 @@ void  LCD_vStateMachineLoop(void){ // STATE MACHINE LOOP{
 		/* Execute LCD state machine */
 		for (i = 0; i < TRANS_COUNT; i++)
 		{
-			if ((sm.state == sm.trans[i].state) || (ST_ANY == sm.trans[i].state)) {
-				if (((sm.event == sm.trans[i].event) || (EV_ANY == sm.trans[i].event)))	{
+			if ((sm.state == sm.trans[i].state) || (ST_ANY == sm.trans[i].state))
+			{
+				if (((sm.event == sm.trans[i].event) || (EV_ANY == sm.trans[i].event)))
+				{
 	                sm.state = sm.trans[i].next;
 
 	                if (sm.trans[i].fn)
+	                {
 	                    (sm.trans[i].fn)();
+	                }
 	                break;
 				}
 			}
@@ -275,26 +317,29 @@ void  LCD_vStateMachineLoop(void){ // STATE MACHINE LOOP{
 	}
 }
 
-void LCD_vMainScreen(void){
-	char lines[][LINE_SIZE]={"      GIGA 3     "
-			                ,"      __:__      "
-			                ,"    TESTE MPX    "
-			                ,"   TESTE PTC 24  "
-							,"   TESTE PTC 16  "};
+void LCD_vMainScreen(void)
+{
+	char lines[][LINE_SIZE]={"     GIGA 3     "
+			                ,"      __:__     "
+			                ,"    TESTE MPX   "
+			                ,"  TESTE PTC 24  "
+							,"  TESTE PTC 16  "};
 
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
-	int n_sensors;
-
-	uint32_t *id = getUniqueID();
 
 	/* Memorize current line */
 	static uint8_t currentLine=1;
-	if(EV_REFRESH != sm.event){
+
+	enableTactShortDeadTime(false);
+
+	if(EV_REFRESH != sm.event)
+	{
 		lcd.sbLine = currentLine;
 		lcd.sbLineMin = 1;
 		lcd.sbLineMax = numLines-1;
 	}
-	else{
+	else
+	{
 		currentLine = lcd.sbLine;
 	}
 
@@ -309,7 +354,8 @@ void LCD_vMainScreen(void){
 
 	char timerSeparationChar=' ';
 	/* 500 ms blink time */
-	if ((sysTickTimer%1000)>499){
+	if ((sysTickTimer%1000)>499)
+	{
 		timerSeparationChar=':';
 	}
 
@@ -328,7 +374,7 @@ void LCD_vAdjustTime(void){
 	char lines[][LINE_SIZE]={"AJUSTE DATA/HORA"
 			                       ,"DD/MM/YYYY __:__"};
 
-	static uint8_t maxFieldValues[5]={60,24,99,13,32};
+	static uint8_t maxFieldValues[5]={60,24,130,13,32};
 	static uint8_t cursorPosition[5]={0x4F, 0x4C, 0x49, 0x44, 0x41};
 
 	uint8_t numFields=sizeof(maxFieldValues) - 1;
@@ -338,6 +384,8 @@ void LCD_vAdjustTime(void){
 
 	struct tm oldTimestamp, newTime;
 	time_t rawtime;
+
+	enableTactShortDeadTime(true);
 
 	maxFieldValues[4] = maxDaysOnMoth(currentTime.currentMonth) + 1;
 
@@ -365,14 +413,17 @@ void LCD_vAdjustTime(void){
 		}
 	}
 
-	if (sm.event == EV_UP){
+	if (sm.event == EV_UP)
+	{
 		currentTime.fields[currentField]++;
+
 		if (currentTime.fields[currentField]>=maxFieldValues[currentField]){
 			if(currentField < 3)
 				currentTime.fields[currentField]=0;
 			else
 				currentTime.fields[currentField]=1;
 		}
+
 	}
 
 	if (sm.event == EV_DOWN){
@@ -390,7 +441,7 @@ void LCD_vAdjustTime(void){
 		currentTime.fields[currentField]--;
 	}
 
-	snprintf(lines[1],LINE_SIZE,"%02d/%02d/%04d %02d:%02d ", currentTime.currentDay, currentTime.currentMonth, currentTime.currentYear+1900,
+	snprintf(lines[1],LINE_SIZE,"%02d/%02d/%04d %02d:%02d ", currentTime.currentDay, currentTime.currentMonth, currentTime.currentYear,
 															 currentTime.currentHour, currentTime.currentMinute);
 
 	/* Print currentLine */
@@ -420,36 +471,7 @@ void LCD_vAdjustUSBMode() {
 	LCD_printLine(1,lines[1]);
 }
 
-static inline bool msgTimoutReached (uint32_t timeout) {
-	static int64_t msgTimeout=0;
-	if(msgTimeout == 0)
-		msgTimeout = sysTickTimer;
-	if(sysTickTimer - msgTimeout > timeout) {
-		msgTimeout = 0;
-		return true;
-	}
-	return false;
-}
 
-/* progress must be between 0 and 10 */
-void LCD_vSetProgressBar (uint8_t progress) {
-
-	char line [1][LINE_SIZE];
-	static const char progressBar[LINE_SIZE] = "****************";
-	static const uint8_t percentages[] = {1,2,3,5,7,8,10,12,14,15,15};
-	char *progressStart;
-
-	if(progress > 10)
-		progress = 10;
-
-	if(progress <= 10) {
-		progressStart = &progressBar[LINE_SIZE-1-percentages[progress]];
-		//if(currentLogSaveMsg == LCD_USB_MSG_SAVING) {
-			sniprintf(line[0], LINE_SIZE, "%s                 ", progressStart);
-		//}
-			LCD_printLine(1,line[0]);
-	}
-}
 
 void LCD_vMenuDebug(void){
 	static const char lines[][LINE_SIZE]={"      Menu      ",
@@ -511,6 +533,79 @@ void LCD_vUIDScreen(void) {
 	LCD_vSetNextEvent(EV_REFRESH);
 }
 
+void LCD_vTestMPX(void)
+{
+	char lines[][LINE_SIZE]={"   TESTE MPX    "
+							,"Selecione o Modo"
+				            ,"Teste Automatico"
+							,"  Teste Manual  "};
+
+	uint8_t numLines = sizeof(lines)/LINE_SIZE;
+
+	static uint8_t currentLine=1;
+
+	if(EV_REFRESH != sm.event)
+	{
+		lcd.sbLine = currentLine;
+		lcd.sbLineMin = 1;
+		lcd.sbLineMax = numLines-1;
+	}
+	else
+	{
+		currentLine = lcd.sbLine;
+	}
+
+	LCD_printLine(0,lines[0]);
+	LCD_printLine(1,lines[lcd.sbLine]);
+
+	LCD_vSetNextEvent(EV_REFRESH);
+}
+
+void LCD_vTestMPXAuto(void)
+{
+	char lines[][LINE_SIZE]={"TESTE MPX: AUTO "
+   	                        ,"Conecte o MPX   "};
+
+	char finalpoint[3]={' ', ' ', ' '};
+
+	if ((sysTickTimer%4000)>999)
+		finalpoint[0]='.';
+
+	if ((sysTickTimer%4000)>1999)
+		finalpoint[1]='.';
+
+	if ((sysTickTimer%4000)>2999)
+		finalpoint[2]='.';
+
+	snprintf(lines[1],LINE_SIZE,"Conecte o MPX%c%c%c",finalpoint[0], finalpoint[1], finalpoint[2]);
+
+	LCD_printLine(0, lines[0]);
+	LCD_printLine(1, lines[1]);
+
+	LCD_vSetNextEvent(EV_REFRESH);
+}
+
+void LCD_vTestMPXManual(void)
+{
+	LCD_printLine(1,"Manual");
+}
+
+void LCD_vTestPTC24(void)
+{
+	LCD_printLine(0,"  TESTE PTC 24  ");
+	LCD_printLine(1,"Em construcao...");
+
+	LCD_vSetNextEvent(EV_REFRESH);
+}
+
+void LCD_vTestPTC16(void)
+{
+	LCD_printLine(0,"  TESTE PTC 16  ");
+	LCD_printLine(1,"Em construcao...");
+
+	LCD_vSetNextEvent(EV_REFRESH);
+}
+
 void LCD_vADCScreen(void){
 
 }
@@ -551,6 +646,39 @@ void LCD_vEditBusName(void) {
 
 void setLCDAsTurnedOff(bool value){
 	showLCDAsTurnedOff = value;
+}
+
+static inline bool msgTimoutReached (uint32_t timeout) {
+	static int64_t msgTimeout=0;
+	if(msgTimeout == 0)
+		msgTimeout = sysTickTimer;
+	if(sysTickTimer - msgTimeout > timeout) {
+		msgTimeout = 0;
+		return true;
+	}
+	return false;
+}
+
+/* progress must be between 0 and 10 */
+void LCD_vSetProgressBar (uint8_t progress)
+{
+
+	char line [1][LINE_SIZE];
+	static const char progressBar[LINE_SIZE] = "****************";
+	static const uint8_t percentages[] = {1,2,3,5,7,8,10,12,14,15,15};
+	char *progressStart;
+
+	if(progress > 10)
+		progress = 10;
+
+	if(progress <= 10)
+	{
+		progressStart = &progressBar[LINE_SIZE-1-percentages[progress]];
+		//if(currentLogSaveMsg == LCD_USB_MSG_SAVING) {
+			sniprintf(line[0], LINE_SIZE, "%s                 ", progressStart);
+		//}
+			LCD_printLine(1,line[0]);
+	}
 }
 
 

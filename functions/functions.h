@@ -3,6 +3,7 @@
 #define __FUNCTIONS_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "multitask/multitask.h"
 #ifdef USE_STDPERIPH_DRIVER
 #include "stm32f10x.h"
 #else
@@ -304,7 +305,7 @@ typedef struct {
 } Function;
 
 
-#define NUM_MPX 6
+#define NUM_MPX 1
 #define NUM_FUNCTIONS 120
 
 #define NUM_PTC_KEY 64
@@ -431,36 +432,6 @@ typedef struct {
 	uint8_t mapToVirtualKeySlave[NUM_PTC_KEY];
 }Ptc;
 
-typedef struct {
-    /* uint32_t to simplify writing to flash */
-    uint32_t isMaster;
-    char busName[13];
-	/************* Calculated in CRC ****************/
-    uint32_t multiplexConfigVersion;
-	Ptc currentPtc;
-	uint8_t numberOfConfiguredMpx;
-	Mpx mpx[NUM_MPX];
-    uint8_t numberOfConfiguredFunctions;
-    BlinkPeriod beepBlink;
-    /* Multiplex size has to be multiple of 4. padding is always 0 */
-    char busStructDesigner[STRING_DESCRIPTION_SIZE];
-    char configName[STRING_DESCRIPTION_SIZE];
-    uint32_t configVersion;
-    struct{
-    	uint8_t day,month,year;
-    }configLastDateSaved;
-
-    Log logs[NUM_LOG_SLOTS];
-    char _reserved[274];
-
-    Function functions[NUM_FUNCTIONS];
-    uint8_t padding[3];
-    /************* Calculated in CRC ****************/
-
-    uint32_t crc;
-
-} Multiplex;
-
 #pragma pack(pop)  /* push current alignment to stack */
 
 /* Exported constants --------------------------------------------------------*/
@@ -468,37 +439,8 @@ typedef struct {
 
 
 /* Exported functions ------------------------------------------------------- */
-extern Multiplex multiplex;
+extern Mpx mpx;
 
-static inline uint32_t crcMultiplex(Multiplex *multiplex){
-	#ifdef USE_STDPERIPH_DRIVER
-	CRC_ResetDR();
-	#endif
-    uint32_t *multiplexStart = ((uint32_t*)(multiplex))+(sizeof(multiplex->isMaster)/4);
-    uint32_t multiplexCRCSize = (sizeof(Multiplex)-sizeof(multiplex->crc)-sizeof(multiplex->isMaster))/4;
-    return  CRC_CalcBlockCRC(multiplexStart, multiplexCRCSize);
-}
 
-void processFunctions();
-
-inline void nextVirtualKeyState(uint8_t key, bool beep);
-inline void setVirtualKeyState(uint8_t key, uint8_t state);
-inline uint8_t getVirtualKeyState(uint8_t key);
-
-inline void processKeyBlink();
-//void setBeep(uint16_t beepPeriodInMs, uint16_t numberOfBeeps);
-inline void processBeepBlink();
-inline void processWarningLights();
-inline void sendChangedOutputsToMPXs();
-
-void printAnalogInputs();
-void printPTCanalogValuesInputs();
-void printNumberOfInputOnByMPX();
-
-static inline uint16_t getMpxAnalogMemoryAddress(uint8_t mpxIndex, uint8_t analogValue){
-	return MEMORY_INDEX_MPX_START + mpxIndex * NUM_ANALOG_MPX_VALUES + analogValue;
-}
-
-void markEveryFunctionAsNotExecuted();
 
 #endif /* __FUNCTIONS_H */

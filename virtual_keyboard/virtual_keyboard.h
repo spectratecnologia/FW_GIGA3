@@ -27,6 +27,4 @@ inline uint8_t getVirtualKeyState(uint8_t key);
 extern void initKeys ();
 extern void processKeysAndDeadTime ();
 
-
-
 #endif

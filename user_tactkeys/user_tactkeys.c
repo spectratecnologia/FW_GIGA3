@@ -21,12 +21,17 @@ void initKeys () {
 	 */
 	initTactButtons();
 
-	tactPressTable[KEY_UP].shortDeadTimeEnabled = true;
-	tactPressTable[KEY_DOWN].shortDeadTimeEnabled = true;
+	enableTactShortDeadTime(false);
 
 #if DEBUG != 0
 	printf("[TACTKEYS]Setup complete\n");
 #endif
+}
+
+void enableTactShortDeadTime(bool state)
+{
+	tactPressTable[KEY_UP].shortDeadTimeEnabled = state;
+	tactPressTable[KEY_DOWN].shortDeadTimeEnabled = state;
 }
 
 void processKeysAndDeadTime() {

@@ -4,8 +4,8 @@
 <window>
 <fastViewData fastViewLocation="1024">
 <orientation position="512" view="org.eclipse.debug.ui.ExpressionView"/>
-<orientation position="512" view="org.coocox.builder.ui.views.ProjectView"/>
 <orientation position="512" view="org.coocox.component.ui.ComponentView"/>
+<orientation position="512" view="org.coocox.builder.ui.views.ProjectView"/>
 <orientation position="512" view="org.coocox.codebugger.trace.ui.traceview"/>
 <orientation position="512" view="org.eclipse.debug.ui.DebugView"/>
 <orientation position="512" view="org.eclipse.ui.console.ConsoleView"/>
@@ -25,37 +25,47 @@
 <part id="4"/>
 <part id="5"/>
 <part id="6"/>
+<part id="7"/>
+<part id="8"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_it.h" partName="stm32f10x_it.h" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/interrupts/stm32f10x_it.h" title="stm32f10x_it.h" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/interrupts/stm32f10x_it.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/interrupts/stm32f10x_it.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1988" selectionTopPixel="0"/>
-</editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/main.c" title="main.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/main.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/main.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="625" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1351" selectionTopPixel="124"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="can.c" partName="can.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/can/can.c" title="can.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/can/can.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/can/can.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="6011" selectionTopPixel="2518"/>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="lcd_screens.c" partName="lcd_screens.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/LCD/lcd_screens.c" title="lcd_screens.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/LCD/lcd_screens.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/LCD/lcd_screens.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="7047" selectionTopPixel="3894"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="can.h" partName="can.h" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/can/can.h" title="can.h" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/can/can.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/can/can.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1406" selectionTopPixel="0"/>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="lcd_screen.h" partName="lcd_screen.h" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/LCD/lcd_screen.h" title="lcd_screen.h" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/LCD/lcd_screen.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/LCD/lcd_screen.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="17" selectionOffset="2222" selectionTopPixel="1461"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x.h" partName="stm32f10x.h" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/cmsis_boot/stm32f10x.h" title="stm32f10x.h" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/cmsis_boot/stm32f10x.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/cmsis_boot/stm32f10x.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="36431" selectionTopPixel="6705"/>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="user_tactkeys.h" partName="user_tactkeys.h" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/user_tactkeys/user_tactkeys.h" title="user_tactkeys.h" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/user_tactkeys/user_tactkeys.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/user_tactkeys/user_tactkeys.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="719" selectionTopPixel="0"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_can.c" partName="stm32f10x_can.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/stm_lib/src/stm32f10x_can.c" title="stm32f10x_can.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/stm_lib/src/stm32f10x_can.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/stm_lib/src/stm32f10x_can.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="17" selectionOffset="33627" selectionTopPixel="15345"/>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="user_tactkeys.c" partName="user_tactkeys.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/user_tactkeys/user_tactkeys.c" title="user_tactkeys.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/user_tactkeys/user_tactkeys.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/user_tactkeys/user_tactkeys.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="55" selectionOffset="594" selectionTopPixel="0"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ios.c" partName="ios.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/ios/ios.c" title="ios.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/ios/ios.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/ios/ios.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="12" selectionOffset="6241" selectionTopPixel="2565"/>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="rtc.c" partName="rtc.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/rtc/rtc.c" title="rtc.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/rtc/rtc.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/rtc/rtc.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="9" selectionOffset="4535" selectionTopPixel="2209"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="spi.c" partName="spi.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/spi/spi.c" title="spi.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/spi/spi.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/spi/spi.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="80" selectionOffset="0" selectionTopPixel="0"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="smtest.c" partName="smtest.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/tests/smtest.c" title="smtest.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/tests/smtest.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/tests/smtest.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3466" selectionTopPixel="42"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="smtest.h" partName="smtest.h" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/tests/smtest.h" title="smtest.h" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/tests/smtest.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/tests/smtest.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1118" selectionTopPixel="259"/>
 </editor>
 </editors>
 <views>
@@ -68,22 +78,18 @@
 <element path="/GIGA3"/>
 <element path="/GIGA3/beep"/>
 <element path="/GIGA3/can"/>
-<element path="/GIGA3/cmsis"/>
-<element path="/GIGA3/cmsis_boot"/>
-<element path="/GIGA3/cmsis_boot/startup"/>
+<element path="/GIGA3/errors"/>
 <element path="/GIGA3/functions"/>
 <element path="/GIGA3/interrupts"/>
 <element path="/GIGA3/ios"/>
 <element path="/GIGA3/LCD"/>
 <element path="/GIGA3/MPX"/>
-<element path="/GIGA3/semihosting"/>
-<element path="/GIGA3/spi"/>
-<element path="/GIGA3/stm_lib"/>
-<element path="/GIGA3/stm_lib/src"/>
-<element path="/GIGA3/syscalls"/>
+<element path="/GIGA3/tests"/>
+<element path="/GIGA3/user_tactkeys"/>
+<element path="/GIGA3/virtual_keyboard"/>
 </expanded>
 <selection>
-<element path="/GIGA3/can/can.h"/>
+<element path="/GIGA3/tests/smtest.h"/>
 </selection>
 </viewState>
 </view>
@@ -94,9 +100,9 @@
 </view>
 <view id="org.eclipse.search.ui.views.SearchView" partName="Search">
 <viewState isPinned="false">
-<view IMemento.internal.id="org.eclipse.search.text.FileSearchResultPage" org.eclipse.search.lastActivation="6" org.eclipse.search.resultpage.layout="2" org.eclipse.search.resultpage.limit="1000" org.eclipse.search.resultpage.sorting="2"/>
-<view IMemento.internal.id="org.eclipse.cdt.ui.pdomSearchViewPage" definitionColumnWidth="150" locationColumnWidth="300" matchColumnWidth="300" org.eclipse.search.lastActivation="5" org.eclipse.search.resultpage.layout="2" showEnclosingDefinitions="true"/>
+<view IMemento.internal.id="org.eclipse.search.text.FileSearchResultPage" org.eclipse.search.lastActivation="2" org.eclipse.search.resultpage.layout="2" org.eclipse.search.resultpage.limit="1000" org.eclipse.search.resultpage.sorting="2"/>
 <view IMemento.internal.id="" org.eclipse.search.lastActivation="0"/>
+<view IMemento.internal.id="org.eclipse.cdt.ui.pdomSearchViewPage" definitionColumnWidth="150" locationColumnWidth="300" matchColumnWidth="300" org.eclipse.search.lastActivation="3" org.eclipse.search.resultpage.layout="2" showEnclosingDefinitions="true"/>
 </viewState>
 </view>
 <view id="org.coocox.codebugger.trace.ui.traceview" partName="Semihosting">
@@ -153,7 +159,7 @@
 <fastViewBars>
 <fastViewBar fastViewLocation="1024" id="org.eclipse.ui.internal.ViewStack@1353d52" orientation="256" selectedTabId="org.eclipse.ui.console.ConsoleView" style="0">
 <fastViews>
-<view id="org.eclipse.ui.console.ConsoleView" ratio="0.29936305"/>
+<view id="org.eclipse.ui.console.ConsoleView" ratio="0.28874734"/>
 <view id="org.coocox.component.ui.Help" ratio="0.3"/>
 <view id="org.eclipse.search.ui.views.SearchView" ratio="0.29936305"/>
 <view id="org.coocox.component.ui.ComponentView" ratio="0.3"/>
@@ -295,166 +301,161 @@
 <workingSets/>
 <navigationHistory>
 <editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/can/can.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/can/can.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/main.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/stm_lib/inc/stm32f10x_can.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/ios/ios.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/cmsis_boot/startup/startup_stm32f10x_cl.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/can/can.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/can/can.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/interrupts/stm32f10x_it.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/LCD/lcd_screens.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/smtest.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/smtest.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/LCD/lcd_screen.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/main.c"/>
 </editors>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="8207" y="0"/>
+<item historyLabel="lcd_screen.h" index="3">
+<position info="not_deleted" x="2020" y="80"/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="130" y="0"/>
+<item historyLabel="main.c" index="4">
+<position info="not_deleted" x="1351" y="0"/>
 </item>
-<item historyLabel="can.c" index="0">
+<item historyLabel="lcd_screens.c" index="0">
+<position info="not_deleted" x="7428" y="1246"/>
+</item>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="2758" y="0"/>
+</item>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="502" y="0"/>
+</item>
+<item historyLabel="smtest.c" index="1">
 <position/>
 </item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="781" y="12"/>
+<item historyLabel="lcd_screens.c" index="0">
+<position info="not_deleted" x="7047" y="0"/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="6832" y="0"/>
+<item historyLabel="lcd_screen.h" index="3">
+<position info="not_deleted" x="2222" y="17"/>
 </item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="750" y="0"/>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="3063" y="0"/>
 </item>
-<item historyLabel="can.h" index="1">
-<position info="not_deleted" x="1743" y="0"/>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="2996" y="45"/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="6827" y="0"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1411" y="0"/>
 </item>
-<item historyLabel="can.c" index="0">
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="2436" y="34"/>
+</item>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1411" y="0"/>
+</item>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="757" y="0"/>
+</item>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="853" y="0"/>
+</item>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="1489" y="0"/>
+</item>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="853" y="0"/>
+</item>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="1489" y="0"/>
+</item>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1004" y="0"/>
+</item>
+<item historyLabel="smtest.c" index="1">
 <position/>
 </item>
-<item historyLabel="ios.c" index="4">
-<position info="not_deleted" x="6241" y="12"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1004" y="0"/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="6114" y="0"/>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="925" y="13"/>
 </item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="450" y="0"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="963" y="0"/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="6132" y="0"/>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="2050" y="0"/>
 </item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="638" y="0"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="963" y="0"/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="7076" y="0"/>
-</item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="450" y="0"/>
-</item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="5757" y="0"/>
-</item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="450" y="0"/>
-</item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="6096" y="0"/>
-</item>
-<item historyLabel="can.h" index="1">
-<position info="not_deleted" x="1406" y="0"/>
-</item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="6098" y="0"/>
-</item>
-<item historyLabel="startup_stm32f10x_cl.c" index="5">
-<position info="not_deleted" x="3923" y="0"/>
-</item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="6098" y="0"/>
-</item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="6147" y="0"/>
-</item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="6920" y="0"/>
-</item>
-<item historyLabel="stm32f10x_can.h" index="3">
+<item historyLabel="smtest.c" index="1">
 <position/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="5965" y="0"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1272" y="0"/>
 </item>
-<item historyLabel="stm32f10x_can.h" index="3">
+<item historyLabel="smtest.c" index="1">
 <position/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="7446" y="0"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1136" y="0"/>
 </item>
-<item historyLabel="stm32f10x_can.h" index="3">
+<item historyLabel="smtest.c" index="1">
 <position/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="7446" y="0"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1270" y="0"/>
 </item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="450" y="0"/>
-</item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="923" y="0"/>
-</item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="4872" y="0"/>
-</item>
-<item historyLabel="stm32f10x_can.h" index="3">
+<item historyLabel="smtest.c" index="1">
 <position/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="4864" y="0"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1144" y="0"/>
 </item>
-<item historyLabel="stm32f10x_can.h" index="3">
+<item historyLabel="smtest.c" index="1">
 <position/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="4798" y="0"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1270" y="0"/>
 </item>
-<item historyLabel="stm32f10x_can.h" index="3">
-<position info="not_deleted" x="5970" y="16"/>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="3026" y="0"/>
 </item>
-<item historyLabel="can.c" index="0">
-<position info="not_deleted" x="4810" y="0"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1270" y="0"/>
 </item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="923" y="0"/>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="2996" y="45"/>
 </item>
-<item historyLabel="can.h" index="6">
-<position info="not_deleted" x="1406" y="0"/>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1443" y="0"/>
 </item>
-<item historyLabel="can.c" index="7">
-<position info="not_deleted" x="4811" y="0"/>
-</item>
-<item historyLabel="can.c" index="7">
-<position info="not_deleted" x="6130" y="0"/>
-</item>
-<item historyLabel="can.c" index="7">
-<position info="not_deleted" x="6713" y="22"/>
-</item>
-<item historyLabel="stm32f10x_it.h" index="8">
-<position info="not_deleted" x="1988" y="0"/>
-</item>
-<item historyLabel="main.c" index="2">
-<position info="not_deleted" x="371" y="0"/>
-</item>
-<item historyLabel="can.c" index="7">
-<position info="not_deleted" x="7033" y="0"/>
-</item>
-<item historyLabel="main.c" index="9">
-<position info="not_deleted" x="625" y="0"/>
-</item>
-<item active="true" historyLabel="can.c" index="7">
+<item historyLabel="smtest.c" index="1">
 <position/>
+</item>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1443" y="0"/>
+</item>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="3302" y="0"/>
+</item>
+<item historyLabel="lcd_screen.h" index="3">
+<position info="not_deleted" x="2222" y="17"/>
+</item>
+<item historyLabel="lcd_screens.c" index="0">
+<position info="not_deleted" x="7047" y="0"/>
+</item>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="3302" y="0"/>
+</item>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="1146" y="0"/>
+</item>
+<item historyLabel="smtest.h" index="2">
+<position info="not_deleted" x="1118" y="0"/>
+</item>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="1146" y="0"/>
+</item>
+<item historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="496" y="0"/>
+</item>
+<item active="true" historyLabel="smtest.c" index="1">
+<position info="not_deleted" x="756" y="69"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -463,50 +464,50 @@
 <actionBarAdvisor/>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_can.h" tooltip="PTC16/stm_lib/inc/stm32f10x_can.h">
-<persistable path="/PTC16/stm_lib/inc/stm32f10x_can.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="smtest.h" tooltip="GIGA3/tests/smtest.h">
+<persistable path="/GIGA3/tests/smtest.h"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_can.h" tooltip="GIGA3/stm_lib/inc/stm32f10x_can.h">
-<persistable path="/GIGA3/stm_lib/inc/stm32f10x_can.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="smtest.c" tooltip="GIGA3/tests/smtest.c">
+<persistable path="/GIGA3/tests/smtest.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="startup_stm32f10x_cl.c" tooltip="GIGA3/cmsis_boot/startup/startup_stm32f10x_cl.c">
-<persistable path="/GIGA3/cmsis_boot/startup/startup_stm32f10x_cl.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="spi.c" tooltip="GIGA3/spi/spi.c">
+<persistable path="/GIGA3/spi/spi.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ios.c" tooltip="GIGA3/ios/ios.c">
-<persistable path="/GIGA3/ios/ios.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="lcd_screen.h" tooltip="PTC/lcd/lcd_screen.h">
+<persistable path="/PTC/lcd/lcd_screen.h"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_can.c" tooltip="GIGA3/stm_lib/src/stm32f10x_can.c">
-<persistable path="/GIGA3/stm_lib/src/stm32f10x_can.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="lcd_screens.c" tooltip="PTC/lcd/lcd_screens.c">
+<persistable path="/PTC/lcd/lcd_screens.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x.h" tooltip="GIGA3/cmsis_boot/stm32f10x.h">
-<persistable path="/GIGA3/cmsis_boot/stm32f10x.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="can.c" tooltip="PTC/can/can.c">
+<persistable path="/PTC/can/can.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="can.h" tooltip="GIGA3/can/can.h">
-<persistable path="/GIGA3/can/can.h"/>
+<file factoryID="org.eclipse.cdt.ui.ExternalEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="functions.h" tooltip="E:\Work\Proj_New\MULTIPLEX3\PTC\PTC24\SW.C\functions\functions.h">
+<persistable path="E:\Work\Proj_New\MULTIPLEX3\PTC\PTC24\SW.C\functions\functions.h" project="PTC"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="can.c" tooltip="GIGA3/can/can.c">
-<persistable path="/GIGA3/can/can.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="PTC/main.c">
+<persistable path="/PTC/main.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="GIGA3/main.c">
-<persistable path="/GIGA3/main.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="functions_config.h" tooltip="PTC/functions/functions_config.h">
+<persistable path="/PTC/functions/functions_config.h"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="can.c" tooltip="PTC16/can/can.c">
-<persistable path="/PTC16/can/can.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="functions_config.c" tooltip="PTC/functions/functions_config.c">
+<persistable path="/PTC/functions/functions_config.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_it.c" tooltip="PTC16/stm32f10x_it.c">
-<persistable path="/PTC16/stm32f10x_it.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="functions.c" tooltip="PTC/functions/functions.c">
+<persistable path="/PTC/functions/functions.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_bkp.c" tooltip="GIGA3/stm_lib/src/stm32f10x_bkp.c">
-<persistable path="/GIGA3/stm_lib/src/stm32f10x_bkp.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="functions.h" tooltip="PTC/functions/functions.h">
+<persistable path="/PTC/functions/functions.h"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="integer.h" tooltip="PTC16/usb_dual/3rdParty/integer.h">
-<persistable path="/PTC16/usb_dual/3rdParty/integer.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="rtc.c" tooltip="GIGA3/rtc/rtc.c">
+<persistable path="/GIGA3/rtc/rtc.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ffconf.h" tooltip="PTC16/usb_dual/3rdParty/ffconf.h">
-<persistable path="/PTC16/usb_dual/3rdParty/ffconf.h"/>
+<file factoryID="org.eclipse.cdt.ui.ExternalEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="types.h" tooltip="C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2014q4\arm-none-eabi\include\sys\types.h">
+<persistable path="C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2014q4\arm-none-eabi\include\sys\types.h" project="GIGA3"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ff.c" tooltip="PTC16/usb_dual/3rdParty/ff.c">
-<persistable path="/PTC16/usb_dual/3rdParty/ff.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="user_tactkeys.c" tooltip="GIGA3/user_tactkeys/user_tactkeys.c">
+<persistable path="/GIGA3/user_tactkeys/user_tactkeys.c"/>
 </file>
 </mruList>
 </workbench>

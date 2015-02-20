@@ -13,8 +13,7 @@
 #define IO_STATUS_LED_CPU_PORT GPIOD
 #define IO_STATUS_LED_CPU_PIN GPIO_Pin_15
 
-#define IO_BEEP_PORT GPIOE
-#define IO_BEEP_PIN GPIO_Pin_14
+
 
 #define IO_IGNITION_CMD_PORT GPIOC
 #define IO_IGNITION_CMD1_PIN GPIO_Pin_12
@@ -52,8 +51,6 @@ float getTemperatureVoltage();
 float getVbbVoltage();
 
 bool isTactInputPressed(uint8_t tactNumber);
-
-void setBeepOutput(bool beepOn);
 
 /*
  * Function: setIgnitionOutput

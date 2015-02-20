@@ -4,12 +4,15 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
+#include "user_tactkeys/user_tactkeys.h"
 #include "HD44780.h"
 #include <stdbool.h>
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
+#ifndef SM_PARAM
+#define SM_PARAM
 typedef struct {
 	int state;
 	int event;
@@ -29,14 +32,17 @@ typedef struct {
 
 } StateMachine;
 
+#endif /* SM_PARAM */
+
 typedef enum {
 	ST_ANY   = -1,
 	ST_MENU_DEBUG,
 	ST_ADJUST_TIME,
-	ST_ADJUST_TEMPERATURE_0,
-	ST_ADJUST_TEMPERATURE_1,
-	ST_ADJUST_USB_MODE,
-	ST_SAVE_LOG,
+	ST_TEST_MPX,
+	ST_TEST_MPX_AUTO,
+	ST_TEST_MPX_MANUAL,
+	ST_TEST_PTC24,
+	ST_TEST_PTC16,
 	ST_MAIN,
 	ST_IDLE,
 	ST_PAGE1,
@@ -68,6 +74,7 @@ typedef enum {
 	EV_LINE9 = 9,
 	EV_LINE10 = 10,
 	EV_LINE11 = 11,
+	EV_LINE12 = 12,
 
 	EV_LINE1_TEMPERATURE,
 	EV_BACK_TO_MAIN,
@@ -92,10 +99,12 @@ typedef enum {
 #define LINE_SIZE 17
 
 /* Menu Keys */
-#define KEY_CANCEL 12
-#define KEY_UP 13
-#define KEY_DOWN 14
-#define KEY_ENTER 15
+#ifndef KEY_UP || KEY_DOWN || KEY_CANCEL || KEY_ENTER
+	#define KEY_UP 0
+	#define KEY_DOWN 1
+	#define KEY_CANCEL 2
+	#define KEY_ENTER 3
+#endif
 
 typedef enum {
 	USB_SAVE_MODE_NOT_CHOSEN = 0,

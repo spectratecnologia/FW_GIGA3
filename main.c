@@ -5,19 +5,21 @@
 #include "ios/ios.h"
 #include "can/can.h"
 #include "rtc/rtc.h"
+#include "LCD/lcd_screen.h"
 #include "beep/beep.h"
 #include "virtual_keyboard/virtual_keyboard.h"
 #include "usb/user/usbd_cdc_vcp.h"
 #include "MPX/mpx.h"
 
+void processLCD();
 
 void teste () {
+	//uint8_t highMPXdeviceports[8]={0x03, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+	//deactiveallMPXports();
+	//sendCanPacket(CAN1, CAN_COMMAND_WRITE, 1, MY_ID, 0x82, &highMPXdeviceports, 8);
+	activeMPXports(4, PORT_HIGH);
 
-	uint8_t data[8]={0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
-
-	sendCanPacket(CAN1, 0xFF, 0xAB, 0xFF, 0xFF, &data, 8);
-	//toggleCPULED();
-}
+	}
 
 int main(void)
 {
@@ -29,22 +31,37 @@ int main(void)
 	initSPIs();
 	initMPXconfig();
 	initLCD();
+	LCD_vStateMachineInit();
 	initIOs();
 	initVitualKeyboard();
+
 	/* --------------------------------- */
 	initCANs();
+	initBeepIO();
+
+
+	//activeMPXdeviceports(0, PORT_HIGH);
+
+	//processBeeps();
 
     while(1)
     {
     	executeEveryInterval(0, 1000, &toggleCPULED);
 
-  //  	GPIO_WriteBit(IO_BEEP_PORT,IO_BEEP_PIN, 1);
+    	executeEveryInterval(1, 10, &processBeeps);
 
- //   	executeEveryInterval(1, 1, &processKeysAndDeadTime);
+    	executeEveryInterval(2, 50, &processKeysAndDeadTime);
 
-    	//executeEveryInterval(1, 500, &teste);
+    	executeEveryInterval(3, 50, &processLCD);
+
+    	//executeEveryInterval(1, 60000, &teste);
 
 
     	//executeEveryInterval(3, 1000, &teste);
     }
+}
+
+void processLCD()
+{
+	LCD_vStateMachineLoop();
 }

@@ -16,7 +16,6 @@ void initADCs();
 void initStatusLeds();
 void initIgnitionCmd();
 void initTactButtons();
-void initBeep();
 
 #define DEBUG 1
 
@@ -30,7 +29,7 @@ void initIOs(){
 
 	initIgnitionCmd();
 
-	initTactButtons();
+	//initTactButtons();
 
 	initADCs();
 
@@ -50,19 +49,6 @@ void initStatusLeds(){
 	gpio_InitTypeDef.GPIO_Speed = GPIO_Speed_50MHz;
 	gpio_InitTypeDef.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_Init(IO_STATUS_LED_CPU_PORT, &gpio_InitTypeDef);
-}
-
-void initBeep(){
-	GPIO_InitTypeDef 		gpio_InitTypeDef;
-
-	/* Enable GPIOs clock  */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-
-	/* PD3(BEEPH) in output pushpull mode */
-	gpio_InitTypeDef.GPIO_Pin =  IO_BEEP_PIN;
-	gpio_InitTypeDef.GPIO_Speed = GPIO_Speed_50MHz;
-	gpio_InitTypeDef.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(IO_BEEP_PORT, &gpio_InitTypeDef);
 }
 
 void initIgnitionCmd(){
@@ -193,17 +179,13 @@ void readCurrentTactsStatus () {
 }
 
 /** Test Functions */
-void toggleBeep () {
-	setBeepOutput(!GPIO_ReadInputDataBit(IO_BEEP_PORT, IO_BEEP_PIN));
-}
+
 
 void toggleCPULED(){
 	toggleStatusLed();
 }
 
-void setBeepOutput(bool beepOn){
-	GPIO_WriteBit(IO_BEEP_PORT,IO_BEEP_PIN,beepOn);
-}
+
 
 void setIgnitionOutput (uint8_t ignNumber, bool ignOn) {
 	if(ignNumber >= 1 && ignNumber <= 2)

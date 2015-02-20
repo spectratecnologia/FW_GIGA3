@@ -8,7 +8,7 @@
 #define TACTS_NUM_USER_KEYS 4
 
 #define PRESS_TIME 10
-#define LONG_DEAD_TIME 700
+#define LONG_DEAD_TIME 500
 #define SHORT_DEAD_TIME 100
 
 #define SHORT_DEAD_TIME_SCREEN LONG_DEAD_TIME*3+50
@@ -34,6 +34,7 @@ enum KEYS {
 };
 
 void initKeys();
+void enableTactShortDeadTime(bool);
 void processKeysAndDeadTime ();
 
 #endif
