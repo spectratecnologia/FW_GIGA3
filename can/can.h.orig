@@ -1,0 +1,83 @@
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __CAN_H
+#define __CAN_H
+
+/* Includes ------------------------------------------------------------------*/
+#include "stm32f10x.h"
+#include "functions/functions.h"
+
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+/* Exported macro ------------------------------------------------------------*/
+
+#define MY_ID 0x20
+
+typedef enum {CAN_COMMAND_BROADCAST=0x19, CAN_COMMAND_WRITE=0x1B,
+					   CAN_COMMAND_WRITE_ACK=0x1C, CAN_COMMAND_READ=0x1E,
+					   CAN_COMMAND_READ_ACK=0x1F}  CanCommandType;
+
+
+
+#define CAN_BROADCAST_COMMAND_MASK 0x10
+
+typedef enum {CAN_BROADCAST_MPX_INFO=0x01, CAN_BROADCAST_MPX_FLASH_INFO=0x02, CAN_BROADCAST_DIGITAL_INPUT_MASK=0x10, CAN_BROADCAST_ANALOG_INPUT_MASK=0x30,
+		  	  CAN_BROADCAST_FLAGS_MASK=0x50, CAN_BROADCAST_KEY_STATE_MASK=0x70, CAN_BROADCAST_RTC=0x90}  BroadcastType;
+
+typedef union {
+	uint32_t extId;
+	struct{
+		uint8_t DA;
+		uint8_t SA;
+		uint8_t index;
+		uint8_t command;
+	};
+} MsgId;
+
+/* Broadcast definitions  */
+#define BROADCAST_DEST_ADDR 0x00
+
+
+/* Read/Write definitions */
+#define CAN_INDEX_EME_IGN_START 64
+#define CAN_INDEX_EME_N_IGN_START 128
+
+/*Emergency Control definitions */
+#define EME_CTRL_TIME_OUT_TO_WRITE_MPX 30000
+#define EME_CTRL_MAX_FLASH_ERROR 3
+typedef struct {
+	uint8_t flashErrorCounter;
+	uint32_t timeElapsed;
+	bool emergencyProcedureTriggered; /* Forces the PTC to start emergency procedure in the MPX */
+}MpxEmergencyControl;
+
+MpxEmergencyControl mpxEmergencyControl[NUM_MPX];
+
+/* Exported functions ------------------------------------------------------- */
+void initCANs();
+
+inline void onCAN1ReceiveInterrupt();
+inline void onCAN1StatusChangeError();
+uint32_t receivedCanPacketsCount();
+uint32_t transmitErrorsCount();
+
+void sendCanPacket(uint8_t command,uint8_t index, uint8_t source, uint8_t dest, uint8_t *data, uint8_t numBytes );
+
+void sendBroadcast2();
+
+void CAN_writePort(uint8_t mpxId, uint8_t port, PortParameter *portParameter);
+
+void printExtId(uint32_t extId);
+
+void turnOffAllMPXsPorts();
+
+bool emergencyProcedureTriggered ();
+uint32_t portEmergencyCheckSum (uint8_t mpxIndex);
+
+void inline resetEmergencyCtrl(uint8_t mxpIndex);
+
+bool startedEmergencyFunc (uint8_t mpxIndex);
+
+void initEmergencyCheckSum ();
+
+
+#endif /* __CAN_H */
