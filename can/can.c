@@ -191,38 +191,107 @@ void CAN2_SCE_IRQHandler(void){
 }
 
 
-inline void onCAN1ReceiveInterrupt(){
+static inline void onCAN1ReceiveInterrupt(){
 	static CanRxMsg rxMessage;
 	static MsgId msgId;
-	static int i;
 
 	CAN_Receive(CAN1, CAN_FIFO0, &rxMessage);
 
 	msgId.extId = rxMessage.ExtId;
 
-	if (msgId.command == CAN_COMMAND_WRITE_ACK)
-	{
-		ackWriteReceived.extId = msgId.extId;
-		return;
-	}
+	//setBeep(2,1000);
+
+	if ((msgId.SA & 0xF0) == DEVICE_MPX_MASK)
+		onCAN1ReceiveInterrupt_MPX(rxMessage, msgId);
+
 
 	receivedPackets++;
 }
 
-inline void onCAN2ReceiveInterrupt(){
+static inline void onCAN1ReceiveInterrupt_MPX(CanRxMsg rxMessage, MsgId msgId)
+{
+	mpx.lastTimeSeen = sysTickTimer;
+	//setBeep(2,1000);
+
+	mpx.mpxId = msgId.SA;
+
+	if (msgId.command == CAN_COMMAND_WRITE_ACK)
+	{
+		if( (!mpx.ackReceived) && (mpx.ackIndex == msgId.index))
+			mpx.ackReceived = true;
+
+		/* Process received  ACK from outputPorts*/
+		if (msgId.index < NUM_PORTS)
+			mpx.outputChanged[msgId.index] = false;
+	}
+
+
+	if (msgId.command == CAN_COMMAND_BROADCAST)
+	{
+		uint8_t broadcastType = (msgId.index & 0xf0);
+
+		if (broadcastType == CAN_BROADCAST_DIGITAL_INPUT_MASK)
+		{
+			uint8_t portOffset = (msgId.index & 0x0f) * 8;
+			if ( portOffset<=(NUM_PORTS-8))
+			{
+				memcpy( &mpx.portInput[portOffset],rxMessage.Data,8);
+			}
+		}
+
+		else if (broadcastType == CAN_BROADCAST_ANALOG_INPUT_MASK)
+		{
+
+		}
+
+
+		else if (broadcastType == CAN_BROADCAST_FLAGS_MASK)
+		{
+
+		}
+
+		else if (msgId.index == CAN_BROADCAST_MPX_INFO)
+		{
+
+		}
+
+		else if(msgId.index == CAN_BROADCAST_MPX_FLASH_INFO)
+		{
+
+		}
+
+		else if(msgId.index == CAN_BROADCAST_RTC)
+		{
+
+		}
+
+		else
+		{
+
+		}
+	}
+}
+
+static inline uint16_t getMpxAnalogMemoryAddress(uint8_t mpxIndex, uint8_t analogValue)
+{
+	return MEMORY_INDEX_MPX_START + mpxIndex * NUM_ANALOG_MPX_VALUES + analogValue;
+}
+
+static inline void onCAN2ReceiveInterrupt() {
 	static CanRxMsg rxMessage;
 	static MsgId msgId;
 	static int i;
 
-	uint8_t data[8]={0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+	//printf("CAN2 Message Received\n");
 
 	CAN_Receive(CAN2, CAN_FIFO0, &rxMessage);
 
 	msgId.extId = rxMessage.ExtId;
 
-	sendCanPacket(CAN2, CAN_COMMAND_BROADCAST, 0xAB, MY_ID, 0xCC, &data, 8);
-
-	receivedPackets++;
+	if (msgId.command == CAN_COMMAND_BROADCAST)
+	{
+		uint8_t broadcastType = (msgId.index & 0xf0);
+	}
 }
 
 inline void onCAN1StatusChangeError(){

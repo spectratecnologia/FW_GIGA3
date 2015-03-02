@@ -4,6 +4,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "multitask/multitask.h"
+#include <stdbool.h>
 #ifdef USE_STDPERIPH_DRIVER
 #include "stm32f10x.h"
 #else
@@ -142,6 +143,7 @@ typedef struct {
 typedef struct{
 	uint8_t mpxId;
 	uint8_t numPorts;
+	bool MpxAlreadyInit;
 
 	char mpxName[STRING_DESCRIPTION_SIZE];
 	char portName[NUM_PORTS][STRING_DESCRIPTION_SIZE];
@@ -432,15 +434,11 @@ typedef struct {
 	uint8_t mapToVirtualKeySlave[NUM_PTC_KEY];
 }Ptc;
 
+
 #pragma pack(pop)  /* push current alignment to stack */
 
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
-
-
 /* Exported functions ------------------------------------------------------- */
-extern Mpx mpx;
-
-
 
 #endif /* __FUNCTIONS_H */

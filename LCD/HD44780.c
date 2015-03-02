@@ -141,6 +141,8 @@ void initLCD(){
 	LCD_Initalize(BUS_WIDTH_8, DISPLAY_LINES_2, FONT_5x8);
 
 	LCD_CursorBlink(false);
+
+	LCD_TurnBacklightOn();
 }
 
 

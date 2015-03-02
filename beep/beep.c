@@ -25,7 +25,7 @@ void initBeep(){
 	GPIO_InitTypeDef 		gpio_InitTypeDef;
 
 	/* Enable GPIOs clock  */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
 
 	/* PD3(BEEPH) in output pushpull mode */
 	gpio_InitTypeDef.GPIO_Pin =  IO_BEEP_PIN;

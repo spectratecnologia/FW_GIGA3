@@ -4,7 +4,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
+#include "MPX/mpx.h"
 #include "user_tactkeys/user_tactkeys.h"
+#include "tests/statemachine.h"
+#include "tests/functions_mpx.h"
 #include "HD44780.h"
 #include <stdbool.h>
 
@@ -38,24 +41,27 @@ typedef enum {
 	ST_ANY   = -1,
 	ST_MENU_DEBUG,
 	ST_ADJUST_TIME,
+
+
 	ST_TEST_MPX,
 	ST_TEST_MPX_AUTO,
+	ST_TEST_MPX_AUTO_STARTED,
+	ST_TEST_MPX_LOOP,
+
 	ST_TEST_MPX_MANUAL,
+	ST_TEST_MPX_ID1,
+	ST_TEST_MPX_ID2,
+	ST_TEST_MPX_ID4,
+	ST_TEST_MPX_ID0,
+
 	ST_TEST_PTC24,
 	ST_TEST_PTC16,
+
+
 	ST_MAIN,
 	ST_IDLE,
-	ST_PAGE1,
-	ST_PAGE2,
-	ST_PAGE3,
-	ST_PAGE4,
-	ST_PAGE5,
-	ST_PAGE6,
-	ST_PAGE7,
-	ST_PAGE8,
-	ST_PAGE9,
-	ST_PAGE10,
-	ST_PAGE11,
+
+	ST_TEST_LOG
 
 }StStates;
 
@@ -85,7 +91,9 @@ typedef enum {
 
 	EV_KBD_DOWN,
 	EV_KBD_CANCEL,
-	EV_KBD_UP
+	EV_KBD_UP,
+
+	EV_START
 }StEvents;
 
 typedef enum {
@@ -97,6 +105,15 @@ typedef enum {
 };
 
 #define LINE_SIZE 17
+
+typedef struct
+{
+	char lines[2][LINE_SIZE];
+
+	uint8_t lastLCDState;
+	TestsStStates lastTestState;
+
+} TestMessagesStruct;
 
 /* Menu Keys */
 #ifndef KEY_UP || KEY_DOWN || KEY_CANCEL || KEY_ENTER
@@ -112,7 +129,10 @@ typedef enum {
 	USB_SAVE_ALL = 2
 };
 
+
+
 /* Exported functions ------------------------------------------------------- */
+TestMessagesStruct TestMessages;
 
 void startDebugMode();
 bool isInDebugMode();

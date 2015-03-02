@@ -12,14 +12,15 @@
 #include "MPX/mpx.h"
 
 void processLCD();
+void processTest();
+void processAnalysisTest();
 
-void teste () {
-	//uint8_t highMPXdeviceports[8]={0x03, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-	//deactiveallMPXports();
-	//sendCanPacket(CAN1, CAN_COMMAND_WRITE, 1, MY_ID, 0x82, &highMPXdeviceports, 8);
-	activeMPXports(4, PORT_HIGH);
+void teste ()
+{
 
-	}
+	setMPXIDports(ID1);
+
+}
 
 int main(void)
 {
@@ -28,21 +29,17 @@ int main(void)
 	initUSBVCP();
 	initRTC();
 	initMultiTask();
-	initSPIs();
-	initMPXconfig();
+	initBeepIO();
 	initLCD();
-	LCD_vStateMachineInit();
 	initIOs();
+	LCD_vStateMachineInit();
 	initVitualKeyboard();
 
 	/* --------------------------------- */
+
+	test_vStateMachineInit();
+
 	initCANs();
-	initBeepIO();
-
-
-	//activeMPXdeviceports(0, PORT_HIGH);
-
-	//processBeeps();
 
     while(1)
     {
@@ -52,16 +49,30 @@ int main(void)
 
     	executeEveryInterval(2, 50, &processKeysAndDeadTime);
 
-    	executeEveryInterval(3, 50, &processLCD);
+    	executeEveryInterval(3, 100, &processLCD);
 
-    	//executeEveryInterval(1, 60000, &teste);
+    	executeEveryInterval(4, 10, &processTest);
 
+    	executeEveryInterval(5, 80, &processAnalysisTest);
 
-    	//executeEveryInterval(3, 1000, &teste);
     }
 }
 
 void processLCD()
 {
 	LCD_vStateMachineLoop();
+}
+
+void processTest()
+{
+	test_vStateMachineLoop();
+
+	if (mpx.MpxAlreadyInit == true)
+		executeTest_MPX();
+}
+
+void processAnalysisTest()
+{
+	if (mpx.MpxAlreadyInit == true)
+		analysisTest_MPX();
 }
