@@ -31,7 +31,7 @@ void initBeep(){
 	gpio_InitTypeDef.GPIO_Pin =  IO_BEEP_PIN;
 	gpio_InitTypeDef.GPIO_Speed = GPIO_Speed_50MHz;
 	gpio_InitTypeDef.GPIO_Mode = GPIO_Mode_Out_PP;
-	GPIO_Init(IO_BEEP_PORT, &gpio_InitTypeDef);
+	//GPIO_Init(IO_BEEP_PORT, &gpio_InitTypeDef);
 }
 
 void setBeep (uint8_t numOfBeeps, uint32_t periodInMs) {

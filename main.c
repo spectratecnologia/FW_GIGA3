@@ -12,14 +12,41 @@
 #include "MPX/mpx.h"
 
 void processLCD();
+void processTurningOffMpxEmergencyMode();
 void processTest();
 void processAnalysisTest();
 
-void teste ()
+void teste()
 {
+	uint32_t data=0xFEDCBA98;
+	uint16_t data2;
+	uint8_t candata[8]={0,0,0,0,0,0,0,0};
+	uint8_t candata1[8]={0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
+	uint8_t candata2[8]={0,0,0,0,0,0,0,0};
+	uint8_t portx;
 
-	setMPXIDports(ID1);
+	initMPXconfig();
 
+
+	portx=22;
+
+	//sendDataToSR(0x11);
+	activeMPXports(portx, PORT_OFF);
+
+	//sendDataToSR(0xFFFFFFFF);
+    data = readDataFromSR();
+
+	candata[4]=(uint8_t)(data>>24);
+	candata[5]=(uint8_t)(data>>16);
+	candata[6]=(uint8_t)(data>>8);
+	candata[7]=(uint8_t)(data>>0);
+
+	sendCanPacket(CAN1, 0xAA, 0xBB, MY_ID, 0x00, &candata, 8);
+
+	if (getPortStatus(portx))
+		sendCanPacket(CAN1, 0xAA, 0xBC, MY_ID, 0x00, &candata1, 8);
+	else
+		sendCanPacket(CAN1, 0xAA, 0xBC, MY_ID, 0x00, &candata2, 8);
 }
 
 int main(void)
@@ -34,12 +61,10 @@ int main(void)
 	initIOs();
 	LCD_vStateMachineInit();
 	initVitualKeyboard();
-
-	/* --------------------------------- */
-
 	test_vStateMachineInit();
-
 	initCANs();
+
+	//teste();
 
     while(1)
     {
@@ -53,14 +78,26 @@ int main(void)
 
     	executeEveryInterval(4, 10, &processTest);
 
-    	executeEveryInterval(5, 80, &processAnalysisTest);
+    	executeEveryInterval(5, 10, &processAnalysisTest);
 
+    	if (mpx.MpxAlreadyInit)
+    	{
+    		executeEveryInterval(6, 80, &processTurningOffMpxEmergencyMode);
+    		executeEveryInterval(7, 40, &sendChangedOutputsToMPXs);
+    	}
+
+    	executeEveryInterval(8, 2000, &teste);
     }
 }
 
 void processLCD()
 {
 	LCD_vStateMachineLoop();
+}
+
+void processTurningOffMpxEmergencyMode()
+{
+	turningOffMpxEmergencyMode();
 }
 
 void processTest()
@@ -76,3 +113,5 @@ void processAnalysisTest()
 	if (mpx.MpxAlreadyInit == true)
 		analysisTest_MPX();
 }
+
+

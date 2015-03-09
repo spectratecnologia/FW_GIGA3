@@ -7,8 +7,8 @@
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_rcc.h"
 #include "functions/functions.h"
-#include "spi.h"
 #include "can/can.h"
+#include "giga3_sr.h"
 
 /* Exported constants --------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
@@ -27,18 +27,13 @@ typedef enum {PORT_LOW = 0, PORT_HIGH = 1, PORT_OFF = 2} FunctionalState_MPXport
 
 /* Exported macro ------------------------------------------------------------*/
 
-/* Relative to the active MPX ID ports code */
-
+/* ID ports code */
 #define CMDFLID0 GPIO_Pin_9
 #define CMDFLID1 GPIO_Pin_10
 #define CMDFLID2 GPIO_Pin_11
 #define CMDFLID_PORT GPIOC
 
-/* Relative to the active ports code */
-
-#define SROUTRCLKPIN GPIO_Pin_12
-#define SROUTRCLKPORT GPIOB
-
+/* Push Pull 10A ports code */
 #define CMDFH1 GPIO_Pin_0
 #define CMDFH2 GPIO_Pin_1
 #define CMDFH3 GPIO_Pin_2
@@ -48,14 +43,27 @@ typedef enum {PORT_LOW = 0, PORT_HIGH = 1, PORT_OFF = 2} FunctionalState_MPXport
 #define CMDFL2 GPIO_Pin_5
 #define CMDFL3 GPIO_Pin_6
 #define CMDFL4 GPIO_Pin_7
-#define CMDFHLPORT GPIOC
+#define CMDFHL_PORT GPIOC
+
+/* SPI2 input/output (shift register control) */
+#define SR_READ GPIO_Pin_11
+#define SR_WRITE GPIO_Pin_12
+#define SR_WR_PORT GPIOB
+
+#define SPI2_SCK GPIO_Pin_13
+#define SPI2_MISO GPIO_Pin_14
+#define SPI2_MOSI GPIO_Pin_15
+#define SPI2_PORT GPIOB
 
 /* Exported declared Types -------------------------------------------------- */
 Mpx mpx;
 
 /* Exported functions ------------------------------------------------------- */
 void initMPXconfig();
-
 void setMPXIDports(MPX_ID);
+void activeMPXports(uint8_t, FunctionalState_MPXports);
+uint8_t getPortStatus(uint8_t);
+void turningOffMpxEmergencyMode();
+void sendChangedOutputsToMPXs();
 
 #endif /* __MPX_H */
