@@ -6,8 +6,8 @@
 #include "stm32f10x.h"
 #include "MPX/mpx.h"
 #include "user_tactkeys/user_tactkeys.h"
-#include "tests/statemachine.h"
-#include "tests/functions_mpx.h"
+#include "tests/tests_statemachine.h"
+#include "tests/mpx_statemachine.h"
 #include "HD44780.h"
 #include <stdbool.h>
 

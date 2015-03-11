@@ -13,40 +13,35 @@
 
 void processLCD();
 void processTurningOffMpxEmergencyMode();
-void processTest();
-void processAnalysisTest();
+void processGenericTest();
+void processSpecificTest();
 
 void teste()
 {
-	uint32_t data=0xFEDCBA98;
-	uint16_t data2;
-	uint8_t candata[8]={0,0,0,0,0,0,0,0};
-	uint8_t candata1[8]={0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
-	uint8_t candata2[8]={0,0,0,0,0,0,0,0};
-	uint8_t portx;
+	int i;
+	uint8_t data[8] = {0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x11};
+	uint8_t data2[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+	uint8_t data3[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-	initMPXconfig();
+	//initMPXconfig();
+	//activeMPXports(3, PORT_LOW);
 
+	//i=TST_MPX_TEST_P0_L;
 
-	portx=22;
+	data3[7]=(uint8_t)(readDataFromSR()>>0);
+	data3[6]=(uint8_t)(readDataFromSR()>>8);
+	data3[5]=(uint8_t)(readDataFromSR()>>16);
+	data3[4]=(uint8_t)(readDataFromSR()>>24);
 
-	//sendDataToSR(0x11);
-	activeMPXports(portx, PORT_OFF);
+	for (i=TST_MPX_TEST_P0_L; i<=TST_MPX_TEST_P3_L; i++)
+	{
+		if (getSRBitStatus(TST_MPX_TEST_P0_L+27-i))
+			sendCanPacket(CAN1, 0x00, i, 0xFF,0xFF, &data, 8);
+		else
+			sendCanPacket(CAN1, 0x00, i, 0xFF,0xFF, &data2, 8);
+	}
 
-	//sendDataToSR(0xFFFFFFFF);
-    data = readDataFromSR();
-
-	candata[4]=(uint8_t)(data>>24);
-	candata[5]=(uint8_t)(data>>16);
-	candata[6]=(uint8_t)(data>>8);
-	candata[7]=(uint8_t)(data>>0);
-
-	sendCanPacket(CAN1, 0xAA, 0xBB, MY_ID, 0x00, &candata, 8);
-
-	if (getPortStatus(portx))
-		sendCanPacket(CAN1, 0xAA, 0xBC, MY_ID, 0x00, &candata1, 8);
-	else
-		sendCanPacket(CAN1, 0xAA, 0xBC, MY_ID, 0x00, &candata2, 8);
+	sendCanPacket(CAN1, 0x00, 0xAA, 0xFF,0xFF, &data3, 8);
 }
 
 int main(void)
@@ -62,6 +57,7 @@ int main(void)
 	LCD_vStateMachineInit();
 	initVitualKeyboard();
 	test_vStateMachineInit();
+	mpxTest_vStateMachineInit();
 	initCANs();
 
 	//teste();
@@ -76,17 +72,18 @@ int main(void)
 
     	executeEveryInterval(3, 100, &processLCD);
 
-    	executeEveryInterval(4, 10, &processTest);
+    	executeEveryInterval(4, 10, &processGenericTest);
 
-    	executeEveryInterval(5, 10, &processAnalysisTest);
+    	executeEveryInterval(5, 10, &processSpecificTest);
 
     	if (mpx.MpxAlreadyInit)
     	{
     		executeEveryInterval(6, 80, &processTurningOffMpxEmergencyMode);
     		executeEveryInterval(7, 40, &sendChangedOutputsToMPXs);
+    		//executeEveryInterval(8, 100, &teste);
     	}
 
-    	executeEveryInterval(8, 2000, &teste);
+
     }
 }
 
@@ -95,23 +92,19 @@ void processLCD()
 	LCD_vStateMachineLoop();
 }
 
+void processGenericTest()
+{
+	test_vStateMachineLoop();
+}
+
+void processSpecificTest()
+{
+	mpxTest_vStateMachineLoop();
+}
+
 void processTurningOffMpxEmergencyMode()
 {
 	turningOffMpxEmergencyMode();
-}
-
-void processTest()
-{
-	test_vStateMachineLoop();
-
-	if (mpx.MpxAlreadyInit == true)
-		executeTest_MPX();
-}
-
-void processAnalysisTest()
-{
-	if (mpx.MpxAlreadyInit == true)
-		analysisTest_MPX();
 }
 
 

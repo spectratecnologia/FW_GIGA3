@@ -11,15 +11,17 @@
 #include "giga3_sr.h"
 
 /* Exported constants --------------------------------------------------------*/
+#define MAX_TIME_TO_PORT_BE_ACTIVE 1000
+
 /* Exported types ------------------------------------------------------------*/
 
 /* Relative to the active MPX ID ports code */
 typedef enum
 {
-	ID0,
 	ID1,
 	ID2,
-	ID4
+	ID4,
+	ID0
 } MPX_ID;
 
 /* Relative to the active ports code */
@@ -64,6 +66,7 @@ void setMPXIDports(MPX_ID);
 void activeMPXports(uint8_t, FunctionalState_MPXports);
 uint8_t getPortStatus(uint8_t);
 void turningOffMpxEmergencyMode();
+void turnOffMpxPorts(void);
 void sendChangedOutputsToMPXs();
 
 #endif /* __MPX_H */

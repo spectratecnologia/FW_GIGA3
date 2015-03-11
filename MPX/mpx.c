@@ -225,6 +225,15 @@ uint8_t getPortStatus(uint8_t portx)
 /* ---------------------------------------------------------------------------*/
 /* Active or deactive MPX device ports ---------------------------------------*/
 /* ---------------------------------------------------------------------------*/
+void turnOffMpxPorts(void)
+{
+	int i;
+
+	/* Disable all ports that might be high or low */
+	for(i=0; i<NUM_PORTS; i++)
+		if((mpx.portOutput[i].mode == 0x01) || (mpx.portOutput[i].mode == 0x03))
+			activeMPXports(i, PORT_OFF);
+}
 
 void sendChangedOutputsToMPXs(){
 	static uint8_t lastPortSent;
@@ -241,9 +250,12 @@ void sendChangedOutputsToMPXs(){
 	/* This if prevents any port be active more than MAX_TIME_TO_PORT_BE_ACTIVE time */
 	//if ((sysTickTimer - lastTimeSent) > MAX_TIME_TO_PORT_BE_ACTIVE)
 	//{
-	//	CAN_writePort(CAN1, mpx.mpxId, lastPortSent, &offMPXdeviceport);
-	//	activeMPXports(lastPortSent, PORT_OFF);
-	//	lastTimeSent = sysTickTimer;
+	//	if ( (mpx.portOutput[lastPortSent].mode == 0x01) || (mpx.portOutput[lastPortSent].mode == 0x03))
+	//	{
+	//		CAN_writePort(CAN1, mpx.mpxId, lastPortSent, &offMPXdeviceport);
+	//		activeMPXports(lastPortSent, PORT_OFF);
+	//		lastTimeSent = sysTickTimer;
+	//	}
 	//}
 
 	for(portIndex=0; portIndex<mpx.numPorts; portIndex++)

@@ -215,7 +215,8 @@ StEvents LCD_vGetNextEvent(void){
 	else if(getVirtualKeyState(KEY_DOWN)){
 		setVirtualKeyState(KEY_DOWN,0); //consumer
 
-		lcd.sbLine++; //Handles others state transitions.
+		if (sm.state != ST_TEST_LOG)
+			lcd.sbLine++; //Handles others state transitions.
 
 		if(lcd.sbLine > lcd.sbLineMax )
 		{
@@ -233,7 +234,8 @@ StEvents LCD_vGetNextEvent(void){
 	else if(getVirtualKeyState(KEY_UP)){
 		setVirtualKeyState(KEY_UP,0); //consumer
 
-		lcd.sbLine--;
+		if (sm.state != ST_TEST_LOG)
+			lcd.sbLine--;
 
 		if (lcd.sbLine < lcd.sbLineMin)
 		{
@@ -257,14 +259,12 @@ StEvents LCD_vGetNextEvent(void){
 		if ( sm.state == ST_TEST_MPX_MANUAL )
 		{
 			TestMessages.lastLCDState = sm.state;
-			TestMessages.lastTestState = test_vGetState();
 			LCD_vSetNextEvent(lcd.sbLine);
 		}
 
 		else if ( (sm.state == ST_TEST_MPX_AUTO) || (sm.state == ST_TEST_MPX_LOOP) )
 		{
 			TestMessages.lastLCDState = sm.state;
-			TestMessages.lastTestState = test_vGetState();
 			LCD_vSetNextEvent(EV_START);
 		}
 
@@ -280,9 +280,17 @@ StEvents LCD_vGetNextEvent(void){
 
 		else if (sm.state == ST_TEST_LOG)
 		{
-			LCD_vJumpToState(TestMessages.lastLCDState);
-			test_vJumpToState(TestMessages.lastTestState);
-			closeMpxTests();
+			if ((TestMessages.lastLCDState == ST_TEST_MPX_AUTO) ||
+				(TestMessages.lastLCDState == ST_TEST_MPX_LOOP) )
+			{
+				LCD_vJumpToState(ST_TEST_MPX);
+			}
+
+			else
+				LCD_vJumpToState(TestMessages.lastLCDState);
+
+			mpxTest_vJumpToState(MPX_ST_IDLE);
+			test_vJumpToState(TST_IDLE);
 		}
 
 	}
@@ -623,8 +631,6 @@ void LCD_vTestMPXAuto(void)
 
 	char finalpoint={' '};
 
-	closeMpxTests();
-	Mpxtests.numberTestDone=0;
 	isAutoTest();
 
 	if ((sysTickTimer%2000)>999)
@@ -659,7 +665,6 @@ void LCD_vTestMPXLoop(void)
 
 	char finalpoint={' '};
 
-	closeMpxTests();
 	Mpxtests.numberTestDone=0;
 	isLoopTest();
 
@@ -708,7 +713,6 @@ void LCD_vTestMPXManual(void)
 
 	static uint8_t currentLine=1;
 
-	closeMpxTests();
 	isManualTest();
 
 	if(EV_REFRESH != sm.event)
@@ -732,6 +736,8 @@ void LCD_vTestMPXManualStarted(void)
 {
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
+
+	//test_vJumpToState(sm.state - ST_TEST_MPX_ID1 + TST_MPX_TEST_ID1);
 
 	if (sm.state == ST_TEST_MPX_ID1 )
 		test_vJumpToState(TST_MPX_TEST_ID1);

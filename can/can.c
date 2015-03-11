@@ -343,7 +343,9 @@ void sendCanPacket(CAN_TypeDef* CANx, uint8_t command,uint8_t index, uint8_t sou
 	uint8_t transmitMailbox= CAN_Transmit(CANx, &txMessage);
 
 	if (command == CAN_COMMAND_WRITE)
+	{
 		mpx.ackReceived = false;
+	}
 
 	uint32_t startTime=sysTickTimer;
 	/* Wait to transmit packet */
