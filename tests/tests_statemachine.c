@@ -32,55 +32,43 @@ const Transition testSMTrans[] =  		//TABELA DE ESTADOS
 {TST_MPX_TEST_ID4	,TEV_LOOP		    ,TST_MPX_TEST_ID0 	  	,&test_vIdle	},
 
 {TST_MPX_TEST_ID0	,TEV_REFRESH	    ,TST_MPX_TEST_ID0 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID0	,TEV_AUTOMATIC	    ,TST_MPX_TEST_END	  	,&test_vIdle	},
-{TST_MPX_TEST_ID0	,TEV_LOOP		    ,TST_MPX_TEST_ID1 	  	,&test_vIdle	},
+{TST_MPX_TEST_ID0	,TEV_AUTOMATIC	    ,TST_MPX_TEST_P0_L	  	,&test_vIdle	},
+{TST_MPX_TEST_ID0	,TEV_LOOP		    ,TST_MPX_TEST_P0_L 	  	,&test_vIdle	},
 
 {TST_MPX_TEST_P0_L	,TEV_REFRESH	    ,TST_MPX_TEST_P0_L 	  	,&test_vIdle	},
 {TST_MPX_TEST_P0_L	,TEV_AUTOMATIC	    ,TST_MPX_TEST_P0_H 	  	,&test_vIdle	},
 {TST_MPX_TEST_P0_L	,TEV_LOOP		    ,TST_MPX_TEST_P0_H 	  	,&test_vIdle	},
 
 {TST_MPX_TEST_P0_H	,TEV_REFRESH	    ,TST_MPX_TEST_P0_H  	,&test_vIdle	},
-{TST_MPX_TEST_P0_H	,TEV_AUTOMATIC	    ,TST_MPX_TEST_END 	  	,&test_vIdle	},
-{TST_MPX_TEST_P0_H	,TEV_LOOP		    ,TST_MPX_TEST_END 	  	,&test_vIdle	},
+{TST_MPX_TEST_P0_H	,TEV_AUTOMATIC	    ,TST_MPX_TEST_P1_L 	  	,&test_vIdle	},
+{TST_MPX_TEST_P0_H	,TEV_LOOP		    ,TST_MPX_TEST_P1_L 	  	,&test_vIdle	},
+
+{TST_MPX_TEST_P1_L	,TEV_REFRESH	    ,TST_MPX_TEST_P1_L 	  	,&test_vIdle	},
+{TST_MPX_TEST_P1_L	,TEV_AUTOMATIC	    ,TST_MPX_TEST_P1_H 	  	,&test_vIdle	},
+{TST_MPX_TEST_P1_L	,TEV_LOOP		    ,TST_MPX_TEST_P1_H 	  	,&test_vIdle	},
+
+{TST_MPX_TEST_P1_H	,TEV_REFRESH	    ,TST_MPX_TEST_P1_H  	,&test_vIdle	},
+{TST_MPX_TEST_P1_H	,TEV_AUTOMATIC	    ,TST_MPX_TEST_P2_L 	  	,&test_vIdle	},
+{TST_MPX_TEST_P1_H	,TEV_LOOP		    ,TST_MPX_TEST_P2_L 	  	,&test_vIdle	},
+
+{TST_MPX_TEST_P2_L	,TEV_REFRESH	    ,TST_MPX_TEST_P2_L 	  	,&test_vIdle	},
+{TST_MPX_TEST_P2_L	,TEV_AUTOMATIC	    ,TST_MPX_TEST_P2_H 	  	,&test_vIdle	},
+{TST_MPX_TEST_P2_L	,TEV_LOOP		    ,TST_MPX_TEST_P2_H 	  	,&test_vIdle	},
+
+{TST_MPX_TEST_P2_H	,TEV_REFRESH	    ,TST_MPX_TEST_P2_H  	,&test_vIdle	},
+{TST_MPX_TEST_P2_H	,TEV_AUTOMATIC	    ,TST_MPX_TEST_P3_L 	  	,&test_vIdle	},
+{TST_MPX_TEST_P2_H	,TEV_LOOP		    ,TST_MPX_TEST_P3_L 	  	,&test_vIdle	},
+
+{TST_MPX_TEST_P3_L	,TEV_REFRESH	    ,TST_MPX_TEST_P3_L 	  	,&test_vIdle	},
+{TST_MPX_TEST_P3_L	,TEV_AUTOMATIC	    ,TST_MPX_TEST_P3_H 	  	,&test_vIdle	},
+{TST_MPX_TEST_P3_L	,TEV_LOOP		    ,TST_MPX_TEST_P3_H 	  	,&test_vIdle	},
+
+{TST_MPX_TEST_P3_H	,TEV_REFRESH	    ,TST_MPX_TEST_P3_H  	,&test_vIdle	},
+{TST_MPX_TEST_P3_H	,TEV_AUTOMATIC	    ,TST_MPX_TEST_END 	  	,&test_vIdle	},
+{TST_MPX_TEST_P3_H	,TEV_LOOP		    ,TST_MPX_TEST_ID1 	  	,&test_vIdle	},
 
 {TST_MPX_TEST_END	,TEV_REFRESH	    ,TST_MPX_TEST_END 	  	,&test_vIdle	}
 };
-	/* OLD
-{TST_IDLE			,TEV_REFRESH       	,TST_IDLE           	,&test_vIdle	},
-{TST_IDLE			,TEV_MPX_TEST      	,TST_MPX_TEST    		,&test_vIdle	},
-{TST_IDLE			,TEV_PTC24_TEST	  	,TST_PTC24_TEST         ,&test_vIdle	},
-
-{TST_MPX_TEST		,TEV_REFRESH	   	,TST_MPX_TEST	 	  	,&test_vIdle	},
-{TST_MPX_TEST		,TEV_LOOP		    ,TST_MPX_TEST_ID0 	  	,&test_vIdle	},
-{TST_MPX_TEST		,TEV_AUTOMATIC	    ,TST_MPX_TEST_ID0 	  	,&test_vIdle	},
-{TST_MPX_TEST		,TEV_TEST_ID0	    ,TST_MPX_TEST_ID0 	  	,&test_vIdle	},
-{TST_MPX_TEST		,TEV_TEST_ID1	    ,TST_MPX_TEST_ID1 	  	,&test_vIdle	},
-{TST_MPX_TEST		,TEV_TEST_ID2	    ,TST_MPX_TEST_ID2 	  	,&test_vIdle	},
-{TST_MPX_TEST		,TEV_TEST_ID4	    ,TST_MPX_TEST_ID4 	  	,&test_vIdle	},
-{TST_MPX_TEST		,TEV_TEST_END	    ,TST_MPX_TEST_END 	  	,&test_vIdle	},
-
-{TST_MPX_TEST_ID1	,TEV_REFRESH	    ,TST_MPX_TEST_ID1 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID1 	,TEV_AUTOMATIC	    ,TST_MPX_TEST_ID2 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID1	,TEV_LOOP		    ,TST_MPX_TEST_ID2 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID1	,TEV_TEST_END	    ,TST_MPX_TEST	 	  	,&test_vIdle	},
-
-{TST_MPX_TEST_ID2	,TEV_REFRESH	    ,TST_MPX_TEST_ID2 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID2	,TEV_AUTOMATIC	    ,TST_MPX_TEST_ID4 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID2	,TEV_LOOP		    ,TST_MPX_TEST_ID4 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID2	,TEV_TEST_END	    ,TST_MPX_TEST	 	  	,&test_vIdle	},
-
-{TST_MPX_TEST_ID4	,TEV_REFRESH	    ,TST_MPX_TEST_ID4 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID4	,TEV_AUTOMATIC	    ,TST_MPX_TEST_ID0 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID4	,TEV_LOOP		    ,TST_MPX_TEST_ID0 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID4	,TEV_TEST_END	    ,TST_MPX_TEST	 	  	,&test_vIdle	},
-
-{TST_MPX_TEST_ID0	,TEV_REFRESH	    ,TST_MPX_TEST_ID0 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID0	,TEV_AUTOMATIC	    ,TST_MPX_TEST_ID1 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID0	,TEV_LOOP		    ,TST_MPX_TEST_ID1 	  	,&test_vIdle	},
-{TST_MPX_TEST_ID0	,TEV_TEST_END	    ,TST_MPX_TEST	 	  	,&test_vIdle	}
-};
-
-*/
 
 #define TRANS_COUNT (sizeof(testSMTrans)/sizeof(*testSMTrans))
 

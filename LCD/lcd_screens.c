@@ -110,6 +110,12 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_MPX_ID0	,EV_REFRESH	  		,ST_TEST_MPX_ID0    	,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_P0_L	,EV_REFRESH			,ST_TEST_MPX_P0_L   	,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_P0_H	,EV_REFRESH			,ST_TEST_MPX_P0_H		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P1_L	,EV_REFRESH			,ST_TEST_MPX_P1_L   	,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P1_H	,EV_REFRESH			,ST_TEST_MPX_P1_H		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P2_L	,EV_REFRESH			,ST_TEST_MPX_P2_L   	,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P2_H	,EV_REFRESH			,ST_TEST_MPX_P2_H		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P3_L	,EV_REFRESH			,ST_TEST_MPX_P3_L   	,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P3_H	,EV_REFRESH			,ST_TEST_MPX_P3_H		,&LCD_vTestMPXManualStarted	},
 
 {ST_TEST_PTC24 		,EV_REFRESH		  	,ST_TEST_PTC24          ,&LCD_vTestPTC24	},
 {ST_TEST_PTC24 		,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen	},
@@ -737,43 +743,7 @@ void LCD_vTestMPXManualStarted(void)
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
 
-	//test_vJumpToState(sm.state - ST_TEST_MPX_ID1 + TST_MPX_TEST_ID1);
-
-	if (sm.state == ST_TEST_MPX_ID1 )
-		test_vJumpToState(TST_MPX_TEST_ID1);
-
-	else if (sm.state == ST_TEST_MPX_ID2)
-		test_vJumpToState(TST_MPX_TEST_ID2);
-
-	else if (sm.state == ST_TEST_MPX_ID4)
-		test_vJumpToState(TST_MPX_TEST_ID4);
-
-	else if (sm.state == ST_TEST_MPX_ID0)
-		test_vJumpToState(TST_MPX_TEST_ID0);
-
-	else if (sm.state == ST_TEST_MPX_P0_L)
-		test_vJumpToState(TST_MPX_TEST_P0_L);
-
-	else if (sm.state == ST_TEST_MPX_P0_H)
-		test_vJumpToState(TST_MPX_TEST_P0_H);
-
-	else if (sm.state == ST_TEST_MPX_P1_L)
-		test_vJumpToState(TST_MPX_TEST_P1_L);
-
-	else if (sm.state == ST_TEST_MPX_P1_H)
-		test_vJumpToState(TST_MPX_TEST_P1_H);
-
-	else if (sm.state == ST_TEST_MPX_P2_L)
-		test_vJumpToState(TST_MPX_TEST_P2_L);
-
-	else if (sm.state == ST_TEST_MPX_P2_H)
-		test_vJumpToState(TST_MPX_TEST_P2_H);
-
-	else if (sm.state == ST_TEST_MPX_P3_L)
-		test_vJumpToState(TST_MPX_TEST_P3_L);
-
-	else if (sm.state == ST_TEST_MPX_P3_H)
-		test_vJumpToState(TST_MPX_TEST_P3_H);
+	test_vJumpToState(sm.state - ST_TEST_MPX_ID1 + TST_MPX_TEST_ID1);
 
 	LCD_vSetNextEvent(EV_REFRESH);
 	LCD_vJumpToState(ST_TEST_LOG);
