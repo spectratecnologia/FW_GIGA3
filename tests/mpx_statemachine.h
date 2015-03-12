@@ -3,10 +3,9 @@
 #define __MPX_STATEMACHINE_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f10x.h"
-#include "tests/tests_statemachine.h"
-#include "LCD/lcd_screen.h"
 #include <stdbool.h>
+#include "MPX/mpx.h"
+#include "LCD/lcd_screen.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
@@ -26,9 +25,10 @@ typedef enum {
 	MPX_ST_FINALIZE,
 	MPX_ST_PRINT
 
-} MpxTestsStStates;
+} TestStStates;
 
-typedef enum {
+typedef enum
+{
 	MPX_EV_ANY   = -1,
 	MPX_EV_REFRESH =  0,
 
@@ -39,37 +39,45 @@ typedef enum {
 	MPX_EV_FINALIZE,
 	MPX_EV_PRINT
 
-} MpxTestsStEvents;
+} TestStEvents;
+
+typedef enum
+{
+	TEST_AUTO,
+	TEST_LOOP,
+	TEST_NOTHING,
+	TEST_ID1, TEST_ID2,  TEST_ID4,  TEST_ID0,
+	TEST_P0_L,  TEST_P1_L, TEST_P2_L, TEST_P3_L,
+	TEST_P0_H,  TEST_P1_H, TEST_P2_H, TEST_P3_H,
+	TEST_P4,    TEST_P5,   TEST_P6,   TEST_P7,
+	TEST_END,
+	TEST_P8,    TEST_P9,   TEST_P10,  TEST_P11,
+	TEST_P12,   TEST_P13,  TEST_P14,  TEST_P15,
+	TEST_P16,   TEST_P17,  TEST_P18,  TEST_P19,
+	TEST_P20,   TEST_P21,  TEST_P22,  TEST_P23,
+	TEST_P24,   TEST_P25,  TEST_P26,  TEST_P27
+
+} TestList;
 
 /* This struct handles data about MPX tests execution */
 typedef struct
 {
+	int16_t currentTest;
 	uint64_t statedTestTime;
-
-	/* Currently MPX test */
-	bool boolIsManualTest;
 	bool boolIsAutoTest;
 	bool boolIsLoopTest;
-
-	bool testFinished;
 	bool testError;
-
-	/* Complete test number */
 	uint16_t numberTestDone;
-} MpxTests;
+} Test;
 
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported declared types -------------------------------------------------- */
-MpxTests Mpxtests;
 
 /* Exported functions ------------------------------------------------------- */
-void test_vMpxStateMachineInit(void);
-void mpxTest_vStateMachineLoop(void);
-void mpxTest_vJumpToState(MpxTestsStStates);
-
-void isManualTest(void);
-void isAutoTest(void);
-void isLoopTest(void);
+void mpxTest_vMpxStateMachineInit(void);
+void mpxTest_vStateMachineInit(void);
+void mpxTest_vSetTest(TestList);
+void mpxTest_vResetTests(void);
 
 #endif /* __SMTEST_H */

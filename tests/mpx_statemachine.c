@@ -2,6 +2,7 @@
 #include "tests/mpx_statemachine.h"
 
 /* Local functions declaration #1 --------------------------------------------*/
+void mpxTest_vUpdateTests(void);
 void mpxTest_vIdle(void);
 void mpxTest_vExecute(void);
 void mpxTest_vWait(void);
@@ -10,32 +11,31 @@ void mpxTest_vFinalize(void);
 void mpxTest_vPrint(void);
 
 /* Local functions declaration #2 --------------------------------------------*/
-void mpxTest_vExecute_ID(StStates);
-void mpxTest_vExecute_PP10A(StStates);
-void mpxTest_vExecute_BIDI(StStates);
-void mpxTest_vAnalyse_ID(StStates);
-void mpxTest_vAnalyse_PP10A(StStates);
-void mpxTest_vAnalyse_BIDI(StStates);
+void mpxTest_vExecute_ID(void);
+void mpxTest_vExecute_PP10A(void);
+void mpxTest_vExecute_BIDI(void);
+void mpxTest_vAnalyse_ID(void);
+void mpxTest_vAnalyse_PP10A(void);
+void mpxTest_vAnalyse_BIDI(void);
 
 /* Local functions declaration #3 --------------------------------------------*/
-void (*printTestResult)(StStates);
+void (*printTestResult)(void);
 void printTestMessage(char*, char*, uint8_t);
-void print_WaitMessage(StStates);
-void print_AutoTest_OK(StStates);
-void print_IDTest_OK(StStates);
-void print_IDTest_erro(StStates);
-void print_PortTest_OK(StStates);
-void print_PortTest_erro(StStates);
+void print_WaitMessage(void);
+void print_AutoTest_OK(void);
+void print_IDTest_OK(void);
+void print_IDTest_erro(void);
+void print_PortTest_OK(void);
+void print_PortTest_erro(void);
 
 char CN[NUM_PORTS+4][4] = {"1.1", "1.3", "2.1", "2.3"
 						  ,"1.1", "1.3", "2.1", "2.3"
 						  ,"3.1", "3.3", "4.1", "4.3"};
 
 /* Local Variables -----------------------------------------------------------*/
-StateMachine MpxSM;
-
+StateMachine MpxStateMachine;
+Test MpxTests;
 char message[LINE_SIZE];
-
 static volatile int8_t nextEvent;
 
 const Transition MpxSMTrans[] =  		//TABELA DE ESTADOS
@@ -72,23 +72,25 @@ const Transition MpxSMTrans[] =  		//TABELA DE ESTADOS
 /* General state machine functions -------------------------------------------*/
 /* ---------------------------------------------------------------------------*/
 
-void  mpxTest_vStateMachineLoop(void)
+void mpxTest_vStateMachineLoop(void)
 {
 	int i;
-	MpxSM.event = nextEvent;
+	MpxStateMachine.event = nextEvent;
 
 	/* Execute test state machine */
 	for (i = 0; i < TRANS_COUNT; i++)
 	{
-		if ((MpxSM.state == MpxSM.trans[i].state) || (MPX_ST_ANY == MpxSM.trans[i].state))
+		if ( (MpxStateMachine.state == MpxStateMachine.trans[i].state) ||
+			 (MPX_ST_ANY == MpxStateMachine.trans[i].state) )
 		{
-			if (((MpxSM.event == MpxSM.trans[i].event) || (MPX_EV_ANY == MpxSM.trans[i].event)))
+			if ( (MpxStateMachine.event == MpxStateMachine.trans[i].event) ||
+				 (MPX_EV_ANY == MpxStateMachine.trans[i].event) )
 			{
-				MpxSM.state = MpxSM.trans[i].next;
+				MpxStateMachine.state = MpxStateMachine.trans[i].next;
 
-                if (MpxSM.trans[i].fn)
+                if (MpxStateMachine.trans[i].fn)
                 {
-                    (MpxSM.trans[i].fn)();
+                    (MpxStateMachine.trans[i].fn)();
                 }
                 break;
 			}
@@ -98,38 +100,89 @@ void  mpxTest_vStateMachineLoop(void)
 
 void mpxTest_vStateMachineInit(void)
 {
-	MpxSM.state = MPX_ST_IDLE;
-	MpxSM.trans = &MpxSMTrans;
-	MpxSM.transCount = TRANS_COUNT;
-	test_vSetNextEvent(EV_REFRESH);
+	/* Start or reset mpx test state machine */
+	MpxStateMachine.state = MPX_ST_IDLE;
+	MpxStateMachine.trans = &MpxSMTrans;
+	MpxStateMachine.transCount = TRANS_COUNT;
+	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
+
+	/* Reset current test */
+	MpxTests.currentTest = TEST_NOTHING;
+	MpxTests.boolIsAutoTest = false;
+	MpxTests.boolIsLoopTest = false;
+	MpxTests.testError = false;
+	MpxTests.numberTestDone = 0;
 }
 
-void  mpxTest_vSetNextEvent(MpxTestsStEvents event)
+void mpxTest_vSetNextEvent(TestStEvents event)
 {
 	nextEvent = event;
 }
 
-void mpxTest_vJumpToState(MpxTestsStStates state)
+void mpxTest_vSetTest(TestList test)
 {
-	MpxSM.state = state;
-	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
+	MpxTests.currentTest = test;
 }
 
 /* ---------------------------------------------------------------------------*/
 /* State machine main functions ----------------------------------------------*/
 /* ---------------------------------------------------------------------------*/
 
+void mpxTest_vResetTests(void)
+{
+	mpxTest_vStateMachineInit();
+}
+
+void mpxTest_vUpdateTests(void)
+{
+	if (MpxTests.currentTest == TEST_NOTHING)
+		return;
+
+	else if (MpxTests.currentTest == TEST_AUTO)
+		MpxTests.boolIsAutoTest = true;
+
+	else if (MpxTests.currentTest == TEST_LOOP)
+		MpxTests.boolIsLoopTest = true;
+
+	if (MpxTests.boolIsAutoTest)
+	{
+		/* TEST_AUTO is set by LCD and if there is this condition, current test should
+		 * be the first test: TEST_NOTHING + 1.
+		 */
+		if (MpxTests.currentTest == TEST_AUTO)
+			MpxTests.currentTest = TEST_NOTHING + 1;
+		/* If TEST_END is reached, tests auto must be stopped. */
+		else if (MpxTests.currentTest != TEST_END)
+			MpxTests.currentTest++;
+	}
+
+	else if (MpxTests.boolIsLoopTest)
+	{
+		/* TEST_LOOP is set by LCD and if there is this condition, current test should
+		 * be the first test: TEST_NOTHING + 1.
+		 */
+		if (MpxTests.currentTest == TEST_LOOP)
+			MpxTests.currentTest = TEST_NOTHING + 1;
+		else
+			MpxTests.currentTest++;
+
+		/* If TEST_END is reached, tests loop must be restarted. */
+		if (MpxTests.currentTest == TEST_END)
+			MpxTests.currentTest = TEST_NOTHING + 1;
+	}
+}
+
 /* Idle ----------------------------------------------------------------------*/
 void mpxTest_vIdle(void)
 {
-	StStates test = test_vGetState();
+	/* Update MpxTests.currentTest */
+	mpxTest_vUpdateTests();
 
-	Mpxtests.testError = false;
+	sendCanPacket(CAN1, 0x0, MpxTests.currentTest, MpxTests.boolIsLoopTest, MpxTests.boolIsAutoTest, 0, 0);
 
-	if ((test >= ST_TEST_MPX_ID1) && (test <= ST_TEST_MPX_END))
-	{
+	if ((MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_END))
 		mpxTest_vSetNextEvent(MPX_EV_EXECUTE);
-	}
+
 	else
 		mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 }
@@ -137,24 +190,22 @@ void mpxTest_vIdle(void)
 /* Execute -------------------------------------------------------------------*/
 void mpxTest_vExecute(void)
 {
-	StStates test = test_vGetState();
-
-	Mpxtests.statedTestTime = sysTickTimer;
+	MpxTests.statedTestTime = sysTickTimer;
 	mpxTest_vSetNextEvent(MPX_EV_WAIT);
 
 	/* ID test */
-	if ((test >= ST_TEST_MPX_ID1) && (test <= ST_TEST_MPX_ID0))
-		mpxTest_vExecute_ID(test);
+	if ((MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_ID0))
+		mpxTest_vExecute_ID();
 
 	/* Push Pull 10A test */
-	else if ((test >= ST_TEST_MPX_P0_L) && (test <= ST_TEST_MPX_P3_H ))
-		mpxTest_vExecute_PP10A(test);
+	else if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_H ))
+		mpxTest_vExecute_PP10A();
 
-	else if ((test >= ST_TEST_MPX_P4) && (test <= ST_TEST_MPX_P7 ))
-		mpxTest_vExecute_BIDI(test);
+	else if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P7 ))
+		mpxTest_vExecute_BIDI();
 
 	/* This state is only reached by automatic test when all tests is working. */
-	else if (test == ST_TEST_MPX_END)
+	else if (MpxTests.currentTest == TEST_END)
 	{
 		printTestResult = print_AutoTest_OK;
 		mpxTest_vSetNextEvent(MPX_EV_PRINT);
@@ -165,7 +216,6 @@ void mpxTest_vExecute(void)
 /* Wait ---------------------------------------------------------------------*/
 void mpxTest_vWait(void)
 {
-	StStates test = test_vGetState();
 	char message[LINE_SIZE];
 
 	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
@@ -175,15 +225,15 @@ void mpxTest_vWait(void)
 	 * while the delay time is not reached.
 	 */
 	/* ID tests is slow, therefore it will be used a greater delay than other tests. */
-	if ( (test >= ST_TEST_MPX_ID1) && (test <= ST_TEST_MPX_ID0) &&
-	   ( (sysTickTimer - Mpxtests.statedTestTime) > DELAY_TO_ANALISE_SLOW_TEST) )
+	if ( (MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_ID0) &&
+	   ( (sysTickTimer - MpxTests.statedTestTime) > DELAY_TO_ANALISE_SLOW_TEST) )
 	{
 		mpxTest_vSetNextEvent(MPX_EV_ANALYSE);
 	}
 
 	/* Other tests, that is slow, is used a less delay. */
-	else if ( (test > ST_TEST_MPX_ID0) && (test <= ST_TEST_MPX_END) &&
-			( (sysTickTimer - Mpxtests.statedTestTime) > DELAY_TO_ANALISE_FAST_TEST) )
+	else if ( (MpxTests.currentTest > TEST_ID0) && (MpxTests.currentTest <= TEST_END) &&
+			( (sysTickTimer - MpxTests.statedTestTime) > DELAY_TO_ANALISE_FAST_TEST) )
 		mpxTest_vSetNextEvent(MPX_EV_ANALYSE);
 
 	else
@@ -196,18 +246,16 @@ void mpxTest_vWait(void)
 /* Analysis ------------------------------------------------------------------*/
 void mpxTest_vAnalyse(void)
 {
-	StStates test = test_vGetState();
-
 	/* ID test */
-	if ((test >= ST_TEST_MPX_ID1) && (test <= ST_TEST_MPX_ID0 ))
-		mpxTest_vAnalyse_ID(test);
+	if ((MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_ID0 ))
+		mpxTest_vAnalyse_ID();
 
 	/* Push Pull 10A test */
-	else if ((test >= ST_TEST_MPX_P0_L) && (test <= ST_TEST_MPX_P3_H ))
-		mpxTest_vAnalyse_PP10A(test);
+	else if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_H ))
+		mpxTest_vAnalyse_PP10A();
 
-	else if ((test >= ST_TEST_MPX_P4) && (test <= ST_TEST_MPX_P7 ))
-		mpxTest_vAnalyse_BIDI(test);
+	else if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P7 ))
+		mpxTest_vAnalyse_BIDI();
 
 	mpxTest_vSetNextEvent(MPX_EV_FINALIZE);
 }
@@ -215,24 +263,12 @@ void mpxTest_vAnalyse(void)
 /* Finalize ------------------------------------------------------------------*/
 void mpxTest_vFinalize(void)
 {
-	mpxTest_vSetNextEvent(MPX_EV_PRINT);
-
 	turnOffMpxPorts();
 
-	if (!Mpxtests.testError)
-	{
-		if (Mpxtests.boolIsAutoTest)
-		{
-			test_vSetNextEvent(EV_AUTOMATIC);
-			mpxTest_vSetNextEvent(MPX_EV_IDLE);
-		}
+	mpxTest_vSetNextEvent(MPX_EV_PRINT);
 
-		else if (Mpxtests.boolIsLoopTest)
-		{
-			test_vSetNextEvent(EV_LOOP);
-			mpxTest_vSetNextEvent(MPX_EV_IDLE);
-		}
-	}
+	if(!MpxTests.testError && (MpxTests.boolIsAutoTest || MpxTests.boolIsLoopTest) )
+		mpxTest_vSetNextEvent(MPX_EV_IDLE);
 }
 
 /* Print ---------------------------------------------------------------------*/
@@ -242,25 +278,12 @@ void mpxTest_vPrint(void)
 	char message[LINE_SIZE];
 
 	if(printTestResult)
-		printTestResult(test);
+		printTestResult();
 
-	/* This function may be called by wait or analyse stage. If was called by former,
-	 * state machine state should be back to wait, else if was called by latter, it
-	 * analyse if should return to idle state to wait for new tests or continue (loop
-	 * or auto tests) or keep this state (manual and end auto test) until user press
-	 * ENTER.
-	 */
+	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 
-	if (MpxSM.state == MPX_ST_PRINT_WAIT)
+	if (MpxStateMachine.state == MPX_ST_PRINT_WAIT)
 		mpxTest_vSetNextEvent(MPX_EV_WAIT);
-
-	else if (MpxSM.state == MPX_ST_PRINT)
-	{
-		if (test_vGetState() == MPX_ST_IDLE)
-			mpxTest_vSetNextEvent(MPX_EV_IDLE);
-		else
-			mpxTest_vSetNextEvent(MPX_EV_REFRESH);
-	}
 }
 
 /* ---------------------------------------------------------------------------*/
@@ -268,72 +291,70 @@ void mpxTest_vPrint(void)
 /* ---------------------------------------------------------------------------*/
 
 /* Execute -------------------------------------------------------------------*/
-void mpxTest_vExecute_ID(StStates test)
+void mpxTest_vExecute_ID(void)
 {
-	if (test == ST_TEST_MPX_ID1)
-		Mpxtests.numberTestDone++;
+	if (MpxTests.currentTest == TEST_ID1)
+		MpxTests.numberTestDone++;
 
-	setMPXIDports(ID1 + (test-ST_TEST_MPX_ID1) );
+	setMPXIDports(ID1 + (MpxTests.currentTest-TEST_ID1) );
 }
 
-void mpxTest_vExecute_PP10A(StStates test)
+void mpxTest_vExecute_PP10A(void)
 {
-	if ((test >= ST_TEST_MPX_P0_L) && (test <= ST_TEST_MPX_P3_L))
-		activeMPXports((test - ST_TEST_MPX_P0_L), PORT_LOW);
+	if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L))
+		activeMPXports((MpxTests.currentTest - TEST_P0_L), PORT_LOW);
 
-	else if ((test >= ST_TEST_MPX_P0_H) && (test <= ST_TEST_MPX_P3_H))
-		activeMPXports((test - ST_TEST_MPX_P0_H), PORT_HIGH);
+	else if ((MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P3_H))
+		activeMPXports((MpxTests.currentTest - TEST_P0_H), PORT_HIGH);
 }
 
-void mpxTest_vExecute_BIDI(StStates test)
+void mpxTest_vExecute_BIDI(void)
 {
-	if ((test >= ST_TEST_MPX_P4) && (test <= ST_TEST_MPX_P7))
-		activeMPXports((test - ST_TEST_MPX_P0_H), PORT_HIGH);
+	if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P7))
+		activeMPXports((MpxTests.currentTest - TEST_P0_H), PORT_HIGH);
 }
 
 /* Analysis ------------------------------------------------------------------*/
-void mpxTest_vAnalyse_ID(StStates test)
+void mpxTest_vAnalyse_ID(void)
 {
-	if ( ( (test == ST_TEST_MPX_ID1) && (mpx.mpxId == 0x81) ) ||
-		 ( (test == ST_TEST_MPX_ID2) && (mpx.mpxId == 0x82) ) ||
-		 ( (test == ST_TEST_MPX_ID4) && (mpx.mpxId == 0x84) ) ||
-		 ( (test == ST_TEST_MPX_ID0) && (mpx.mpxId == 0x80) ) )
+	if ( ( (MpxTests.currentTest == TEST_ID1) && (mpx.mpxId == 0x81) ) ||
+		 ( (MpxTests.currentTest == TEST_ID2) && (mpx.mpxId == 0x82) ) ||
+		 ( (MpxTests.currentTest == TEST_ID4) && (mpx.mpxId == 0x84) ) ||
+		 ( (MpxTests.currentTest == TEST_ID0) && (mpx.mpxId == 0x80) ) )
 	{
-		if (Mpxtests.boolIsManualTest)
-			printTestResult = print_IDTest_OK;
+		printTestResult = print_IDTest_OK;
 	}
 
 	else
 	{
 		printTestResult = print_IDTest_erro;
-		Mpxtests.testError = true;
+		MpxTests.testError = true;
 	}
 }
 
-void mpxTest_vAnalyse_PP10A(StStates test)
+void mpxTest_vAnalyse_PP10A(void)
 {
 	bool isMpxPortLow;
 	bool isMpxPortHigh;
 	bool isGiga3HighSideMosfetDrivingCurrent;
 
-	if ( (test >= ST_TEST_MPX_P0_L) && (test <= ST_TEST_MPX_P3_L) )
+	if ( (MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L) )
 	{
 		/* Is MPX device port low? If port is low, MPX device low side portx is working when low tests. */
-		isMpxPortLow = !getPortStatus(test-ST_TEST_MPX_P0_L);
+		isMpxPortLow = !getPortStatus(MpxTests.currentTest-TEST_P0_L);
 		/* If this bool is true, then giga3 mosfet is driving current. */
-		isGiga3HighSideMosfetDrivingCurrent = getSRBitStatus(ST_TEST_MPX_P0_L+27-test);
+		isGiga3HighSideMosfetDrivingCurrent = getSRBitStatus(TEST_P0_L+27-MpxTests.currentTest);
 	}
 
 	else
 	{
 		/* Is MPX device port high? If port is high, MPX device low side portx is working when high tests. */
-		isMpxPortHigh = getPortStatus(test-ST_TEST_MPX_P0_H);
+		isMpxPortHigh = getPortStatus(MpxTests.currentTest-TEST_P0_H);
 	}
 
 
-
 	/* Is a LOW TEST? */
-	if ( (test >= ST_TEST_MPX_P0_L) && (test <= ST_TEST_MPX_P3_L) )
+	if ( (MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L) )
 	{
 		/* is MPX port low? */
 		if (isMpxPortLow)
@@ -341,13 +362,13 @@ void mpxTest_vAnalyse_PP10A(StStates test)
 			/* GIGA3 high side mosfet is driving current? */
 			if (isGiga3HighSideMosfetDrivingCurrent)
 			{
-				Mpxtests.testError = false;
+				MpxTests.testError = false;
 				printTestResult = print_PortTest_OK;
 			}
 			/* GIGA3 high side mosfet is not driving current? */
 			else
 			{
-				Mpxtests.testError = true;
+				MpxTests.testError = true;
 				printTestResult = print_PortTest_erro;
 			}
 		}
@@ -358,13 +379,13 @@ void mpxTest_vAnalyse_PP10A(StStates test)
 			/* GIGA3 high side mosfet is driving current? */
 			if (isGiga3HighSideMosfetDrivingCurrent)
 			{
-				Mpxtests.testError = true;
+				MpxTests.testError = true;
 				printTestResult = print_PortTest_erro;
 			}
 			/* GIGA3 high side mosfet is not driving current? */
 			else
 			{
-				Mpxtests.testError = true;
+				MpxTests.testError = true;
 				printTestResult = print_PortTest_erro;
 			}
 		}
@@ -374,32 +395,32 @@ void mpxTest_vAnalyse_PP10A(StStates test)
 	else
 	{
 		/* If mpx.portInput[X] is not "0x01", then there is some problem with the port X. */
-		if (mpx.portInput[test-ST_TEST_MPX_P0_H] == 0x01)
+		if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x01)
 		{
-			Mpxtests.testError = false;
+			MpxTests.testError = false;
 			printTestResult = print_PortTest_OK;
 		}
 
 		else
 		{
-			Mpxtests.testError = true;
+			MpxTests.testError = true;
 			printTestResult = print_PortTest_erro;
 		}
 	}
 }
 
-void mpxTest_vAnalyse_BIDI(StStates test)
+void mpxTest_vAnalyse_BIDI(void)
 {
 	/* If mpx.portInput[X] is not "0x01", then there is some problem with the port X. */
-	if (mpx.portInput[test-ST_TEST_MPX_P0_H] == 0x01)
+	if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x01)
 	{
-		Mpxtests.testError = false;
+		MpxTests.testError = false;
 		printTestResult = print_PortTest_OK;
 	}
 
 	else
 	{
-		Mpxtests.testError = true;
+		MpxTests.testError = true;
 		printTestResult = print_PortTest_erro;
 	}
 }
@@ -407,27 +428,27 @@ void mpxTest_vAnalyse_BIDI(StStates test)
 /* Print LCD functions -------------------------------------------------------*/
 /* ---------------------------------------------------------------------------*/
 
-void print_WaitMessage(StStates test)
+void print_WaitMessage(void)
 {
-	if (Mpxtests.boolIsAutoTest || Mpxtests.boolIsManualTest)
+	if (MpxTests.boolIsLoopTest)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE," Teste em Loop  ");
+		if (MpxTests.numberTestDone < 10)
+			sprintf(message, "  Contagem: %d    ", MpxTests.numberTestDone);
+		else
+			sprintf(message, " Contagem: %d     ", MpxTests.numberTestDone);
+		printTestMessage(TestMessages.lines[1], message, 0);
+	}
+
+	else
 	{
 		sprintf(message, "Aguarde");
 		printTestMessage(TestMessages.lines[0], message, 3);
 		sniprintf(TestMessages.lines[1], LINE_SIZE, "                ");
 	}
-
-	else if (Mpxtests.boolIsLoopTest)
-	{
-		snprintf(TestMessages.lines[0],LINE_SIZE," Teste em Loop  ");
-		if (Mpxtests.numberTestDone < 10)
-			sprintf(message, "  Contagem: %d    ", Mpxtests.numberTestDone);
-		else
-			sprintf(message, " Contagem: %d     ", Mpxtests.numberTestDone);
-		printTestMessage(TestMessages.lines[1], message, 0);
-	}
 }
 
-void print_AutoTest_OK(StStates test)
+void print_AutoTest_OK(void)
 {
 	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Auto: OK  ");
 	sprintf(message, "Pressione Enter");
@@ -435,17 +456,17 @@ void print_AutoTest_OK(StStates test)
 }
 
 /* ID test print functions ---------------------------------------------------*/
-void print_IDTest_OK(StStates test)
+void print_IDTest_OK(void)
 {
 	char ID;
 
-	if (test == ST_TEST_MPX_ID0)
+	if (MpxTests.currentTest == TEST_ID0)
 		ID = '0';
-	else if (test == ST_TEST_MPX_ID1)
+	else if (MpxTests.currentTest == TEST_ID1)
 		ID = '1';
-	else if (test == ST_TEST_MPX_ID2)
+	else if (MpxTests.currentTest == TEST_ID2)
 		ID = '2';
-	else if (test == ST_TEST_MPX_ID4)
+	else if (MpxTests.currentTest == TEST_ID4)
 		ID = '4';
 
 	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste ID%c: OK     ", ID);
@@ -453,17 +474,17 @@ void print_IDTest_OK(StStates test)
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
-void print_IDTest_erro(StStates test)
+void print_IDTest_erro(void)
 {
 	char ID;
 
-	if (test == ST_TEST_MPX_ID0)
+	if (MpxTests.currentTest == TEST_ID0)
 		ID = '0';
-	else if (test == ST_TEST_MPX_ID1)
+	else if (MpxTests.currentTest == TEST_ID1)
 		ID = '1';
-	else if (test == ST_TEST_MPX_ID2)
+	else if (MpxTests.currentTest == TEST_ID2)
 		ID = '2';
-	else if (test == ST_TEST_MPX_ID4)
+	else if (MpxTests.currentTest == TEST_ID4)
 		ID = '4';
 
 	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste ID%c: FALHA ", ID);
@@ -471,16 +492,16 @@ void print_IDTest_erro(StStates test)
 }
 
 /* ID test print functions ---------------------------------------------------*/
-void print_PortTest_OK(StStates test)
+void print_PortTest_OK(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste CN%s: OK  ", CN[test - ST_TEST_MPX_P0_L]);
+	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste CN%s: OK  ", CN[MpxTests.currentTest - TEST_P0_L]);
 	sprintf(message, "Pressione Enter", 1);
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
-void print_PortTest_erro(StStates test)
+void print_PortTest_erro(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"  Erro CN%s E  ", CN[test - ST_TEST_MPX_P0_L]);
+	snprintf(TestMessages.lines[0],LINE_SIZE,"  Erro CN%s E  ", CN[MpxTests.currentTest - TEST_P0_L]);
 	sprintf(message, "agora? Continue", 1);
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
@@ -513,29 +534,4 @@ void printTestMessage(char *line, char *sentence, uint8_t dots)
 
 	else
 		snprintf(line, LINE_SIZE, "%s", sentence);
-}
-
-/* ---------------------------------------------------------------------------*/
-/* Auxiliary functions -------------------------------------------------------*/
-/* ---------------------------------------------------------------------------*/
-
-void isManualTest(void)
-{
-	Mpxtests.boolIsManualTest = true;
-	Mpxtests.boolIsAutoTest = false;
-	Mpxtests.boolIsLoopTest = false;
-}
-
-void isAutoTest(void)
-{
-	Mpxtests.boolIsManualTest = false;
-	Mpxtests.boolIsAutoTest = true;
-	Mpxtests.boolIsLoopTest = false;
-}
-
-void isLoopTest(void)
-{
-	Mpxtests.boolIsManualTest = false;
-	Mpxtests.boolIsAutoTest = false;
-	Mpxtests.boolIsLoopTest = true;
 }

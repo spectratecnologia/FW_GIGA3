@@ -331,8 +331,7 @@ StEvents LCD_vGetNextEvent(void){
 			else
 				LCD_vJumpToState(TestMessages.lastLCDState);
 
-			mpxTest_vJumpToState(MPX_ST_IDLE);
-			test_vJumpToState(ST_IDLE);
+			mpxTest_vResetTests();
 		}
 
 	}
@@ -673,8 +672,6 @@ void LCD_vTestMPXAuto(void)
 
 	char finalpoint={' '};
 
-	isAutoTest();
-
 	if ((sysTickTimer%2000)>999)
 		finalpoint='.';
 
@@ -691,7 +688,7 @@ void LCD_vTestMPXAutoStarted(void)
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
 
-	test_vSetNextEvent(EV_AUTOMATIC);
+	mpxTest_vSetTest(TEST_AUTO);
 
 	LCD_vSetNextEvent(EV_REFRESH);
 	LCD_vJumpToState(ST_TEST_LOG);
@@ -706,9 +703,6 @@ void LCD_vTestMPXLoop(void)
    	                        ,"Conecte o MPX   "};
 
 	char finalpoint={' '};
-
-	Mpxtests.numberTestDone=0;
-	isLoopTest();
 
 	if ((sysTickTimer%2000)>999)
 		finalpoint='.';
@@ -726,7 +720,7 @@ void LCD_vTestMPXLoopStarted(void)
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
 
-	test_vSetNextEvent(EV_LOOP);
+	mpxTest_vSetTest(TEST_LOOP);
 
 	LCD_vSetNextEvent(EV_REFRESH);
 	LCD_vJumpToState(ST_TEST_LOG);
@@ -759,8 +753,6 @@ void LCD_vTestMPXManual(void)
 
 	static uint8_t currentLine=1;
 
-	isManualTest();
-
 	if(EV_REFRESH != sm.event)
 	{
 		lcd.sbLine = currentLine;
@@ -783,7 +775,7 @@ void LCD_vTestMPXManualStarted(void)
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
 
-	test_vJumpToState(sm.state);
+	mpxTest_vSetTest((sm.state - ST_TEST_MPX_ID1) + (TEST_NOTHING + 1));
 
 	LCD_vSetNextEvent(EV_REFRESH);
 	LCD_vJumpToState(ST_TEST_LOG);

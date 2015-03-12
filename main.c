@@ -13,8 +13,7 @@
 
 void processLCD();
 void processTurningOffMpxEmergencyMode();
-void processGenericTest();
-void processSpecificTest();
+void processTest();
 
 void teste()
 {
@@ -56,7 +55,6 @@ int main(void)
 	initIOs();
 	LCD_vStateMachineInit();
 	initVitualKeyboard();
-	test_vStateMachineInit();
 	mpxTest_vStateMachineInit();
 	initCANs();
 
@@ -72,9 +70,7 @@ int main(void)
 
     	executeEveryInterval(3, 100, &processLCD);
 
-    	executeEveryInterval(4, 10, &processGenericTest);
-
-    	executeEveryInterval(5, 10, &processSpecificTest);
+    	executeEveryInterval(4, 10, &processTest);
 
     	if (mpx.MpxAlreadyInit)
     	{
@@ -92,12 +88,7 @@ void processLCD()
 	LCD_vStateMachineLoop();
 }
 
-void processGenericTest()
-{
-	test_vStateMachineLoop();
-}
-
-void processSpecificTest()
+void processTest()
 {
 	mpxTest_vStateMachineLoop();
 }
