@@ -86,7 +86,6 @@ void processKeysAndDeadTime() {
 
 		/* Process pressed keys */
 		if(isTactInputPressed(i)==true && tactPressTable[i].state ==  NOT_PRESSED) {
-			setBeep(1, 25);
 			tactPressTable[i].elapsedTime = 0;
 			tactPressTable[i].state = PRESSED;
 			printf("K %d - Pr\n", i);

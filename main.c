@@ -33,9 +33,9 @@ void teste()
 	data3[5]=(uint8_t)(readDataFromSR()>>16);
 	data3[4]=(uint8_t)(readDataFromSR()>>24);
 
-	for (i=TST_MPX_TEST_P0_L; i<=TST_MPX_TEST_P3_L; i++)
+	for (i=ST_TEST_MPX_P0_L; i<=ST_TEST_MPX_P3_L; i++)
 	{
-		if (getSRBitStatus(TST_MPX_TEST_P0_L+27-i))
+		if (getSRBitStatus(ST_TEST_MPX_P0_L+27-i))
 			sendCanPacket(CAN1, 0x00, i, 0xFF,0xFF, &data, 8);
 		else
 			sendCanPacket(CAN1, 0x00, i, 0xFF,0xFF, &data2, 8);
@@ -79,7 +79,7 @@ int main(void)
     	if (mpx.MpxAlreadyInit)
     	{
     		executeEveryInterval(6, 80, &processTurningOffMpxEmergencyMode);
-    		executeEveryInterval(7, 40, &sendChangedOutputsToMPXs);
+    		executeEveryInterval(7, 5, &sendChangedOutputsToMPXs);
     		//executeEveryInterval(8, 100, &teste);
     	}
 

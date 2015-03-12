@@ -102,12 +102,17 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_MPX_MANUAL	,EV_LINE10		  	,ST_TEST_MPX_P2_H		,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_MANUAL	,EV_LINE11		  	,ST_TEST_MPX_P3_L 		,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_MANUAL	,EV_LINE12		  	,ST_TEST_MPX_P3_H		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_MANUAL	,EV_LINE13		  	,ST_TEST_MPX_P4			,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_MANUAL	,EV_LINE14		  	,ST_TEST_MPX_P5			,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_MANUAL	,EV_LINE15		  	,ST_TEST_MPX_P6			,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_MANUAL	,EV_LINE16		  	,ST_TEST_MPX_P7			,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_MANUAL	,EV_KBD_CANCEL	  	,ST_TEST_MPX  	     	,&LCD_vTestMPX				},
-
+//ID tests
 {ST_TEST_MPX_ID1	,EV_REFRESH	  		,ST_TEST_MPX_ID1    	,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_ID2	,EV_REFRESH	  		,ST_TEST_MPX_ID2    	,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_ID4	,EV_REFRESH	  		,ST_TEST_MPX_ID4    	,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_ID0	,EV_REFRESH	  		,ST_TEST_MPX_ID0    	,&LCD_vTestMPXManualStarted	},
+//push pull 10A
 {ST_TEST_MPX_P0_L	,EV_REFRESH			,ST_TEST_MPX_P0_L   	,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_P0_H	,EV_REFRESH			,ST_TEST_MPX_P0_H		,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_P1_L	,EV_REFRESH			,ST_TEST_MPX_P1_L   	,&LCD_vTestMPXManualStarted	},
@@ -116,6 +121,37 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_MPX_P2_H	,EV_REFRESH			,ST_TEST_MPX_P2_H		,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_P3_L	,EV_REFRESH			,ST_TEST_MPX_P3_L   	,&LCD_vTestMPXManualStarted	},
 {ST_TEST_MPX_P3_H	,EV_REFRESH			,ST_TEST_MPX_P3_H		,&LCD_vTestMPXManualStarted	},
+//BIDI 10A
+{ST_TEST_MPX_P4		,EV_REFRESH			,ST_TEST_MPX_P4			,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P5		,EV_REFRESH			,ST_TEST_MPX_P5			,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P6		,EV_REFRESH			,ST_TEST_MPX_P6			,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P7		,EV_REFRESH			,ST_TEST_MPX_P7			,&LCD_vTestMPXManualStarted	},
+//BIDI 2A #1
+{ST_TEST_MPX_P8		,EV_REFRESH			,ST_TEST_MPX_P8			,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P9		,EV_REFRESH			,ST_TEST_MPX_P9			,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P10	,EV_REFRESH			,ST_TEST_MPX_P10		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P11	,EV_REFRESH			,ST_TEST_MPX_P11		,&LCD_vTestMPXManualStarted	},
+//BIDI 2A #2
+{ST_TEST_MPX_P12	,EV_REFRESH			,ST_TEST_MPX_P12		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P13	,EV_REFRESH			,ST_TEST_MPX_P13		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P14	,EV_REFRESH			,ST_TEST_MPX_P14		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P15	,EV_REFRESH			,ST_TEST_MPX_P15		,&LCD_vTestMPXManualStarted	},
+//BIDI 2A #3
+{ST_TEST_MPX_P16	,EV_REFRESH			,ST_TEST_MPX_P16		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P17	,EV_REFRESH			,ST_TEST_MPX_P17		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P18	,EV_REFRESH			,ST_TEST_MPX_P18		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P19	,EV_REFRESH			,ST_TEST_MPX_P19		,&LCD_vTestMPXManualStarted	},
+//BIDI 2A #4
+{ST_TEST_MPX_P20	,EV_REFRESH			,ST_TEST_MPX_P20		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P21	,EV_REFRESH			,ST_TEST_MPX_P21		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P22	,EV_REFRESH			,ST_TEST_MPX_P22		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P23	,EV_REFRESH			,ST_TEST_MPX_P23		,&LCD_vTestMPXManualStarted	},
+//BIDI 2A #5
+{ST_TEST_MPX_P24	,EV_REFRESH			,ST_TEST_MPX_P24		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P25	,EV_REFRESH			,ST_TEST_MPX_P25		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P26	,EV_REFRESH			,ST_TEST_MPX_P26		,&LCD_vTestMPXManualStarted	},
+{ST_TEST_MPX_P27	,EV_REFRESH			,ST_TEST_MPX_P27		,&LCD_vTestMPXManualStarted	},
+
 
 {ST_TEST_PTC24 		,EV_REFRESH		  	,ST_TEST_PTC24          ,&LCD_vTestPTC24	},
 {ST_TEST_PTC24 		,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen	},
@@ -296,7 +332,7 @@ StEvents LCD_vGetNextEvent(void){
 				LCD_vJumpToState(TestMessages.lastLCDState);
 
 			mpxTest_vJumpToState(MPX_ST_IDLE);
-			test_vJumpToState(TST_IDLE);
+			test_vJumpToState(ST_IDLE);
 		}
 
 	}
@@ -623,7 +659,7 @@ void LCD_vTestMPX(void)
 	LCD_printLine(0,lines[0]);
 	LCD_printLine(1,lines[lcd.sbLine]);
 
-	test_vJumpToState(TST_MPX_TEST);
+	test_vJumpToState(ST_TEST_MPX);
 	LCD_vSetNextEvent(EV_REFRESH);
 }
 
@@ -655,7 +691,7 @@ void LCD_vTestMPXAutoStarted(void)
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
 
-	test_vSetNextEvent(TEV_AUTOMATIC);
+	test_vSetNextEvent(EV_AUTOMATIC);
 
 	LCD_vSetNextEvent(EV_REFRESH);
 	LCD_vJumpToState(ST_TEST_LOG);
@@ -690,7 +726,7 @@ void LCD_vTestMPXLoopStarted(void)
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
 
-	test_vSetNextEvent(TEV_LOOP);
+	test_vSetNextEvent(EV_LOOP);
 
 	LCD_vSetNextEvent(EV_REFRESH);
 	LCD_vJumpToState(ST_TEST_LOG);
@@ -713,7 +749,11 @@ void LCD_vTestMPXManual(void)
 							,"Teste 9: CN2.1L " // CN2.1 = port2;
 							,"Teste 10: CN2.1H"
 							,"Teste 11: CN2.3L" // CN2.3 = port3;
-							,"Teste 12: CN2.3H"};
+							,"Teste 12: CN2.3H"
+							,"Teste 13: CN3.1 " // CN3.1 = port4
+							,"Teste 14: CN3.3 "	// CN3.3 = port5
+							,"Teste 15: CN4.1 " // CN4.1 = port6
+							,"Teste 16: CN4.3 "};
 
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
@@ -743,7 +783,7 @@ void LCD_vTestMPXManualStarted(void)
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
 
-	test_vJumpToState(sm.state - ST_TEST_MPX_ID1 + TST_MPX_TEST_ID1);
+	test_vJumpToState(sm.state);
 
 	LCD_vSetNextEvent(EV_REFRESH);
 	LCD_vJumpToState(ST_TEST_LOG);

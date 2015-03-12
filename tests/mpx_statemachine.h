@@ -10,8 +10,8 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-#define DELAY_TO_ANALISE_SLOW_TEST 3000
-#define DELAY_TO_ANALISE_FAST_TEST 50
+#define DELAY_TO_ANALISE_SLOW_TEST 1000
+#define DELAY_TO_ANALISE_FAST_TEST 42
 /* Exported macro ------------------------------------------------------------*/
 
 typedef enum {
