@@ -202,44 +202,23 @@ inline void activeLODINports(uint8_t portx, FunctionalState_MPXports state)
 
 uint8_t getPortStatus(uint8_t portx)
 {
-	/* uint32_t maskport will be used to select shift registers bits relative to the portx */
-	uint32_t maskport;
 	uint8_t offset_port;
 
-	if ((portx >= 0) && (portx <= 3))
-	{
-		offset_port = 0;
-		maskport = 0x80;
-	}
+	if ((portx >= 0) && (portx <= 7))
+		offset_port = 0x07;
 
-	else if ((portx >= 4) && (portx <= 7))
-	{
-		offset_port = 4;
-		maskport = 0x08;
-	}
+	else if ((portx >= 8) && (portx <= 15))
+		offset_port = 0x17;
 
-	else if ((portx >= 8) && (portx <= 17))
-	{
-		offset_port = 8;
-		maskport = 0x8000;
-	}
+	else if ((portx >= 16) && (portx <= 23))
+		offset_port = 0x27;
 
-	else if ((portx >= 18) && (portx <= 25))
-	{
-		offset_port = 18;
-		maskport = 0x800000;
-	}
-
-	else if ((portx >= 26) && (portx <= 29))
-	{
-		offset_port = 26;
-		maskport = 0x80000000;
-	}
-
+	else if ((portx >= 24) && (portx <= 28))
+		offset_port = 0x37;
 	else
 		return;
 
-	if (readDataFromSR() & (maskport >> (portx - offset_port)))
+	if (getSRBitStatus(offset_port-portx))
 		return 1;
 	else
 		return 0;

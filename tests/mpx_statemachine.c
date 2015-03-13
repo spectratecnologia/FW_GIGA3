@@ -17,6 +17,8 @@ void mpxTest_vExecute_ID(void);
 void mpxTest_vExecute_PP10A(void);
 void mpxTest_vExecute_BIDI(void);
 void mpxTest_vExecute_LODIN(void);
+void mpxTest_vAnalyse_CAN(void);
+void mpxTest_vAnalyse_SwitchedPort(void);
 void mpxTest_vAnalyse_ID(void);
 void mpxTest_vAnalyse_PP10A(void);
 void mpxTest_vAnalyse_BIDI(void);
@@ -26,14 +28,26 @@ void mpxTest_vAnalyse_LODIN(void);
 void (*printTestResult)(void);
 void printTestMessage(char*, char*, uint8_t);
 void print_WaitMessage(void);
+void print_CANTest_error(void);
+void print_SwitchedPortTest_error(void);
 void print_AutoTest_OK(void);
 void print_IDTest_OK(void);
-void print_IDTest_erro(void);
+void print_IDTest_error(void);
 void print_PortTest_OK(void);
-void print_PortTest_erro(void);
+void print_PortTest_error(void);
 
 char CN[NUM_PORTS+4][5] = {"1.1L", "1.3L", "2.1L", "2.3L"
 						  ,"1.1H", "1.3H", "2.1H", "2.3H"
+						  ,"3.1",  "3.3",  "4.1",  "4.3"
+						  ,"1.2",  "1.4",  "1.6",  "1.7"
+						  ,"1.9",  "2.2",  "2.4",  "2.6"
+						  ,"2.7",  "2.9",  "3.2",  "3.4"
+						  ,"3.6",  "3.7",  "3.9",  "4.2"
+						  ,"4.4",  "4.6",  "4.7",  "4.9"
+						  ,"1.5",  "1.8",  "2.5",  "2.8"
+						  ,"3.5",  "3.8",  "4.5",  "4.8"};
+
+char CN2[NUM_PORTS][4] =  {"1.1",  "1.3",  "2.1",  "2.3"
 						  ,"3.1",  "3.3",  "4.1",  "4.3"
 						  ,"1.2",  "1.4",  "1.6",  "1.7"
 						  ,"1.9",  "2.2",  "2.4",  "2.6"
@@ -156,6 +170,7 @@ void mpxTest_vResetTests(void)
 	MpxTests.boolIsAutoTest = false;
 	MpxTests.boolIsLoopTest = false;
 	MpxTests.testError = false;
+	MpxTests.seriousError = false;
 	MpxTests.numberTestDone = 0;
 	turnOffMpxPorts();
 }
@@ -275,18 +290,27 @@ void mpxTest_vWait(void)
 /* Analysis ------------------------------------------------------------------*/
 void mpxTest_vAnalyse(void)
 {
+	/* CAN test */
+	mpxTest_vAnalyse_CAN();
+
+	/* Switched ports test */
+	if (!MpxTests.testError)
+		mpxTest_vAnalyse_SwitchedPort();
+
 	/* ID test */
-	if ((MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_ID0 ))
+	if ((MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_ID0 ) && !MpxTests.testError)
 		mpxTest_vAnalyse_ID();
 
 	/* Push Pull 10A test */
-	else if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_H ))
+	else if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_H ) && !MpxTests.testError)
 		mpxTest_vAnalyse_PP10A();
 
-	else if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P27 ))
+	/* BIDI test */
+	else if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P27 ) && !MpxTests.testError)
 		mpxTest_vAnalyse_BIDI();
 
-	else if ((MpxTests.currentTest >= TEST_P28) && (MpxTests.currentTest <= TEST_P35 ))
+	/* LODIN test */
+	else if ((MpxTests.currentTest >= TEST_P28) && (MpxTests.currentTest <= TEST_P35 ) && !MpxTests.testError)
 		mpxTest_vAnalyse_LODIN();
 
 	mpxTest_vSetNextEvent(MPX_EV_FINALIZE);
@@ -311,12 +335,16 @@ void mpxTest_vPrint(void)
 	if(printTestResult)
 		printTestResult();
 
+	if(MpxTests.seriousError)
+		setBeep(1,100);
+
 	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 
 	if (MpxStateMachine.state == MPX_ST_PRINT_WAIT)
 		mpxTest_vSetNextEvent(MPX_EV_WAIT);
 }
 
+/* Finish test----------------------------------------------------------------*/
 void mpxTest_vFinish(void)
 {
 	mpxTest_vResetTests();
@@ -331,7 +359,7 @@ void mpxTest_vFinish(void)
 /* Execute -------------------------------------------------------------------*/
 void mpxTest_vExecute_ID(void)
 {
-	if (MpxTests.currentTest == TEST_NOTHING + 1)
+	if (MpxTests.currentTest == TEST_ID0)
 		MpxTests.numberTestDone++;
 
 	setMPXIDports(ID1 + (MpxTests.currentTest-TEST_ID1) );
@@ -359,6 +387,65 @@ void mpxTest_vExecute_LODIN(void)
 }
 
 /* Analysis ------------------------------------------------------------------*/
+void mpxTest_vAnalyse_CAN(void)
+{
+	if( (sysTickTimer - mpx.lastTimeSeen) > DELAY_TO_CAN_SEND_DATA)
+	{
+		MpxTests.testError = true;
+		MpxTests.seriousError = true;
+		printTestResult = print_CANTest_error;
+	}
+
+}
+
+void mpxTest_vAnalyse_SwitchedPort(void)
+{
+	int i;
+	uint8_t status;
+
+	if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L))
+		for (i=0; i<28; i++)
+		{
+			if (i == (MpxTests.currentTest - TEST_P0_L))
+				continue;
+
+			if (mpx.portInput[i] & 0x01)
+			{
+				MpxTests.switchPort = i;
+				MpxTests.testError = true;
+				printTestResult = print_SwitchedPortTest_error;
+				break;
+			}
+		}
+
+	else if ((MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P27))
+		for (i=0; i<28; i++)
+		{
+			if (i == (MpxTests.currentTest - TEST_P0_H))
+				continue;
+
+			if (getPortStatus(i))
+			{
+				MpxTests.switchPort = i;
+				MpxTests.testError = true;
+				printTestResult = print_SwitchedPortTest_error;
+				break;
+			}
+		}
+			//data = readDataFromSR();
+			//delayMsUsingSysTick(100);
+			//status = getPortStatus(0);
+			//sendCanPacket(CAN1, 0x00, 0x00, 0x00, status, 0, 0);
+			//if (status)
+			//{
+				//MpxTests.switchPort = i;
+				//MpxTests.testError = true;
+				//printTestResult = print_SwitchedPortTest_error;
+				//break;
+			//}
+		//}
+}
+
 void mpxTest_vAnalyse_ID(void)
 {
 	if ( ( (MpxTests.currentTest == TEST_ID1) && (mpx.mpxId == 0x81) ) ||
@@ -371,7 +458,7 @@ void mpxTest_vAnalyse_ID(void)
 
 	else
 	{
-		printTestResult = print_IDTest_erro;
+		printTestResult = print_IDTest_error;
 		MpxTests.testError = true;
 	}
 }
@@ -413,7 +500,7 @@ void mpxTest_vAnalyse_PP10A(void)
 			else
 			{
 				MpxTests.testError = true;
-				printTestResult = print_PortTest_erro;
+				printTestResult = print_PortTest_error;
 			}
 		}
 
@@ -424,13 +511,13 @@ void mpxTest_vAnalyse_PP10A(void)
 			if (isGiga3HighSideMosfetDrivingCurrent)
 			{
 				MpxTests.testError = true;
-				printTestResult = print_PortTest_erro;
+				printTestResult = print_PortTest_error;
 			}
 			/* GIGA3 high side mosfet is not driving current? */
 			else
 			{
 				MpxTests.testError = true;
-				printTestResult = print_PortTest_erro;
+				printTestResult = print_PortTest_error;
 			}
 		}
 	}
@@ -448,7 +535,7 @@ void mpxTest_vAnalyse_PP10A(void)
 		else
 		{
 			MpxTests.testError = true;
-			printTestResult = print_PortTest_erro;
+			printTestResult = print_PortTest_error;
 		}
 	}
 }
@@ -465,7 +552,7 @@ void mpxTest_vAnalyse_BIDI(void)
 	else
 	{
 		MpxTests.testError = true;
-		printTestResult = print_PortTest_erro;
+		printTestResult = print_PortTest_error;
 	}
 }
 
@@ -480,7 +567,7 @@ void mpxTest_vAnalyse_LODIN(void)
 		else
 		{
 			MpxTests.testError = true;
-			printTestResult = print_PortTest_erro;
+			printTestResult = print_PortTest_error;
 		}
 }
 /* ---------------------------------------------------------------------------*/
@@ -505,6 +592,23 @@ void print_WaitMessage(void)
 		printTestMessage(TestMessages.lines[0], message, 3);
 		sniprintf(TestMessages.lines[1], LINE_SIZE, "                ");
 	}
+}
+
+void print_CANTest_error(void)
+{
+	snprintf(TestMessages.lines[0],LINE_SIZE,"  Erro de CAN!  ");
+	snprintf(TestMessages.lines[1],LINE_SIZE,"DESLIGUE O MPX!!");
+}
+
+void print_SwitchedPortTest_error(void)
+{
+	if ( (MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L) )
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro: Canal %s  ", CN2[MpxTests.currentTest - TEST_P0_L]);
+	else if ( (MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P27) )
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro: Canal %s  ", CN2[MpxTests.currentTest - TEST_P0_H]);
+
+	sprintf(message,"e %s trocados", CN2[MpxTests.switchPort]);
+	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_AutoTest_OK(void)
@@ -533,7 +637,7 @@ void print_IDTest_OK(void)
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
-void print_IDTest_erro(void)
+void print_IDTest_error(void)
 {
 	char ID;
 
@@ -558,10 +662,11 @@ void print_PortTest_OK(void)
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
-void print_PortTest_erro(void)
+void print_PortTest_error(void)
 {
 	snprintf(TestMessages.lines[0],LINE_SIZE,"   Erro CN%s  ", CN[MpxTests.currentTest - TEST_P0_L]);
-	snprintf(TestMessages.lines[1],LINE_SIZE,"    E agora?    ");
+	sprintf(message, "Pressione Enter", 1);
+	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void printTestMessage(char *line, char *sentence, uint8_t dots)
@@ -579,7 +684,7 @@ void printTestMessage(char *line, char *sentence, uint8_t dots)
 		if ((sysTickTimer%4000)>2999)
 			finalpoint[2]='.';
 
-		snprintf(line, LINE_SIZE, "%s%c%c%c", sentence, finalpoint[0], finalpoint[1], finalpoint[2]);
+		snprintf(line, LINE_SIZE, "%s%c%c%c        ", sentence, finalpoint[0], finalpoint[1], finalpoint[2]);
 	}
 
 	else if (dots == 1)
@@ -587,7 +692,7 @@ void printTestMessage(char *line, char *sentence, uint8_t dots)
 		if ((sysTickTimer%2000)>999)
 			finalpoint[0]='.';
 
-		snprintf(line, LINE_SIZE, "%s%c", sentence, finalpoint[0]);
+		snprintf(line, LINE_SIZE, "%s%c         ", sentence, finalpoint[0]);
 	}
 
 	else

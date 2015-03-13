@@ -205,7 +205,7 @@ static inline void onCAN1ReceiveInterrupt(){
 		onCAN1ReceiveInterrupt_MPX(rxMessage, msgId);
 
 
-	receivedPackets++;
+	//receivedPackets++;
 }
 
 static inline void onCAN1ReceiveInterrupt_MPX(CanRxMsg rxMessage, MsgId msgId)

@@ -743,10 +743,28 @@ void LCD_vTestMPXManual(void)
 
 void LCD_vTestMPXManualStart(void)
 {
+	int event;
+
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
 
-	mpxTest_vSetTest((sm.event - EV_LINE1) + (TEST_NOTHING + 1));
+	/* Rearrange PP10A sequence between LCD display and MPX state machine tests. */
+	if(sm.event == EV_LINE6)
+		event = 9;
+	else if (sm.event == EV_LINE7)
+		event = 6;
+	else if (sm.event == EV_LINE8)
+		event = 10;
+	else if (sm.event == EV_LINE9)
+		event = 7;
+	else if (sm.event == EV_LINE10)
+		event = 11;
+	else if (sm.event == EV_LINE11)
+		event = 8;
+	else
+		event = sm.event;
+
+	mpxTest_vSetTest((event - EV_LINE1) + (TEST_NOTHING + 1));
 
 	LCD_vSetNextEvent(EV_TEST_LOG);
 }

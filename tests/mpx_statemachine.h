@@ -9,6 +9,7 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+#define DELAY_TO_CAN_SEND_DATA 100
 #define DELAY_TO_ANALISE_SLOW_TEST 1000
 #define DELAY_TO_ANALISE_FAST_TEST 42
 /* Exported macro ------------------------------------------------------------*/
@@ -66,10 +67,12 @@ typedef enum
 typedef struct
 {
 	int16_t currentTest;
+	uint8_t switchPort;
 	uint64_t statedTestTime;
 	bool boolIsAutoTest;
 	bool boolIsLoopTest;
 	bool testError;
+	bool seriousError;
 	uint16_t numberTestDone;
 } Test;
 

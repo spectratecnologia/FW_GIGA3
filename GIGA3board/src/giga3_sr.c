@@ -93,8 +93,9 @@ uint32_t readDataFromSR(void)
 uint8_t getSRBitStatus(uint8_t bit_x)
 {
 	uint32_t maskbits = 0x1;
+	uint32_t SRdata = readDataFromSR();
 
-	if (readDataFromSR() & (maskbits << bit_x))
+	if (SRdata & (maskbits << bit_x))
 		return 1;
 	else
 		return 0;
