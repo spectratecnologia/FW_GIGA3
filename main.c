@@ -15,10 +15,16 @@ void processLCD();
 void processTurningOffMpxEmergencyMode();
 void processTest();
 
+
+
 void teste()
 {
+	int i=27;
+
 	initMPXconfig();
-	activeMPXports(35, PORT_LOW);
+
+	activeMPXports(28, PORT_LOW);
+
 }
 
 int main(void)
@@ -52,9 +58,9 @@ int main(void)
 
     	if (mpx.MpxAlreadyInit)
     	{
-    		executeEveryInterval(6, 80, &processTurningOffMpxEmergencyMode);
-    		executeEveryInterval(7, 5, &sendChangedOutputsToMPXs);
-    		//executeEveryInterval(8, 100, &teste);
+    		executeEveryInterval(5, 80, &processTurningOffMpxEmergencyMode);
+    		executeEveryInterval(6, 5, &sendChangedOutputsToMPXs);
+    		//executeEveryInterval(8, 5000, &teste);
     	}
 
 

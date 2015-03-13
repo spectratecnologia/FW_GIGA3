@@ -132,6 +132,16 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_MPX_MANUAL		,EV_LINE34	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE35	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE36	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// LODIN #1
+{ST_TEST_MPX_MANUAL   	,EV_LINE37	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL		,EV_LINE38	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL	  	,EV_LINE39	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL	  	,EV_LINE40	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// LODIN #2
+{ST_TEST_MPX_MANUAL   	,EV_LINE41	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL		,EV_LINE42	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL	  	,EV_LINE43	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL	  	,EV_LINE44	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 
 {ST_TEST_LOG_MPX		,EV_REFRESH		  	,ST_TEST_LOG_MPX   		,&LCD_vDisplayTestMessage	},
 {ST_TEST_LOG_MPX		,EV_KBD_ENTER	  	,ST_TEST_MPX   			,&LCD_vTestMPX				},
@@ -706,7 +716,9 @@ void LCD_vTestMPXManual(void)
 		,"Teste 21: CN1.9 "	,"Teste 22: CN2.2 " ,"Teste 23: CN2.4 "	,"Teste 24: CN2.6 "
 		,"Teste 25: CN2.7 "	,"Teste 26: CN2.9 " ,"Teste 27: CN3.2 "	,"Teste 28: CN3.4 "
 		,"Teste 29: CN3.6 "	,"Teste 30: CN3.7 " ,"Teste 31: CN3.9 "	,"Teste 32: CN4.2 "
-		,"Teste 33: CN4.4 "	,"Teste 34: CN4.6 " ,"Teste 35: CN4.7 "	,"Teste 36: CN4.9 "};
+		,"Teste 33: CN4.4 "	,"Teste 34: CN4.6 " ,"Teste 35: CN4.7 "	,"Teste 36: CN4.9 "
+		,"Teste 37: CN1.5 "	,"Teste 38: CN1.8 " ,"Teste 39: CN2.5 "	,"Teste 40: CN2.8 "
+		,"Teste 41: CN3.5 "	,"Teste 42: CN3.8 " ,"Teste 43: CN4.5 "	,"Teste 44: CN4.8 "};
 
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 

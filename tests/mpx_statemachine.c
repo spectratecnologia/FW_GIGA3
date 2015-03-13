@@ -16,9 +16,11 @@ void mpxTest_vFinish(void);
 void mpxTest_vExecute_ID(void);
 void mpxTest_vExecute_PP10A(void);
 void mpxTest_vExecute_BIDI(void);
+void mpxTest_vExecute_LODIN(void);
 void mpxTest_vAnalyse_ID(void);
 void mpxTest_vAnalyse_PP10A(void);
 void mpxTest_vAnalyse_BIDI(void);
+void mpxTest_vAnalyse_LODIN(void);
 
 /* Local functions declaration #3 --------------------------------------------*/
 void (*printTestResult)(void);
@@ -37,7 +39,9 @@ char CN[NUM_PORTS+4][5] = {"1.1L", "1.3L", "2.1L", "2.3L"
 						  ,"1.9",  "2.2",  "2.4",  "2.6"
 						  ,"2.7",  "2.9",  "3.2",  "3.4"
 						  ,"3.6",  "3.7",  "3.9",  "4.2"
-						  ,"4.4",  "4.6",  "4.7",  "4.9"};
+						  ,"4.4",  "4.6",  "4.7",  "4.9"
+						  ,"1.5",  "1.8",  "2.5",  "2.8"
+						  ,"3.5",  "3.8",  "4.5",  "4.8"};
 
 /* Local Variables -----------------------------------------------------------*/
 StateMachine MpxStateMachine;
@@ -225,6 +229,9 @@ void mpxTest_vExecute(void)
 	else if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P27 ))
 		mpxTest_vExecute_BIDI();
 
+	else if ((MpxTests.currentTest >= TEST_P28) && (MpxTests.currentTest <= TEST_P35 ))
+		mpxTest_vExecute_LODIN();
+
 	/* This state is only reached by automatic test when all tests is working. */
 	else if (MpxTests.currentTest == TEST_END)
 	{
@@ -278,6 +285,9 @@ void mpxTest_vAnalyse(void)
 
 	else if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P27 ))
 		mpxTest_vAnalyse_BIDI();
+
+	else if ((MpxTests.currentTest >= TEST_P28) && (MpxTests.currentTest <= TEST_P35 ))
+		mpxTest_vAnalyse_LODIN();
 
 	mpxTest_vSetNextEvent(MPX_EV_FINALIZE);
 }
@@ -340,6 +350,12 @@ void mpxTest_vExecute_BIDI(void)
 {
 	if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P27))
 		activeMPXports((MpxTests.currentTest - TEST_P0_H), PORT_HIGH);
+}
+
+void mpxTest_vExecute_LODIN(void)
+{
+	if ((MpxTests.currentTest >= TEST_P28) && (MpxTests.currentTest <= TEST_P35))
+		activeMPXports((MpxTests.currentTest - TEST_P0_H), PORT_LOW);
 }
 
 /* Analysis ------------------------------------------------------------------*/
@@ -451,6 +467,21 @@ void mpxTest_vAnalyse_BIDI(void)
 		MpxTests.testError = true;
 		printTestResult = print_PortTest_erro;
 	}
+}
+
+void mpxTest_vAnalyse_LODIN(void)
+{
+	if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x02)
+		{
+			MpxTests.testError = false;
+			printTestResult = print_PortTest_OK;
+		}
+
+		else
+		{
+			MpxTests.testError = true;
+			printTestResult = print_PortTest_erro;
+		}
 }
 /* ---------------------------------------------------------------------------*/
 /* Print LCD functions -------------------------------------------------------*/

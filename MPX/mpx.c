@@ -252,6 +252,9 @@ void turnOffMpxPorts(void)
 {
 	int i;
 
+	if(mpx.MpxAlreadyInit)
+		sendDataToSR(0x0);
+
 	/* Disable all ports that might be high or low */
 	for(i=0; i<NUM_PORTS; i++)
 		if((mpx.portOutput[i].mode == 0x01) || (mpx.portOutput[i].mode == 0x03))

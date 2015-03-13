@@ -181,8 +181,8 @@
     <File name="usb/user/usb_bsp.c" path="usb/user/usb_bsp.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_gpio.h" path="stm_lib/inc/stm32f10x_gpio.h" type="1"/>
     <File name="usb/lib/usb_dcd.h" path="usb/lib/usb_dcd.h" type="1"/>
-    <File name="rtc" path="" type="2"/>
     <File name="usb/lib/usbd_ioreq.h" path="usb/lib/usbd_ioreq.h" type="1"/>
+    <File name="rtc" path="" type="2"/>
     <File name="usb/user/usbd_conf.h" path="usb/user/usbd_conf.h" type="1"/>
     <File name="usart" path="" type="2"/>
     <File name="cmsis/core_cm3.h" path="cmsis/core_cm3.h" type="1"/>
@@ -197,11 +197,11 @@
     <File name="usb/lib/usb_core.c" path="usb/lib/usb_core.c" type="1"/>
     <File name="usb/lib/usbd_cdc_if_template.h" path="usb/lib/usbd_cdc_if_template.h" type="1"/>
     <File name="stm_lib/inc/stm32f10x_rcc.h" path="stm_lib/inc/stm32f10x_rcc.h" type="1"/>
-    <File name="usb/lib/usb_defines.h" path="usb/lib/usb_defines.h" type="1"/>
     <File name="syscalls" path="" type="2"/>
+    <File name="usb/lib/usb_defines.h" path="usb/lib/usb_defines.h" type="1"/>
     <File name="usb/lib/usbd_ioreq.c" path="usb/lib/usbd_ioreq.c" type="1"/>
-    <File name="rtc/rtc.h" path="rtc/rtc.h" type="1"/>
     <File name="usb/lib" path="" type="2"/>
+    <File name="rtc/rtc.h" path="rtc/rtc.h" type="1"/>
     <File name="semihosting/semihosting.h" path="semihosting/semihosting.h" type="1"/>
     <File name="stm_lib/inc" path="" type="2"/>
     <File name="stm_lib/src/stm32f10x_can.c" path="stm_lib/src/stm32f10x_can.c" type="1"/>
