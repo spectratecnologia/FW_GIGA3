@@ -331,7 +331,7 @@ StEvents LCD_vGetNextEvent(void){
 			else
 				LCD_vJumpToState(TestMessages.lastLCDState);
 
-			mpxTest_vResetTests();
+			mpxTest_vFinishTest();
 		}
 
 	}
@@ -658,7 +658,6 @@ void LCD_vTestMPX(void)
 	LCD_printLine(0,lines[0]);
 	LCD_printLine(1,lines[lcd.sbLine]);
 
-	test_vJumpToState(ST_TEST_MPX);
 	LCD_vSetNextEvent(EV_REFRESH);
 }
 

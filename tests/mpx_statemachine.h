@@ -23,7 +23,8 @@ typedef enum {
 	MPX_ST_PRINT_WAIT,
 	MPX_ST_ANALYSE,
 	MPX_ST_FINALIZE,
-	MPX_ST_PRINT
+	MPX_ST_PRINT,
+	MPX_ST_FINISH
 
 } TestStStates;
 
@@ -37,7 +38,8 @@ typedef enum
 	MPX_EV_WAIT,
 	MPX_EV_ANALYSE,
 	MPX_EV_FINALIZE,
-	MPX_EV_PRINT
+	MPX_EV_PRINT,
+	MPX_EV_FINISH
 
 } TestStEvents;
 
@@ -49,8 +51,8 @@ typedef enum
 	TEST_ID1, TEST_ID2,  TEST_ID4,  TEST_ID0,
 	TEST_P0_L,  TEST_P1_L, TEST_P2_L, TEST_P3_L,
 	TEST_P0_H,  TEST_P1_H, TEST_P2_H, TEST_P3_H,
-	TEST_P4,    TEST_P5,   TEST_P6,   TEST_P7,
 	TEST_END,
+	TEST_P4,    TEST_P5,   TEST_P6,   TEST_P7,
 	TEST_P8,    TEST_P9,   TEST_P10,  TEST_P11,
 	TEST_P12,   TEST_P13,  TEST_P14,  TEST_P15,
 	TEST_P16,   TEST_P17,  TEST_P18,  TEST_P19,
@@ -75,9 +77,9 @@ typedef struct
 /* Exported declared types -------------------------------------------------- */
 
 /* Exported functions ------------------------------------------------------- */
-void mpxTest_vMpxStateMachineInit(void);
+void mpxTest_vStateMachineLoop(void);
 void mpxTest_vStateMachineInit(void);
 void mpxTest_vSetTest(TestList);
-void mpxTest_vResetTests(void);
+void mpxTest_vFinishTest(void);
 
 #endif /* __SMTEST_H */

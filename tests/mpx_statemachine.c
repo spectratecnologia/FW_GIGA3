@@ -3,12 +3,14 @@
 
 /* Local functions declaration #1 --------------------------------------------*/
 void mpxTest_vUpdateTests(void);
+void mpxTest_vResetTests(void);
 void mpxTest_vIdle(void);
 void mpxTest_vExecute(void);
 void mpxTest_vWait(void);
 void mpxTest_vAnalyse(void);
 void mpxTest_vFinalize(void);
 void mpxTest_vPrint(void);
+void mpxTest_vFinish(void);
 
 /* Local functions declaration #2 --------------------------------------------*/
 void mpxTest_vExecute_ID(void);
@@ -43,27 +45,37 @@ const Transition MpxSMTrans[] =  		//TABELA DE ESTADOS
 /*Current state		Event				Next state			callback */
 {MPX_ST_IDLE		,MPX_EV_REFRESH   	,MPX_ST_IDLE       	,&mpxTest_vIdle		},
 {MPX_ST_IDLE		,MPX_EV_EXECUTE    	,MPX_ST_EXECUTE    	,&mpxTest_vExecute	},
+{MPX_ST_IDLE		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_EXECUTE		,MPX_EV_REFRESH   	,MPX_ST_EXECUTE    	,&mpxTest_vExecute	},
 {MPX_ST_EXECUTE		,MPX_EV_PRINT    	,MPX_ST_PRINT    	,&mpxTest_vPrint 	},
 {MPX_ST_EXECUTE		,MPX_EV_WAIT    	,MPX_ST_WAIT       	,&mpxTest_vWait 	},
+{MPX_ST_EXECUTE		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_WAIT		,MPX_EV_REFRESH   	,MPX_ST_WAIT       	,&mpxTest_vWait		},
 {MPX_ST_WAIT		,MPX_EV_PRINT	 	,MPX_ST_PRINT_WAIT  ,&mpxTest_vPrint	},
 {MPX_ST_WAIT		,MPX_EV_ANALYSE    	,MPX_ST_ANALYSE    	,&mpxTest_vAnalyse 	},
+{MPX_ST_WAIT		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_ANALYSE		,MPX_EV_REFRESH   	,MPX_ST_ANALYSE    	,&mpxTest_vAnalyse	},
 {MPX_ST_ANALYSE		,MPX_EV_FINALIZE   	,MPX_ST_FINALIZE   	,&mpxTest_vFinalize	},
+{MPX_ST_ANALYSE		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_FINALIZE	,MPX_EV_REFRESH   	,MPX_ST_FINALIZE   	,&mpxTest_vFinalize	},
 {MPX_ST_FINALIZE	,MPX_EV_IDLE    	,MPX_ST_IDLE    	,&mpxTest_vIdle 	},
 {MPX_ST_FINALIZE	,MPX_EV_PRINT    	,MPX_ST_PRINT    	,&mpxTest_vPrint 	},
+{MPX_ST_FINALIZE	,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_PRINT_WAIT	,MPX_EV_REFRESH   	,MPX_ST_PRINT_WAIT 	,&mpxTest_vPrint    },
 {MPX_ST_PRINT_WAIT	,MPX_EV_WAIT	   	,MPX_ST_WAIT     	,&mpxTest_vWait 	},
+{MPX_ST_PRINT_WAIT	,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_PRINT		,MPX_EV_REFRESH   	,MPX_ST_PRINT      	,&mpxTest_vPrint	},
-{MPX_ST_PRINT		,MPX_EV_IDLE	   	,MPX_ST_IDLE      	,&mpxTest_vIdle		}
+{MPX_ST_PRINT		,MPX_EV_IDLE	   	,MPX_ST_IDLE      	,&mpxTest_vIdle		},
+{MPX_ST_PRINT		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
+
+{MPX_ST_FINISH		,MPX_EV_REFRESH   	,MPX_ST_FINISH     	,&mpxTest_vFinish	},
+{MPX_ST_FINISH		,MPX_EV_IDLE 	  	,MPX_ST_IDLE     	,&mpxTest_vIdle		},
 };
 
 #define TRANS_COUNT (sizeof(MpxSMTrans)/sizeof(*MpxSMTrans))
@@ -106,12 +118,7 @@ void mpxTest_vStateMachineInit(void)
 	MpxStateMachine.transCount = TRANS_COUNT;
 	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 
-	/* Reset current test */
-	MpxTests.currentTest = TEST_NOTHING;
-	MpxTests.boolIsAutoTest = false;
-	MpxTests.boolIsLoopTest = false;
-	MpxTests.testError = false;
-	MpxTests.numberTestDone = 0;
+	mpxTest_vResetTests();
 }
 
 void mpxTest_vSetNextEvent(TestStEvents event)
@@ -124,13 +131,24 @@ void mpxTest_vSetTest(TestList test)
 	MpxTests.currentTest = test;
 }
 
+void mpxTest_vFinishTest()
+{
+	mpxTest_vSetNextEvent(MPX_EV_FINISH);
+}
+
 /* ---------------------------------------------------------------------------*/
 /* State machine main functions ----------------------------------------------*/
 /* ---------------------------------------------------------------------------*/
 
 void mpxTest_vResetTests(void)
 {
-	mpxTest_vStateMachineInit();
+	/* Reset current test */
+	MpxTests.currentTest = TEST_NOTHING;
+	MpxTests.boolIsAutoTest = false;
+	MpxTests.boolIsLoopTest = false;
+	MpxTests.testError = false;
+	MpxTests.numberTestDone = 0;
+	turnOffMpxPorts();
 }
 
 void mpxTest_vUpdateTests(void)
@@ -208,7 +226,8 @@ void mpxTest_vExecute(void)
 	else if (MpxTests.currentTest == TEST_END)
 	{
 		printTestResult = print_AutoTest_OK;
-		mpxTest_vSetNextEvent(MPX_EV_PRINT);
+		if(MpxStateMachine.state != MPX_EV_FINISH)
+			mpxTest_vSetNextEvent(MPX_EV_PRINT);
 	}
 }
 
@@ -274,7 +293,6 @@ void mpxTest_vFinalize(void)
 /* Print ---------------------------------------------------------------------*/
 void mpxTest_vPrint(void)
 {
-	StStates test = test_vGetState();
 	char message[LINE_SIZE];
 
 	if(printTestResult)
@@ -284,6 +302,13 @@ void mpxTest_vPrint(void)
 
 	if (MpxStateMachine.state == MPX_ST_PRINT_WAIT)
 		mpxTest_vSetNextEvent(MPX_EV_WAIT);
+}
+
+void mpxTest_vFinish(void)
+{
+	mpxTest_vResetTests();
+
+	mpxTest_vSetNextEvent(MPX_EV_IDLE);
 }
 
 /* ---------------------------------------------------------------------------*/
