@@ -30,9 +30,9 @@ void print_IDTest_erro(void);
 void print_PortTest_OK(void);
 void print_PortTest_erro(void);
 
-char CN[NUM_PORTS+4][4] = {"1.1", "1.3", "2.1", "2.3"
-						  ,"1.1", "1.3", "2.1", "2.3"
-						  ,"3.1", "3.3", "4.1", "4.3"};
+char CN[NUM_PORTS+4][5] = {"1.1L", "1.3L", "2.1L", "2.3L"
+						  ,"1.1H", "1.3H", "2.1H", "2.3H"
+						  ,"3.1",  "3.3",  "4.1",  "4.3"};
 
 /* Local Variables -----------------------------------------------------------*/
 StateMachine MpxStateMachine;
@@ -195,8 +195,6 @@ void mpxTest_vIdle(void)
 {
 	/* Update MpxTests.currentTest */
 	mpxTest_vUpdateTests();
-
-	sendCanPacket(CAN1, 0x0, MpxTests.currentTest, MpxTests.boolIsLoopTest, MpxTests.boolIsAutoTest, 0, 0);
 
 	if ((MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_END))
 		mpxTest_vSetNextEvent(MPX_EV_EXECUTE);

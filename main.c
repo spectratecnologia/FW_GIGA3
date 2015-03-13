@@ -28,19 +28,6 @@ void teste()
 	//i=TST_MPX_TEST_P0_L;
 
 	data3[7]=(uint8_t)(readDataFromSR()>>0);
-	data3[6]=(uint8_t)(readDataFromSR()>>8);
-	data3[5]=(uint8_t)(readDataFromSR()>>16);
-	data3[4]=(uint8_t)(readDataFromSR()>>24);
-
-	for (i=ST_TEST_MPX_P0_L; i<=ST_TEST_MPX_P3_L; i++)
-	{
-		if (getSRBitStatus(ST_TEST_MPX_P0_L+27-i))
-			sendCanPacket(CAN1, 0x00, i, 0xFF,0xFF, &data, 8);
-		else
-			sendCanPacket(CAN1, 0x00, i, 0xFF,0xFF, &data2, 8);
-	}
-
-	sendCanPacket(CAN1, 0x00, 0xAA, 0xFF,0xFF, &data3, 8);
 }
 
 int main(void)
