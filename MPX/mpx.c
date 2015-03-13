@@ -11,6 +11,7 @@ void initPP10Apins();
 inline void activePP10Aports(uint8_t, FunctionalState_MPXports);
 inline void activePP10AportX(uint8_t, uint8_t, uint8_t, FunctionalState_MPXports);
 inline void activeBIDIports(uint8_t, FunctionalState_MPXports);
+inline void activeLODINports(uint8_t, FunctionalState_MPXports);
 
 /* Functions -----------------------------------------------------------------*/
 
@@ -94,8 +95,10 @@ void activeMPXports(uint8_t portx, FunctionalState_MPXports state)
 {
 	if ((portx >= 0) && (portx < 4))
 		activePP10Aports(portx, state);
-	else
+	else if ((portx >= 4) && (portx <= 27))
 		activeBIDIports(portx, state);
+	else if ((portx >= 28) && (portx <= 35))
+		activeLODINports(portx, state);
 }
 
 /* Active push pull 10A ports ------------------------------------------------*/
@@ -171,6 +174,26 @@ inline void activeBIDIports(uint8_t portx, FunctionalState_MPXports state)
     	sendDataToSR(position);
     	memcpy(&mpx.portOutput[portx], highMPXdeviceport, 8);
     	mpx.outputChanged[portx] = true;
+    }
+
+    else
+    	return;
+}
+
+/* Active LODIN ports --------------------------------------------------------*/
+inline void activeLODINports(uint8_t portx, FunctionalState_MPXports state)
+{
+	uint32_t position=0x00000001;
+
+    if (state == PORT_OFF)
+    	sendDataToSR(0x0);
+
+    else if (state == PORT_LOW)
+    {
+    	/* Return int32 position which specify data to turn on port X */
+    	position<<=8*((portx-4)/8)+(7-(portx-4)%8);
+    	/* Send int32 position to update output shift registers pins */
+    	sendDataToSR(position);
     }
 
     else

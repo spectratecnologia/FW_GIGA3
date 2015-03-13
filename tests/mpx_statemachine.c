@@ -32,7 +32,12 @@ void print_PortTest_erro(void);
 
 char CN[NUM_PORTS+4][5] = {"1.1L", "1.3L", "2.1L", "2.3L"
 						  ,"1.1H", "1.3H", "2.1H", "2.3H"
-						  ,"3.1",  "3.3",  "4.1",  "4.3"};
+						  ,"3.1",  "3.3",  "4.1",  "4.3"
+						  ,"1.2",  "1.4",  "1.6",  "1.7"
+						  ,"1.9",  "2.2",  "2.4",  "2.6"
+						  ,"2.7",  "2.9",  "3.2",  "3.4"
+						  ,"3.6",  "3.7",  "3.9",  "4.2"
+						  ,"4.4",  "4.6",  "4.7",  "4.9"};
 
 /* Local Variables -----------------------------------------------------------*/
 StateMachine MpxStateMachine;
@@ -196,7 +201,7 @@ void mpxTest_vIdle(void)
 	/* Update MpxTests.currentTest */
 	mpxTest_vUpdateTests();
 
-	if ((MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_END))
+	if ((MpxTests.currentTest > TEST_NOTHING) && (MpxTests.currentTest <= TEST_END))
 		mpxTest_vSetNextEvent(MPX_EV_EXECUTE);
 
 	else
@@ -217,7 +222,7 @@ void mpxTest_vExecute(void)
 	else if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_H ))
 		mpxTest_vExecute_PP10A();
 
-	else if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P7 ))
+	else if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P27 ))
 		mpxTest_vExecute_BIDI();
 
 	/* This state is only reached by automatic test when all tests is working. */
@@ -271,7 +276,7 @@ void mpxTest_vAnalyse(void)
 	else if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_H ))
 		mpxTest_vAnalyse_PP10A();
 
-	else if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P7 ))
+	else if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P27 ))
 		mpxTest_vAnalyse_BIDI();
 
 	mpxTest_vSetNextEvent(MPX_EV_FINALIZE);
@@ -316,7 +321,7 @@ void mpxTest_vFinish(void)
 /* Execute -------------------------------------------------------------------*/
 void mpxTest_vExecute_ID(void)
 {
-	if (MpxTests.currentTest == TEST_ID1)
+	if (MpxTests.currentTest == TEST_NOTHING + 1)
 		MpxTests.numberTestDone++;
 
 	setMPXIDports(ID1 + (MpxTests.currentTest-TEST_ID1) );
@@ -333,7 +338,7 @@ void mpxTest_vExecute_PP10A(void)
 
 void mpxTest_vExecute_BIDI(void)
 {
-	if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P7))
+	if ((MpxTests.currentTest >= TEST_P4) && (MpxTests.currentTest <= TEST_P27))
 		activeMPXports((MpxTests.currentTest - TEST_P0_H), PORT_HIGH);
 }
 
@@ -524,9 +529,8 @@ void print_PortTest_OK(void)
 
 void print_PortTest_erro(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"  Erro CN%s E  ", CN[MpxTests.currentTest - TEST_P0_L]);
-	sprintf(message, "agora? Continue", 1);
-	printTestMessage(TestMessages.lines[1], message, 1);
+	snprintf(TestMessages.lines[0],LINE_SIZE,"   Erro CN%s  ", CN[MpxTests.currentTest - TEST_P0_L]);
+	snprintf(TestMessages.lines[1],LINE_SIZE,"    E agora?    ");
 }
 
 void printTestMessage(char *line, char *sentence, uint8_t dots)

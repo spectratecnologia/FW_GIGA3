@@ -167,7 +167,6 @@
     <File name="multitask/multitask.h" path="multitask/multitask.h" type="1"/>
     <File name="usb" path="" type="2"/>
     <File name="usb/lib/usbd_core.h" path="usb/lib/usbd_core.h" type="1"/>
-    <File name="tests/tests_statemachine.h" path="tests/tests_statemachine.h" type="1"/>
     <File name="virtual_keyboard/virtual_keyboard.h" path="virtual_keyboard/virtual_keyboard.h" type="1"/>
     <File name="ios/ios.c" path="ios/ios.c" type="1"/>
     <File name="LCD/lcd_screen.h" path="LCD/lcd_screen.h" type="1"/>
@@ -203,7 +202,6 @@
     <File name="usb/lib/usbd_ioreq.c" path="usb/lib/usbd_ioreq.c" type="1"/>
     <File name="rtc/rtc.h" path="rtc/rtc.h" type="1"/>
     <File name="usb/lib" path="" type="2"/>
-    <File name="tests/tests_statemachine.c" path="tests/tests_statemachine.c" type="1"/>
     <File name="semihosting/semihosting.h" path="semihosting/semihosting.h" type="1"/>
     <File name="stm_lib/inc" path="" type="2"/>
     <File name="stm_lib/src/stm32f10x_can.c" path="stm_lib/src/stm32f10x_can.c" type="1"/>
