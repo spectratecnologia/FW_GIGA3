@@ -11,7 +11,7 @@
 /* Exported constants --------------------------------------------------------*/
 #define DELAY_TO_CAN_SEND_DATA 100
 #define DELAY_TO_ANALISE_SLOW_TEST 1000
-#define DELAY_TO_ANALISE_FAST_TEST 42
+#define DELAY_TO_ANALISE_FAST_TEST 60
 /* Exported macro ------------------------------------------------------------*/
 
 typedef enum {
@@ -71,6 +71,8 @@ typedef struct
 	uint64_t statedTestTime;
 	bool boolIsAutoTest;
 	bool boolIsLoopTest;
+	bool testFinished;
+	bool finishedTestBeep;
 	bool testError;
 	bool seriousError;
 	uint16_t numberTestDone;

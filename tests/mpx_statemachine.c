@@ -169,9 +169,12 @@ void mpxTest_vResetTests(void)
 	MpxTests.currentTest = TEST_NOTHING;
 	MpxTests.boolIsAutoTest = false;
 	MpxTests.boolIsLoopTest = false;
+	MpxTests.testFinished = false;
+	MpxTests.finishedTestBeep = false;
 	MpxTests.testError = false;
 	MpxTests.seriousError = false;
 	MpxTests.numberTestDone = 0;
+	setBeep(1,0);
 	turnOffMpxPorts();
 }
 
@@ -250,9 +253,9 @@ void mpxTest_vExecute(void)
 	/* This state is only reached by automatic test when all tests is working. */
 	else if (MpxTests.currentTest == TEST_END)
 	{
+		MpxTests.testFinished = true;
 		printTestResult = print_AutoTest_OK;
-		if(MpxStateMachine.state != MPX_EV_FINISH)
-			mpxTest_vSetNextEvent(MPX_EV_PRINT);
+		mpxTest_vSetNextEvent(MPX_EV_PRINT);
 	}
 }
 
@@ -321,22 +324,37 @@ void mpxTest_vFinalize(void)
 {
 	turnOffMpxPorts();
 
+	MpxTests.testFinished = true;
+
 	mpxTest_vSetNextEvent(MPX_EV_PRINT);
 
 	if(!MpxTests.testError && (MpxTests.boolIsAutoTest || MpxTests.boolIsLoopTest) )
+	{
 		mpxTest_vSetNextEvent(MPX_EV_IDLE);
+		MpxTests.testFinished = false;
+	}
 }
 
 /* Print ---------------------------------------------------------------------*/
 void mpxTest_vPrint(void)
 {
-	char message[LINE_SIZE];
-
-	if(printTestResult)
+	if (printTestResult)
 		printTestResult();
 
-	if(MpxTests.seriousError)
+	if (MpxTests.seriousError)
 		setBeep(1,100);
+
+	if (MpxTests.testFinished  && !MpxTests.finishedTestBeep)
+	{
+		setBeep(3, 100);
+		MpxTests.finishedTestBeep = true;
+	}
+
+	if (MpxTests.boolIsLoopTest  && !MpxTests.finishedTestBeep)
+	{
+		setBeep(1, 250);
+		MpxTests.finishedTestBeep = true;
+	}
 
 	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 
@@ -359,8 +377,13 @@ void mpxTest_vFinish(void)
 /* Execute -------------------------------------------------------------------*/
 void mpxTest_vExecute_ID(void)
 {
-	if (MpxTests.currentTest == TEST_ID0)
+	if (MpxTests.currentTest == TEST_ID1)
+	{
+		/* Everytime that TESD_ID1 (this is the first test) is reached, loop test
+		   to show counting and a set a beep. */
 		MpxTests.numberTestDone++;
+		MpxTests.finishedTestBeep = false;
+	}
 
 	setMPXIDports(ID1 + (MpxTests.currentTest-TEST_ID1) );
 }
@@ -403,18 +426,34 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 	int i;
 	uint8_t status;
 
+	/* Verify if some port is switched with LODIN ports. */
+	if ((MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P35))
+		for (i=28; i<36; i++)
+		{
+			if (i == (MpxTests.currentTest - TEST_P0_H))
+				continue;
+
+			if (mpx.portInput[i] == 0x02)
+			{
+				MpxTests.switchPort = i;
+				MpxTests.testError = true;
+				printTestResult = print_SwitchedPortTest_error;
+				return;
+			}
+		}
+
 	if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L))
 		for (i=0; i<28; i++)
 		{
 			if (i == (MpxTests.currentTest - TEST_P0_L))
 				continue;
 
-			if (mpx.portInput[i] & 0x01)
+			if (mpx.portInput[i] == 0x01)
 			{
 				MpxTests.switchPort = i;
 				MpxTests.testError = true;
 				printTestResult = print_SwitchedPortTest_error;
-				break;
+				return;
 			}
 		}
 
@@ -429,21 +468,9 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 				MpxTests.switchPort = i;
 				MpxTests.testError = true;
 				printTestResult = print_SwitchedPortTest_error;
-				break;
+				return;
 			}
 		}
-			//data = readDataFromSR();
-			//delayMsUsingSysTick(100);
-			//status = getPortStatus(0);
-			//sendCanPacket(CAN1, 0x00, 0x00, 0x00, status, 0, 0);
-			//if (status)
-			//{
-				//MpxTests.switchPort = i;
-				//MpxTests.testError = true;
-				//printTestResult = print_SwitchedPortTest_error;
-				//break;
-			//}
-		//}
 }
 
 void mpxTest_vAnalyse_ID(void)
@@ -588,9 +615,10 @@ void print_WaitMessage(void)
 
 	else
 	{
-		sprintf(message, "Aguarde");
-		printTestMessage(TestMessages.lines[0], message, 3);
-		sniprintf(TestMessages.lines[1], LINE_SIZE, "                ");
+		snprintf(TestMessages.lines[0], LINE_SIZE, "    Aguarde!    ");
+		sprintf(message, "Fazendo Testes");
+		sprintf(message, "  Executando");
+		printTestMessage(TestMessages.lines[1], message, 3);
 	}
 }
 
@@ -604,7 +632,7 @@ void print_SwitchedPortTest_error(void)
 {
 	if ( (MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L) )
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro: Canal %s  ", CN2[MpxTests.currentTest - TEST_P0_L]);
-	else if ( (MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P27) )
+	else if ( (MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P35) )
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro: Canal %s  ", CN2[MpxTests.currentTest - TEST_P0_H]);
 
 	sprintf(message,"e %s trocados", CN2[MpxTests.switchPort]);

@@ -61,6 +61,7 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_MAIN				,EV_LINE3		  	,ST_TEST_PTC24			,&LCD_vTestPTC24    		},
 {ST_MAIN				,EV_LINE4		  	,ST_TEST_PTC16			,&LCD_vTestPTC16    		},
 {ST_MAIN				,EV_KBD_CANCEL    	,ST_MAIN           		,&LCD_vMainScreen			},
+{ST_MAIN				,EV_ANY		       	,ST_MAIN           		,&LCD_vMainScreen			},
 
 {ST_ADJUST_TIME			,EV_REFRESH         ,ST_ADJUST_TIME	 	  	,&LCD_vAdjustTime			},
 {ST_ADJUST_TIME			,EV_PREVIOUS_FIELD  ,ST_ADJUST_TIME    		,&LCD_vAdjustTime			},
@@ -74,19 +75,27 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_MPX 		  	,EV_LINE2		  	,ST_TEST_MPX_LOOP    	,&LCD_vTestMPXLoop			},
 {ST_TEST_MPX 		  	,EV_LINE3		  	,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManual		},
 {ST_TEST_MPX 		  	,EV_KBD_CANCEL		,ST_MAIN    	   		,&LCD_vMainScreen	      	},
+{ST_TEST_MPX 		  	,EV_ANY				,ST_TEST_MPX          	,&LCD_vTestMPX				},
 
 {ST_TEST_MPX_AUTO 	  	,EV_REFRESH			,ST_TEST_MPX_AUTO      	,&LCD_vTestMPXAuto			},
 {ST_TEST_MPX_AUTO	  	,EV_KBD_ENTER		,ST_TEST_MPX_AUTO		,&LCD_vTestMPXAutoStart	    },
 {ST_TEST_MPX_AUTO		,EV_TEST_LOG		,ST_TEST_LOG_MPX		,&LCD_vDisplayTestMessage	},
 {ST_TEST_MPX_AUTO	 	,EV_KBD_CANCEL		,ST_TEST_MPX  	     	,&LCD_vTestMPX				},
+{ST_TEST_MPX_AUTO 	  	,EV_ANY				,ST_TEST_MPX_AUTO      	,&LCD_vTestMPXAuto			},
 
 {ST_TEST_MPX_LOOP 	  	,EV_REFRESH			,ST_TEST_MPX_LOOP      	,&LCD_vTestMPXLoop			},
 {ST_TEST_MPX_LOOP	  	,EV_KBD_ENTER		,ST_TEST_MPX_LOOP		,&LCD_vTestMPXLoopStart	    },
 {ST_TEST_MPX_LOOP	 	,EV_TEST_LOG		,ST_TEST_LOG_MPX		,&LCD_vDisplayTestMessage	},
 {ST_TEST_MPX_LOOP 		,EV_KBD_CANCEL		,ST_TEST_MPX  	     	,&LCD_vTestMPX				},
+{ST_TEST_MPX_LOOP 	  	,EV_ANY				,ST_TEST_MPX_LOOP      	,&LCD_vTestMPXLoop			},
+
+{ST_TEST_LOG_MPX		,EV_REFRESH		  	,ST_TEST_LOG_MPX   		,&LCD_vDisplayTestMessage	},
+{ST_TEST_LOG_MPX		,EV_KBD_ENTER	  	,ST_TEST_MPX   			,&LCD_vTestMPX				},
+{ST_TEST_LOG_MPX		,EV_KBD_CANCEL	  	,ST_TEST_MPX   			,&LCD_vTestMPX				},
+{ST_TEST_LOG_MPX		,EV_ANY			  	,ST_TEST_LOG_MPX   		,&LCD_vDisplayTestMessage	},
 
 {ST_TEST_MPX_MANUAL	  	,EV_REFRESH	  		,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManual		},
-{ST_TEST_MPX_MANUAL	  	,EV_TEST_LOG	  	,ST_TEST_LOG_MPX		,&LCD_vDisplayTestMessage	},
+{ST_TEST_MPX_MANUAL	  	,EV_TEST_LOG	  	,ST_TEST_LOG_MPX_M		,&LCD_vDisplayTestMessage	},
 {ST_TEST_MPX_MANUAL	  	,EV_KBD_CANCEL		,ST_TEST_MPX  	     	,&LCD_vTestMPX				},
 // ID tests
 {ST_TEST_MPX_MANUAL	  	,EV_LINE1		  	,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManualStart	},
@@ -142,9 +151,13 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_MPX_MANUAL		,EV_LINE42	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE43	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE44	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// Ev. ANY
+{ST_TEST_MPX_MANUAL	  	,EV_ANY		  		,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManual		},
 
-{ST_TEST_LOG_MPX		,EV_REFRESH		  	,ST_TEST_LOG_MPX   		,&LCD_vDisplayTestMessage	},
-{ST_TEST_LOG_MPX		,EV_KBD_ENTER	  	,ST_TEST_MPX   			,&LCD_vTestMPX				},
+{ST_TEST_LOG_MPX_M		,EV_REFRESH		  	,ST_TEST_LOG_MPX_M 		,&LCD_vDisplayTestMessage	},
+{ST_TEST_LOG_MPX_M		,EV_KBD_ENTER	  	,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManual		},
+{ST_TEST_LOG_MPX_M		,EV_KBD_CANCEL	  	,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManual		},
+{ST_TEST_LOG_MPX_M		,EV_ANY			  	,ST_TEST_LOG_MPX_M 		,&LCD_vDisplayTestMessage	},
 
 {ST_TEST_PTC24 			,EV_REFRESH		  	,ST_TEST_PTC24          ,&LCD_vTestPTC24			},
 {ST_TEST_PTC24 			,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen			},
@@ -240,9 +253,7 @@ StEvents LCD_vGetNextEvent(void){
 		LCD_vSetNextEvent(EV_KBD_CANCEL);
 
 		if(sm.state == ST_ADJUST_TIME)
-		{
 			LCD_vSetNextEvent(EV_PREVIOUS_FIELD);
-		}
 	}
 
 	else if(getVirtualKeyState(KEY_DOWN)){
@@ -307,7 +318,7 @@ StEvents LCD_vGetNextEvent(void){
 		else if (sm.state == ST_TEST_MPX_MANUAL)
 			LCD_vSetNextEvent(lcd.sbLine);
 
-		else if (sm.state == ST_TEST_LOG_MPX)
+		else if ((sm.state == ST_TEST_LOG_MPX) || (sm.state == ST_TEST_LOG_MPX_M))
 		{
 			LCD_vSetNextEvent(EV_KBD_ENTER);
 			mpxTest_vFinishTest();
@@ -748,7 +759,7 @@ void LCD_vTestMPXManualStart(void)
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
 
-	/* Rearrange PP10A sequence between LCD display and MPX state machine tests. */
+	/* Rearrange test sequence between LCD display and MPX state machine tests. */
 	if(sm.event == EV_LINE6)
 		event = 9;
 	else if (sm.event == EV_LINE7)
