@@ -87,8 +87,8 @@
     <Component id="498" name="CMSIS Boot" path="" type="2"/>
   </Components>
   <Files>
-    <File name="beep/beep.h" path="beep/beep.h" type="1"/>
     <File name="GIGA3board" path="" type="2"/>
+    <File name="beep/beep.h" path="beep/beep.h" type="1"/>
     <File name="stm_lib/inc/stm32f10x_can.h" path="stm_lib/inc/stm32f10x_can.h" type="1"/>
     <File name="GIGA3board/src/giga3_sr.c" path="GIGA3board/src/giga3_sr.c" type="1"/>
     <File name="cmsis_boot/startup/startup_stm32f10x_cl.c" path="cmsis_boot/startup/startup_stm32f10x_cl.c" type="1"/>
@@ -103,8 +103,8 @@
     <File name="usb/lib/usbd_cdc_if_template.c" path="usb/lib/usbd_cdc_if_template.c" type="1"/>
     <File name="syscalls/syscalls.c" path="syscalls/syscalls.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_spi.h" path="stm_lib/inc/stm32f10x_spi.h" type="1"/>
-    <File name="stm_lib/src/stm32f10x_adc.c" path="stm_lib/src/stm32f10x_adc.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_dma.h" path="stm_lib/inc/stm32f10x_dma.h" type="1"/>
+    <File name="stm_lib/src/stm32f10x_adc.c" path="stm_lib/src/stm32f10x_adc.c" type="1"/>
     <File name="beep/beep.c" path="beep/beep.c" type="1"/>
     <File name="user_tactkeys" path="" type="2"/>
     <File name="can/can.h" path="can/can.h" type="1"/>
@@ -114,8 +114,8 @@
     <File name="stm_lib/inc/stm32f10x_usart.h" path="stm_lib/inc/stm32f10x_usart.h" type="1"/>
     <File name="MPX/mpx.c" path="MPX/mpx.c" type="1"/>
     <File name="cmsis_boot/system_stm32f10x.c" path="cmsis_boot/system_stm32f10x.c" type="1"/>
-    <File name="stm_lib/inc/misc.h" path="stm_lib/inc/misc.h" type="1"/>
     <File name="usb/lib/usbd_core.c" path="usb/lib/usbd_core.c" type="1"/>
+    <File name="stm_lib/inc/misc.h" path="stm_lib/inc/misc.h" type="1"/>
     <File name="interrupts/stm32f10x_it.c" path="interrupts/stm32f10x_it.c" type="1"/>
     <File name="ios/ios.h" path="ios/ios.h" type="1"/>
     <File name="stm_lib/src/stm32f10x_rcc.c" path="stm_lib/src/stm32f10x_rcc.c" type="1"/>

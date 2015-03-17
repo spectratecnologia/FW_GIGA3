@@ -19,7 +19,20 @@ int i=0;
 
 void teste()
 {
-	activeMPXports(29, PORT_LOW);
+	uint32_t data;
+	uint8_t data2[4];
+
+	//initShiftRegisters();
+	data=readDataFromSR();
+
+	data2[3]=(uint8_t)(data>>0);
+	data2[2]=(uint8_t)(data>>8);
+	data2[1]=(uint8_t)(data>>16);
+	data2[0]=(uint8_t)(data>>24);
+
+	activePP10Aports(0, PORT_LOW);
+
+	sendCanPacket(CAN1, 0x00, 0x00, 0x00, 0xFF, &data2, 4);
 }
 
 int main(void)
@@ -55,7 +68,7 @@ int main(void)
     	{
     		executeEveryInterval(5, 80, &processTurningOffMpxEmergencyMode);
     		executeEveryInterval(6, 5, &sendChangedOutputsToMPXs);
-    		//executeEveryInterval(8, 1000, &teste);
+    		//executeEveryInterval(8, 500, &teste);
     	}
 
 

@@ -35,6 +35,9 @@ void print_IDTest_OK(void);
 void print_IDTest_error(void);
 void print_PortTest_OK(void);
 void print_PortTest_error(void);
+void print_PortTest_PortOpenError(void);
+void print_PortTest_PortShortError(void);
+void print_PortTest_FetError(void);
 
 char CN[NUM_PORTS+4][5] = {"1.1L", "1.3L", "2.1L", "2.3L"
 						  ,"1.1H", "1.3H", "2.1H", "2.3H"
@@ -56,6 +59,15 @@ char CN2[NUM_PORTS][4] =  {"1.1",  "1.3",  "2.1",  "2.3"
 						  ,"4.4",  "4.6",  "4.7",  "4.9"
 						  ,"1.5",  "1.8",  "2.5",  "2.8"
 						  ,"3.5",  "3.8",  "4.5",  "4.8"};
+
+char FET[NUM_PORTS][2] =  {"12", "13", "14", "15"
+						  ,"0",  "1",  "2",  "3"
+						  ,"4",  "5",  "6",  "7"
+						  ,"8",  "9",  "10", "11"
+						  ,"16", "17", "19", "19"
+						  ,"20", "21", "22", "23"
+						  ,"24", "25", "26", "27"
+						  ,"28", "29", "30", "31"};
 
 /* Local Variables -----------------------------------------------------------*/
 StateMachine MpxStateMachine;
@@ -523,28 +535,22 @@ void mpxTest_vAnalyse_PP10A(void)
 				MpxTests.testError = false;
 				printTestResult = print_PortTest_OK;
 			}
-			/* GIGA3 high side mosfet is not driving current? */
-			else
-			{
-				MpxTests.testError = true;
-				printTestResult = print_PortTest_error;
-			}
 		}
 
 		/* is MPX port high? */
 		else
 		{
-			/* GIGA3 high side mosfet is driving current? */
-			if (isGiga3HighSideMosfetDrivingCurrent)
+			/* Is MPX device port high? */
+			if (mpx.portInput[MpxTests.currentTest-TEST_P0_L] && 0x01)
 			{
 				MpxTests.testError = true;
-				printTestResult = print_PortTest_error;
+				printTestResult = print_PortTest_FetError;
 			}
-			/* GIGA3 high side mosfet is not driving current? */
+			/* Is MPX device port low? */
 			else
 			{
 				MpxTests.testError = true;
-				printTestResult = print_PortTest_error;
+				printTestResult = print_PortTest_PortOpenError;
 			}
 		}
 	}
@@ -562,7 +568,17 @@ void mpxTest_vAnalyse_PP10A(void)
 		else
 		{
 			MpxTests.testError = true;
-			printTestResult = print_PortTest_error;
+			if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x0D)
+				printTestResult = print_PortTest_PortOpenError;
+
+			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x00)
+				printTestResult = print_PortTest_FetError;
+
+			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] && 0x10)
+			{
+				printTestResult = print_PortTest_PortShortError;
+				MpxTests.seriousError = true;
+			}
 		}
 	}
 }
@@ -579,7 +595,17 @@ void mpxTest_vAnalyse_BIDI(void)
 	else
 	{
 		MpxTests.testError = true;
-		printTestResult = print_PortTest_error;
+		if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x0D)
+			printTestResult = print_PortTest_PortOpenError;
+
+		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x00)
+			printTestResult = print_PortTest_FetError;
+
+		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] && 0x10)
+		{
+			printTestResult = print_PortTest_PortShortError;
+			MpxTests.seriousError = true;
+		}
 	}
 }
 
@@ -694,6 +720,27 @@ void print_PortTest_error(void)
 {
 	snprintf(TestMessages.lines[0],LINE_SIZE,"   Erro CN%s  ", CN[MpxTests.currentTest - TEST_P0_L]);
 	sprintf(message, "Pressione Enter", 1);
+	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
+void print_PortTest_PortOpenError(void)
+{
+	snprintf(TestMessages.lines[0],LINE_SIZE,"   Erro CN%s  ", CN[MpxTests.currentTest - TEST_P0_L]);
+	sprintf(message, "Canal em aberto");
+	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
+void print_PortTest_PortShortError(void)
+{
+	snprintf(TestMessages.lines[0],LINE_SIZE,"   Erro CN%s  ", CN[MpxTests.currentTest - TEST_P0_L]);
+	sprintf(message, "Canal em Curto!!!");
+	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
+void print_PortTest_FetError(void)
+{
+	snprintf(TestMessages.lines[0],LINE_SIZE,"   Erro CN%s  ", CN[MpxTests.currentTest - TEST_P0_L]);
+	sprintf(message, "Prob. FET%d", FET[MpxTests.currentTest - TEST_P0_L]);
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
