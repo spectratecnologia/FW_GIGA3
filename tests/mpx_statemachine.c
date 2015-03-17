@@ -13,11 +13,15 @@ void mpxTest_vPrint(void);
 void mpxTest_vFinish(void);
 
 /* Local functions declaration #2 --------------------------------------------*/
+void mpxTest_vExecute_Flash(void);
+void mpxTest_vExecute_IGN(void);
 void mpxTest_vExecute_ID(void);
 void mpxTest_vExecute_PP10A(void);
 void mpxTest_vExecute_BIDI(void);
 void mpxTest_vExecute_LODIN(void);
 void mpxTest_vAnalyse_CAN(void);
+void mpxTest_vAnalyse_Flash(void);
+void mpxTest_vAnalyse_IGN(void);
 void mpxTest_vAnalyse_SwitchedPort(void);
 void mpxTest_vAnalyse_ID(void);
 void mpxTest_vAnalyse_PP10A(void);
@@ -31,6 +35,8 @@ void print_WaitMessage(void);
 void print_CANTest_error(void);
 void print_SwitchedPortTest_error(void);
 void print_AutoTest_OK(void);
+void print_IgnTest_OK(void);
+void print_IgnTest_error(void);
 void print_IDTest_OK(void);
 void print_IDTest_error(void);
 void print_PortTest_OK(void);
@@ -38,6 +44,8 @@ void print_PortTest_error(void);
 void print_PortTest_PortOpenError(void);
 void print_PortTest_PortShortError(void);
 void print_PortTest_FetError(void);
+
+void print_OnGoing(void);
 
 char CN[NUM_PORTS+4][5] = {"1.1L", "1.3L", "2.1L", "2.3L"
 						  ,"1.1H", "1.3H", "2.1H", "2.3H"
@@ -93,6 +101,7 @@ const Transition MpxSMTrans[] =  		//TABELA DE ESTADOS
 {MPX_ST_WAIT		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_ANALYSE		,MPX_EV_REFRESH   	,MPX_ST_ANALYSE    	,&mpxTest_vAnalyse	},
+{MPX_ST_ANALYSE		,MPX_EV_EXECUTE   	,MPX_ST_EXECUTE    	,&mpxTest_vExecute	},
 {MPX_ST_ANALYSE		,MPX_EV_FINALIZE   	,MPX_ST_FINALIZE   	,&mpxTest_vFinalize	},
 {MPX_ST_ANALYSE		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
@@ -188,6 +197,7 @@ void mpxTest_vResetTests(void)
 	MpxTests.numberTestDone = 0;
 	setBeep(1,0);
 	turnOffMpxPorts();
+	activeMPXIgnition(PORT_LOW);
 }
 
 void mpxTest_vUpdateTests(void)
@@ -225,7 +235,15 @@ void mpxTest_vUpdateTests(void)
 
 		/* If TEST_END is reached, tests loop must be restarted. */
 		if (MpxTests.currentTest == TEST_END)
-			MpxTests.currentTest = TEST_NOTHING + 1;
+		{
+			/* Flash test is only done one time in loop mode. */
+			MpxTests.currentTest = TEST_FLASH + 1;
+			/* Everytime that TESD_END is reached, loop test show counting and
+			 * a set a beep. */
+			MpxTests.numberTestDone++;
+			MpxTests.finishedTestBeep = false;
+		}
+
 	}
 }
 
@@ -247,6 +265,13 @@ void mpxTest_vExecute(void)
 {
 	MpxTests.statedTestTime = sysTickTimer;
 	mpxTest_vSetNextEvent(MPX_EV_WAIT);
+
+	if (MpxTests.currentTest == TEST_FLASH)
+		mpxTest_vExecute_Flash();
+
+	/* Ignition test */
+	if ((MpxTests.currentTest == TEST_IGN_L) || (MpxTests.currentTest == TEST_IGN_H))
+		mpxTest_vExecute_IGN();
 
 	/* ID test */
 	if ((MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_ID0))
@@ -283,17 +308,34 @@ void mpxTest_vWait(void)
 	 * Each kind of test (manual, automatic or loop test) has a message to be shown
 	 * while the delay time is not reached.
 	 */
+
+	/* Flash tests are too slow. */
+	if ( (MpxTests.currentTest == TEST_FLASH) &&
+	   ( (sysTickTimer - MpxTests.statedTestTime) > DELAY_TO_ANALISE_FLASH_TEST) )
+	{
+		mpxTest_vSetNextEvent(MPX_EV_ANALYSE);
+	}
+
 	/* ID tests is slow, therefore it will be used a greater delay than other tests. */
-	if ( (MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_ID0) &&
+	else if ( (MpxTests.currentTest >= TEST_ID1) && (MpxTests.currentTest <= TEST_ID0) &&
 	   ( (sysTickTimer - MpxTests.statedTestTime) > DELAY_TO_ANALISE_SLOW_TEST) )
 	{
 		mpxTest_vSetNextEvent(MPX_EV_ANALYSE);
 	}
 
-	/* Other tests, that is slow, is used a less delay. */
-	else if ( (MpxTests.currentTest > TEST_ID0) && (MpxTests.currentTest <= TEST_END) &&
-			( (sysTickTimer - MpxTests.statedTestTime) > DELAY_TO_ANALISE_FAST_TEST) )
+	/* Ignition test needs two more time than fast tests. */
+	else if ( (MpxTests.currentTest == TEST_IGN_L) || (MpxTests.currentTest == TEST_IGN_H) &&
+			( (sysTickTimer - MpxTests.statedTestTime) > 5*DELAY_TO_ANALISE_FAST_TEST) )
+	{
 		mpxTest_vSetNextEvent(MPX_EV_ANALYSE);
+	}
+
+	/* Other tests (ports), that is slow, is used a less delay. */
+	else if ( (MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_END) &&
+			( (sysTickTimer - MpxTests.statedTestTime) > DELAY_TO_ANALISE_FAST_TEST) )
+	{
+		mpxTest_vSetNextEvent(MPX_EV_ANALYSE);
+	}
 
 	else
 	{
@@ -305,8 +347,16 @@ void mpxTest_vWait(void)
 /* Analysis ------------------------------------------------------------------*/
 void mpxTest_vAnalyse(void)
 {
+	mpxTest_vSetNextEvent(MPX_EV_FINALIZE);
+
 	/* CAN test */
 	mpxTest_vAnalyse_CAN();
+
+	if ((MpxTests.currentTest == TEST_FLASH) && !MpxTests.testError)
+		mpxTest_vAnalyse_Flash();
+
+	if ( (MpxTests.currentTest == TEST_IGN_L || MpxTests.currentTest == TEST_IGN_H) && !MpxTests.testError)
+		mpxTest_vAnalyse_IGN();
 
 	/* Switched ports test */
 	if (!MpxTests.testError)
@@ -327,8 +377,6 @@ void mpxTest_vAnalyse(void)
 	/* LODIN test */
 	else if ((MpxTests.currentTest >= TEST_P28) && (MpxTests.currentTest <= TEST_P35 ) && !MpxTests.testError)
 		mpxTest_vAnalyse_LODIN();
-
-	mpxTest_vSetNextEvent(MPX_EV_FINALIZE);
 }
 
 /* Finalize ------------------------------------------------------------------*/
@@ -337,6 +385,9 @@ void mpxTest_vFinalize(void)
 	turnOffMpxPorts();
 
 	MpxTests.testFinished = true;
+
+	if(MpxTests.testError)
+		MpxTests.finishedTestBeep = false;
 
 	mpxTest_vSetNextEvent(MPX_EV_PRINT);
 
@@ -358,7 +409,12 @@ void mpxTest_vPrint(void)
 
 	if (MpxTests.testFinished  && !MpxTests.finishedTestBeep)
 	{
-		setBeep(3, 100);
+		if (MpxTests.testError)
+			setBeep(1, 2000);
+
+		else
+			setBeep(3, 100);
+
 		MpxTests.finishedTestBeep = true;
 	}
 
@@ -387,16 +443,21 @@ void mpxTest_vFinish(void)
 /* ---------------------------------------------------------------------------*/
 
 /* Execute -------------------------------------------------------------------*/
+void mpxTest_vExecute_Flash(void)
+{
+
+}
+
+void mpxTest_vExecute_IGN(void)
+{
+	if (MpxTests.currentTest == TEST_IGN_L)
+		activeMPXIgnition(PORT_LOW);
+
+	else if (MpxTests.currentTest == TEST_IGN_H)
+		activeMPXIgnition(PORT_HIGH);
+}
 void mpxTest_vExecute_ID(void)
 {
-	if (MpxTests.currentTest == TEST_ID1)
-	{
-		/* Everytime that TESD_ID1 (this is the first test) is reached, loop test
-		   to show counting and a set a beep. */
-		MpxTests.numberTestDone++;
-		MpxTests.finishedTestBeep = false;
-	}
-
 	setMPXIDports(ID1 + (MpxTests.currentTest-TEST_ID1) );
 }
 
@@ -430,7 +491,32 @@ void mpxTest_vAnalyse_CAN(void)
 		MpxTests.seriousError = true;
 		printTestResult = print_CANTest_error;
 	}
+}
 
+void mpxTest_vAnalyse_Flash(void)
+{
+	printTestResult = print_OnGoing;
+}
+
+void mpxTest_vAnalyse_IGN(void)
+{
+	if (MpxTests.currentTest == TEST_IGN_H && (mpx.MpxFlags[0] && 0x40))
+	{
+		printTestResult = print_IgnTest_OK;
+	}
+
+	else if (MpxTests.currentTest == TEST_IGN_L && !(mpx.MpxFlags[0] && 0x40))
+	{
+		/* Both next code line is used to analyse high ignition. */
+		MpxTests.currentTest = TEST_IGN_H;
+		mpxTest_vSetNextEvent(MPX_EV_EXECUTE);
+	}
+
+	else
+	{
+		MpxTests.testError = true;
+		printTestResult = print_IgnTest_error;
+	}
 }
 
 void mpxTest_vAnalyse_SwitchedPort(void)
@@ -612,17 +698,18 @@ void mpxTest_vAnalyse_BIDI(void)
 void mpxTest_vAnalyse_LODIN(void)
 {
 	if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x02)
-		{
-			MpxTests.testError = false;
-			printTestResult = print_PortTest_OK;
-		}
+	{
+		MpxTests.testError = false;
+		printTestResult = print_PortTest_OK;
+	}
 
-		else
-		{
-			MpxTests.testError = true;
-			printTestResult = print_PortTest_error;
-		}
+	else
+	{
+		MpxTests.testError = true;
+		printTestResult = print_PortTest_error;
+	}
 }
+
 /* ---------------------------------------------------------------------------*/
 /* Print LCD functions -------------------------------------------------------*/
 /* ---------------------------------------------------------------------------*/
@@ -670,6 +757,21 @@ void print_AutoTest_OK(void)
 	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Auto: OK  ");
 	sprintf(message, "Pressione Enter");
 	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
+/* Ignition test print functions ---------------------------------------------*/
+void print_IgnTest_OK(void)
+{
+	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Ignicao:OK");
+	sprintf(message, "Pressione Enter");
+	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
+void print_IgnTest_error(void)
+{
+	snprintf(TestMessages.lines[0],LINE_SIZE," Falha Ignicao. ");
+	sprintf(message, "Problema COM7");
+	printTestMessage(TestMessages.lines[1], message, 3);
 }
 
 /* ID test print functions ---------------------------------------------------*/
@@ -741,6 +843,13 @@ void print_PortTest_FetError(void)
 {
 	snprintf(TestMessages.lines[0],LINE_SIZE,"   Erro CN%s  ", CN[MpxTests.currentTest - TEST_P0_L]);
 	sprintf(message, "Prob. FET%d", FET[MpxTests.currentTest - TEST_P0_L]);
+	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
+void print_OnGoing(void)
+{
+	snprintf(TestMessages.lines[0],LINE_SIZE," Em Construcao. ");
+	sprintf(message, "Pressione Enter", 1);
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 

@@ -7,6 +7,7 @@
 void initMPXstruct();
 void initMPXIDports();
 void initPP10Apins();
+void initMPXIgn();
 
 inline void activePP10Aports(uint8_t, FunctionalState_MPXports);
 inline void activePP10AportX(uint8_t, uint8_t, uint8_t, FunctionalState_MPXports);
@@ -23,12 +24,14 @@ inline void activeLODINports(uint8_t, FunctionalState_MPXports);
 void initMPXconfig()
 {
 	initMPXstruct();
-	/* Initializes the MPX ID pins */
+	/* Initialize the MPX ID pins */
 	initMPXIDpins();
-	/* Initializes GIGA3 shift registers */
+	/* Initialize GIGA3 shift registers */
 	initShiftRegisters();
-	/* Initializes the High and Low side Push Pull 10A transistors' pins  */
+	/* Initialize the High and Low side Push Pull 10A transistors' pins  */
 	initPP10Apins();
+	/* Initialize ignition command pin */
+	initMPXIgn();
 
 	mpx.numPorts = NUM_PORTS;
 	mpx.MpxAlreadyInit = true;
@@ -70,6 +73,23 @@ void initPP10Apins()
 	gpio_InitTypeDef.GPIO_Speed	= GPIO_Speed_50MHz;
 	GPIO_Init(CMDFHL_PORT, &gpio_InitTypeDef);
 }
+
+void initMPXIgn()
+{
+	GPIO_InitTypeDef	gpio_InitTypeDef;
+
+	/* Enable clock GPIOC's peripheric  */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE);
+
+	/* 	Initializes the High and Low side Push Pull 10A transistors' pins */
+	gpio_InitTypeDef.GPIO_Pin	= CMD_IGN1;
+	gpio_InitTypeDef.GPIO_Mode	= GPIO_Mode_Out_PP;
+	gpio_InitTypeDef.GPIO_Speed	= GPIO_Speed_50MHz;
+	GPIO_Init(CMD_IGN1_PORT, &gpio_InitTypeDef);
+
+	GPIO_ResetBits(CMD_IGN1_PORT, CMD_IGN1);
+}
+
 
 /* ---------------------------------------------------------------------------*/
 /* Functions to enable or disable pins relative to the MPX device ------------*/
@@ -224,6 +244,15 @@ uint8_t getPortStatus(uint8_t portx)
 		return 0;
 }
 
+void activeMPXIgnition(FunctionalState_MPXports state)
+{
+	if (state == PORT_HIGH)
+		GPIO_SetBits(CMD_IGN1_PORT, CMD_IGN1);
+	else if (state == PORT_LOW)
+		GPIO_ResetBits(CMD_IGN1_PORT, CMD_IGN1);
+	else
+		return;
+}
 /* ---------------------------------------------------------------------------*/
 /* Active or deactive MPX device ports ---------------------------------------*/
 /* ---------------------------------------------------------------------------*/

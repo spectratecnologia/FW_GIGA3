@@ -53,10 +53,12 @@ void LCD_vReboot();
 void LCD_vUIDScreen();
 
 /* Rearrange test sequence between LCD display and MPX state machine tests. */
-const int RearrangedTests[] = {TEST_ID1,  TEST_ID2,  TEST_ID4,  TEST_ID0,  //Line1
-							   TEST_P0_L, TEST_P0_H, TEST_P8,   TEST_P1_L, //Line5
-							   TEST_P1_H, TEST_P9,   TEST_P28,  TEST_P10,  //Line9
-							   TEST_P11,  TEST_P29,  TEST_P12,  TEST_P2_L, //Line13
+const int RearrangedTests[] = {TEST_FLASH,								   //Line1
+							   TEST_ID1,  TEST_ID2,  TEST_ID4,  TEST_ID0,  //Line2
+							   TEST_IGN_L,								   //Line6
+							   TEST_P0_L, TEST_P0_H, TEST_P8,   TEST_P1_L, //Line7
+							   TEST_P1_H, TEST_P9,   TEST_P28,  TEST_P10,  //Line11
+							   TEST_P11,  TEST_P29,  TEST_P12,  TEST_P2_L, //Line15
 							   TEST_P2_H, TEST_P13,  TEST_P3_L, TEST_P3_H, //...
 							   TEST_P14,  TEST_P30,	 TEST_P15,  TEST_P16,
 							   TEST_P31,  TEST_P17,  TEST_P4,   TEST_P18,
@@ -110,60 +112,64 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_MPX_MANUAL	  	,EV_REFRESH	  		,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManual		},
 {ST_TEST_MPX_MANUAL	  	,EV_TEST_LOG	  	,ST_TEST_LOG_MPX_M		,&LCD_vDisplayTestMessage	},
 {ST_TEST_MPX_MANUAL	  	,EV_KBD_CANCEL		,ST_TEST_MPX  	     	,&LCD_vTestMPX				},
-// ID tests
+// Memory tests
 {ST_TEST_MPX_MANUAL	  	,EV_LINE1		  	,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManualStart	},
+// ID tests
 {ST_TEST_MPX_MANUAL	  	,EV_LINE2		  	,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManualStart	},
-{ST_TEST_MPX_MANUAL	  	,EV_LINE3		  	,ST_TEST_MPX_MANUAL 	,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL	  	,EV_LINE3		  	,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE4		  	,ST_TEST_MPX_MANUAL 	,&LCD_vTestMPXManualStart	},
-//Push pull 10A tests
-{ST_TEST_MPX_MANUAL	  	,EV_LINE5		  	,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL	  	,EV_LINE5		  	,ST_TEST_MPX_MANUAL 	,&LCD_vTestMPXManualStart	},
+//Ignition tests
 {ST_TEST_MPX_MANUAL	  	,EV_LINE6		  	,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-{ST_TEST_MPX_MANUAL	  	,EV_LINE7		  	,ST_TEST_MPX_MANUAL 	,&LCD_vTestMPXManualStart	},
-{ST_TEST_MPX_MANUAL	  	,EV_LINE8		  	,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+//Push pull 10A tests
+{ST_TEST_MPX_MANUAL	  	,EV_LINE7		  	,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL	  	,EV_LINE8		  	,ST_TEST_MPX_MANUAL 	,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE9		  	,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-{ST_TEST_MPX_MANUAL	  	,EV_LINE10	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL	  	,EV_LINE10		  	,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE11	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL   	,EV_LINE12	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-// BIDI 10A tests
 {ST_TEST_MPX_MANUAL		,EV_LINE13	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE14	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// BIDI 10A tests
 {ST_TEST_MPX_MANUAL	  	,EV_LINE15	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE16	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-// BIDI 2A tests #1
 {ST_TEST_MPX_MANUAL   	,EV_LINE17	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL		,EV_LINE18	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// BIDI 2A tests #1
 {ST_TEST_MPX_MANUAL	  	,EV_LINE19	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE20	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-// BIDI 2A tests #2
 {ST_TEST_MPX_MANUAL   	,EV_LINE21	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL		,EV_LINE22	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// BIDI 2A tests #2
 {ST_TEST_MPX_MANUAL	  	,EV_LINE23	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE24	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-// BIDI 2A tests #3
 {ST_TEST_MPX_MANUAL   	,EV_LINE25	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL		,EV_LINE26	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// BIDI 2A tests #3
 {ST_TEST_MPX_MANUAL	  	,EV_LINE27	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE28	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-// BIDI 2A tests #4
 {ST_TEST_MPX_MANUAL   	,EV_LINE29	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL		,EV_LINE30	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// BIDI 2A tests #4
 {ST_TEST_MPX_MANUAL	  	,EV_LINE31	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE32	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-// BIDI 2A tests #5
 {ST_TEST_MPX_MANUAL   	,EV_LINE33	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL		,EV_LINE34	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// BIDI 2A tests #5
 {ST_TEST_MPX_MANUAL	  	,EV_LINE35	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE36	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-// LODIN #1
 {ST_TEST_MPX_MANUAL   	,EV_LINE37	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL		,EV_LINE38	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// LODIN #1
 {ST_TEST_MPX_MANUAL	  	,EV_LINE39	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE40	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-// LODIN #2
 {ST_TEST_MPX_MANUAL   	,EV_LINE41	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL		,EV_LINE42	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// LODIN #2
 {ST_TEST_MPX_MANUAL	  	,EV_LINE43	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE44	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL	  	,EV_LINE45	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+{ST_TEST_MPX_MANUAL	  	,EV_LINE46	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 // Ev. ANY
 {ST_TEST_MPX_MANUAL	  	,EV_ANY		  		,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManual		},
 
@@ -731,18 +737,20 @@ void LCD_vTestMPXLoopStart(void)
 /* ---------------------------------------------------------------------------*/
 void LCD_vTestMPXManual(void)
 {
-	char lines[][LINE_SIZE]={"TESTE MPX Manual"
-		,"Teste 1: ID1    " ,"Teste 2: ID2    "	,"Teste 3: ID4    "	,"Teste 4: ID0    "
-		,"Teste 5: CN1.1L " ,"Teste 6: CN1.1H "	,"Teste 7: CN1.2  " ,"Teste 8: CN1.3L "
-		,"Teste 9: CN1.3H " ,"Teste 10: CN1.4 "	,"Teste 11: CN1.5 " ,"Teste 12: CN1.6 "
-		,"Teste 13: CN1.7 "	,"Teste 14: CN1.8 "	,"Teste 15: CN1.9 " ,"Teste 16: CN2.1L"
-		,"Teste 17: CN2.1H"	,"Teste 18: CN2.2 " ,"Teste 19: CN2.3L"	,"Teste 20: CN2.3H"
-		,"Teste 21: CN2.4 "	,"Teste 22: CN2.5 " ,"Teste 23: CN2.6 "	,"Teste 24: CN2.7 "
-		,"Teste 25: CN2.8 "	,"Teste 26: CN2.9 " ,"Teste 27: CN3.1 "	,"Teste 28: CN3.2 "
-		,"Teste 29: CN3.3 "	,"Teste 30: CN3.4 " ,"Teste 31: CN3.5 "	,"Teste 32: CN3.6 "
-		,"Teste 33: CN3.7 "	,"Teste 34: CN3.8 " ,"Teste 35: CN3.9 "	,"Teste 36: CN4.1 "
-		,"Teste 37: CN4.2 "	,"Teste 38: CN4.3 " ,"Teste 39: CN4.4 "	,"Teste 40: CN4.5 "
-		,"Teste 41: CN4.6 "	,"Teste 42: CN4.7 " ,"Teste 43: CN4.8 "	,"Teste 44: CN4.9 "};
+	char lines[][LINE_SIZE]={"    TESTE MPX   "
+		,"Teste 1: Memoria"
+		,"Teste 2: ID1    " ,"Teste 3: ID2    "	,"Teste 4: ID4    "	,"Teste 5: ID0    "
+		,"Teste 6: Ignicao"
+		,"Teste 7: CN1.1L " ,"Teste 8: CN1.1H "	,"Teste 9: CN1.2  " ,"Teste 10: CN1.3L"
+		,"Teste 11: CN1.3H" ,"Teste 12: CN1.4 "	,"Teste 13: CN1.5 " ,"Teste 14: CN1.6 "
+		,"Teste 15: CN1.7 "	,"Teste 16: CN1.8 "	,"Teste 17: CN1.9 " ,"Teste 18: CN2.1L"
+		,"Teste 19: CN2.1H"	,"Teste 20: CN2.2 " ,"Teste 21: CN2.3L"	,"Teste 22: CN2.3H"
+		,"Teste 23: CN2.4 "	,"Teste 24: CN2.5 " ,"Teste 25: CN2.6 "	,"Teste 26: CN2.7 "
+		,"Teste 27: CN2.8 "	,"Teste 28: CN2.9 " ,"Teste 29: CN3.1 "	,"Teste 30: CN3.2 "
+		,"Teste 31: CN3.3 "	,"Teste 32: CN3.4 " ,"Teste 33: CN3.5 "	,"Teste 34: CN3.6 "
+		,"Teste 35: CN3.7 "	,"Teste 36: CN3.8 " ,"Teste 37: CN3.9 "	,"Teste 38: CN4.1 "
+		,"Teste 39: CN4.2 "	,"Teste 40: CN4.3 " ,"Teste 41: CN4.4 "	,"Teste 42: CN4.5 "
+		,"Teste 43: CN4.6 "	,"Teste 44: CN4.7 " ,"Teste 45: CN4.8 "	,"Teste 46: CN4.9 "};
 
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 

@@ -247,7 +247,7 @@ static inline void onCAN1ReceiveInterrupt_MPX(CanRxMsg rxMessage, MsgId msgId)
 
 		else if (broadcastType == CAN_BROADCAST_FLAGS_MASK)
 		{
-
+			memcpy( &mpx.MpxFlags[0],rxMessage.Data,8);
 		}
 
 		else if (msgId.index == CAN_BROADCAST_MPX_INFO)

@@ -28,6 +28,9 @@ typedef enum
 typedef enum {PORT_LOW = 0, PORT_HIGH = 1, PORT_OFF = 2} FunctionalState_MPXports;
 
 /* Exported macro ------------------------------------------------------------*/
+/* Ignition Pin */
+#define CMD_IGN1 GPIO_Pin_12
+#define CMD_IGN1_PORT GPIOC
 
 /* ID ports code */
 #define CMDFLID0 GPIO_Pin_9
@@ -65,6 +68,7 @@ void initMPXconfig();
 void setMPXIDports(MPX_ID);
 void activeMPXports(uint8_t, FunctionalState_MPXports);
 uint8_t getPortStatus(uint8_t);
+void activeMPXIgnition(FunctionalState_MPXports);
 void turningOffMpxEmergencyMode();
 void turnOffMpxPorts(void);
 void sendChangedOutputsToMPXs();

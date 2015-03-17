@@ -159,7 +159,7 @@ typedef struct{
 	/* Mudar contagem de erro */
 	uint8_t lastPortInput[NUM_PORTS];
 
-	uint8_t portFlags[NUM_PORTS];
+	uint8_t MpxFlags[8];
 	/* Count MPX timeout */
 	uint64_t lastTimeSeen;
 

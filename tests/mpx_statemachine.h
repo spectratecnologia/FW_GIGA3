@@ -10,6 +10,7 @@
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 #define DELAY_TO_CAN_SEND_DATA 100
+#define DELAY_TO_ANALISE_FLASH_TEST 1000
 #define DELAY_TO_ANALISE_SLOW_TEST 1000
 #define DELAY_TO_ANALISE_FAST_TEST 60
 /* Exported macro ------------------------------------------------------------*/
@@ -49,17 +50,19 @@ typedef enum
 	TEST_AUTO,
 	TEST_LOOP,
 	TEST_NOTHING,
-	TEST_ID1, TEST_ID2,  TEST_ID4,  TEST_ID0,
-	TEST_P0_L,  TEST_P1_L, TEST_P2_L, TEST_P3_L,
-	TEST_P0_H,  TEST_P1_H, TEST_P2_H, TEST_P3_H,
-	TEST_P4,    TEST_P5,   TEST_P6,   TEST_P7,
-	TEST_P8,    TEST_P9,   TEST_P10,  TEST_P11,
-	TEST_P12,   TEST_P13,  TEST_P14,  TEST_P15,
-	TEST_P16,   TEST_P17,  TEST_P18,  TEST_P19,
-	TEST_P20,   TEST_P21,  TEST_P22,  TEST_P23,
-	TEST_P24,   TEST_P25,  TEST_P26,  TEST_P27,
-	TEST_P28,   TEST_P29,  TEST_P30,  TEST_P31,
-	TEST_P32,   TEST_P33,  TEST_P34,  TEST_P35,
+	TEST_FLASH,
+	TEST_ID1,     TEST_ID2,     TEST_ID4,     TEST_ID0,
+	TEST_IGN_L,   TEST_IGN_H,
+	TEST_P0_L,    TEST_P1_L,    TEST_P2_L, 	  TEST_P3_L,
+	TEST_P0_H,    TEST_P1_H,    TEST_P2_H,    TEST_P3_H,
+	TEST_P4,      TEST_P5,      TEST_P6,      TEST_P7,
+	TEST_P8,      TEST_P9,      TEST_P10,     TEST_P11,
+	TEST_P12,     TEST_P13,     TEST_P14,     TEST_P15,
+	TEST_P16,     TEST_P17,     TEST_P18,     TEST_P19,
+	TEST_P20,     TEST_P21,     TEST_P22,     TEST_P23,
+	TEST_P24,     TEST_P25,     TEST_P26,     TEST_P27,
+	TEST_P28,     TEST_P29,     TEST_P30,     TEST_P31,
+	TEST_P32,     TEST_P33,     TEST_P34,     TEST_P35,
 	TEST_END
 } TestList;
 
@@ -72,6 +75,7 @@ typedef struct
 	bool boolIsAutoTest;
 	bool boolIsLoopTest;
 	bool testFinished;
+	/* This boolean shows if finished test beep occurred (true) or not (false). */
 	bool finishedTestBeep;
 	bool testError;
 	bool seriousError;
