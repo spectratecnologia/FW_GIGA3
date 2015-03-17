@@ -52,6 +52,19 @@ void LCD_vManualMode();
 void LCD_vReboot();
 void LCD_vUIDScreen();
 
+/* Rearrange test sequence between LCD display and MPX state machine tests. */
+const int RearrangedTests[] = {TEST_ID1,  TEST_ID2,  TEST_ID4,  TEST_ID0,  //Line1
+							   TEST_P0_L, TEST_P0_H, TEST_P8,   TEST_P1_L, //Line5
+							   TEST_P1_H, TEST_P9,   TEST_P28,  TEST_P10,  //Line9
+							   TEST_P11,  TEST_P29,  TEST_P12,  TEST_P2_L, //Line13
+							   TEST_P2_H, TEST_P13,  TEST_P3_L, TEST_P3_H, //...
+							   TEST_P14,  TEST_P30,	 TEST_P15,  TEST_P16,
+							   TEST_P31,  TEST_P17,  TEST_P4,   TEST_P18,
+							   TEST_P5,   TEST_P19,  TEST_P32,  TEST_P20,
+							   TEST_P21,  TEST_P33,  TEST_P22,  TEST_P6,
+							   TEST_P23,  TEST_P7,   TEST_P24,  TEST_P34,
+							   TEST_P25,  TEST_P26,  TEST_P35,  TEST_P27};
+
 const Transition smTrans[] =  		//TABELA DE ESTADOS
 {
 /*Current state			Event				Next state				callback */
@@ -720,16 +733,16 @@ void LCD_vTestMPXManual(void)
 {
 	char lines[][LINE_SIZE]={"TESTE MPX Manual"
 		,"Teste 1: ID1    " ,"Teste 2: ID2    "	,"Teste 3: ID4    "	,"Teste 4: ID0    "
-		,"Teste 5: CN1.1L " ,"Teste 6: CN1.1H "	,"Teste 7: CN1.3L " ,"Teste 8: CN1.3H "
-		,"Teste 9: CN2.1L " ,"Teste 10: CN2.1H"	,"Teste 11: CN2.3L" ,"Teste 12: CN2.3H"
-		,"Teste 13: CN3.1 "	,"Teste 14: CN3.3 "	,"Teste 15: CN4.1 " ,"Teste 16: CN4.3 "
-		,"Teste 17: CN1.2 "	,"Teste 18: CN1.4 " ,"Teste 19: CN1.6 "	,"Teste 20: CN1.7 "
-		,"Teste 21: CN1.9 "	,"Teste 22: CN2.2 " ,"Teste 23: CN2.4 "	,"Teste 24: CN2.6 "
-		,"Teste 25: CN2.7 "	,"Teste 26: CN2.9 " ,"Teste 27: CN3.2 "	,"Teste 28: CN3.4 "
-		,"Teste 29: CN3.6 "	,"Teste 30: CN3.7 " ,"Teste 31: CN3.9 "	,"Teste 32: CN4.2 "
-		,"Teste 33: CN4.4 "	,"Teste 34: CN4.6 " ,"Teste 35: CN4.7 "	,"Teste 36: CN4.9 "
-		,"Teste 37: CN1.5 "	,"Teste 38: CN1.8 " ,"Teste 39: CN2.5 "	,"Teste 40: CN2.8 "
-		,"Teste 41: CN3.5 "	,"Teste 42: CN3.8 " ,"Teste 43: CN4.5 "	,"Teste 44: CN4.8 "};
+		,"Teste 5: CN1.1L " ,"Teste 6: CN1.1H "	,"Teste 7: CN1.2  " ,"Teste 8: CN1.3L "
+		,"Teste 9: CN1.3H " ,"Teste 10: CN1.4 "	,"Teste 11: CN1.5 " ,"Teste 12: CN1.6 "
+		,"Teste 13: CN1.7 "	,"Teste 14: CN1.8 "	,"Teste 15: CN1.9 " ,"Teste 16: CN2.1L"
+		,"Teste 17: CN2.1H"	,"Teste 18: CN2.2 " ,"Teste 19: CN2.3L"	,"Teste 20: CN2.3H"
+		,"Teste 21: CN2.4 "	,"Teste 22: CN2.5 " ,"Teste 23: CN2.6 "	,"Teste 24: CN2.7 "
+		,"Teste 25: CN2.8 "	,"Teste 26: CN2.9 " ,"Teste 27: CN3.1 "	,"Teste 28: CN3.2 "
+		,"Teste 29: CN3.3 "	,"Teste 30: CN3.4 " ,"Teste 31: CN3.5 "	,"Teste 32: CN3.6 "
+		,"Teste 33: CN3.7 "	,"Teste 34: CN3.8 " ,"Teste 35: CN3.9 "	,"Teste 36: CN4.1 "
+		,"Teste 37: CN4.2 "	,"Teste 38: CN4.3 " ,"Teste 39: CN4.4 "	,"Teste 40: CN4.5 "
+		,"Teste 41: CN4.6 "	,"Teste 42: CN4.7 " ,"Teste 43: CN4.8 "	,"Teste 44: CN4.9 "};
 
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
@@ -754,28 +767,10 @@ void LCD_vTestMPXManual(void)
 
 void LCD_vTestMPXManualStart(void)
 {
-	int event;
-
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
 
-	/* Rearrange test sequence between LCD display and MPX state machine tests. */
-	if(sm.event == EV_LINE6)
-		event = 9;
-	else if (sm.event == EV_LINE7)
-		event = 6;
-	else if (sm.event == EV_LINE8)
-		event = 10;
-	else if (sm.event == EV_LINE9)
-		event = 7;
-	else if (sm.event == EV_LINE10)
-		event = 11;
-	else if (sm.event == EV_LINE11)
-		event = 8;
-	else
-		event = sm.event;
-
-	mpxTest_vSetTest((event - EV_LINE1) + (TEST_NOTHING + 1));
+	mpxTest_vSetTest(RearrangedTests[sm.event - EV_LINE1]);
 
 	LCD_vSetNextEvent(EV_TEST_LOG);
 }
