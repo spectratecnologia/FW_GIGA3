@@ -1,31 +1,39 @@
 #include <stdio.h>
-
 #include "user_tactkeys.h"
-#include "ios/ios.h"
+//#include "ios/ios.h"
 #include "multitask/multitask.h"
-
 #include "virtual_keyboard/virtual_keyboard.h"
 
+void readCurrentTactsStatus(void);
+
 static KeyPress tactPressTable[TACTS_NUM_USER_KEYS] = { 0, 0, 0, 0 };
+static uint8_t tactInputStatus[4];
+uint32_t getDeadTime(uint8_t);
+bool isTactInputPressed(uint8_t);
+void initTactButtons();
 
-uint32_t getDeadTime(uint8_t key);
-
-void initKeys () {
-
-#if DEBUG != 0
-	printf("[TACTKEYS]Tactskeys Setup\n");
-#endif
-
+void initKeys ()
+{
 	/* Redundancy, this function is already invoked at initIOS(). However this redundancy prevents
 	 * IO miss configuration if initIOS is missed or in wrong order.
 	 */
 	initTactButtons();
-
 	enableTactShortDeadTime(false);
 
-#if DEBUG != 0
-	printf("[TACTKEYS]Setup complete\n");
-#endif
+}
+
+void initTactButtons()
+{
+    GPIO_InitTypeDef        gpio_InitTypeDef;
+
+    /* Enable GPIOs clock  */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+
+    /* Configure PD4 (TACTL), input with Pull-Up */
+    gpio_InitTypeDef.GPIO_Pin =  IO_TACT_UP_PIN | IO_TACT_DOWN_PIN | IO_TACT_ENTER_PIN | IO_TACT_CANCEL_PIN;
+    gpio_InitTypeDef.GPIO_Speed = GPIO_Speed_50MHz;
+    gpio_InitTypeDef.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_Init(IO_TACT_PORT, &gpio_InitTypeDef);
 }
 
 void enableTactShortDeadTime(bool state)
@@ -129,6 +137,21 @@ uint32_t getDeadTime(uint8_t key) {
 		return SHORT_DEAD_TIME;
 
 	return LONG_DEAD_TIME;
+}
+
+bool isTactInputPressed(uint8_t tactNumber)
+{
+	/* Active Low Input*/
+	return tactInputStatus[tactNumber] == 0 ? true : false;
+}
+
+void readCurrentTactsStatus ()
+{
+    uint32_t i;
+    for(i=KEY_UP; i<=KEY_CANCEL; i++) {
+         tactInputStatus[i] =  GPIO_ReadInputDataBit(IO_TACT_PORT, IO_TACT_UP_PIN << i);
+         //printf("K %d - St: %d\n", i, tactInputStatus[i]);
+     }
 }
 
 

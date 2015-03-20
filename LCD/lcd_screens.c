@@ -37,6 +37,7 @@ void LCD_vTestMPXManual();
 void LCD_vTestMPXManualStart();
 
 void LCD_vTestPTC24();
+void LCD_vTestPTC24Start(void);
 void LCD_vTestPTC16();
 
 void LCD_vDisplayTestMessage();
@@ -180,6 +181,15 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 
 {ST_TEST_PTC24 			,EV_REFRESH		  	,ST_TEST_PTC24          ,&LCD_vTestPTC24			},
 {ST_TEST_PTC24 			,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen			},
+{ST_TEST_PTC24 			,EV_KBD_ENTER	  	,ST_TEST_PTC24 			,&LCD_vTestPTC24Start		},
+{ST_TEST_PTC24 			,EV_TEST_LOG	  	,ST_TEST_LOG_PTC24 		,&LCD_vDisplayTestMessage	},
+{ST_TEST_PTC24 			,EV_ANY			  	,ST_TEST_PTC24          ,&LCD_vTestPTC24			},
+
+{ST_TEST_LOG_PTC24		,EV_REFRESH		  	,ST_TEST_LOG_PTC24      ,&LCD_vDisplayTestMessage	},
+{ST_TEST_LOG_PTC24		,EV_KBD_ENTER	  	,ST_TEST_LOG_PTC24      ,&LCD_vDisplayTestMessage	},
+{ST_TEST_LOG_PTC24		,EV_KBD_CANCEL	  	,ST_TEST_PTC24 		    ,&LCD_vTestPTC24			},
+{ST_TEST_LOG_PTC24		,EV_RETURN		  	,ST_TEST_PTC24 		    ,&LCD_vTestPTC24			},
+{ST_TEST_LOG_PTC24		,EV_ANY			  	,ST_TEST_LOG_PTC24      ,&LCD_vDisplayTestMessage	},
 
 {ST_TEST_PTC16 			,EV_REFRESH		  	,ST_TEST_PTC16          ,&LCD_vTestPTC16			},
 {ST_TEST_PTC16 			,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen			}
@@ -273,6 +283,9 @@ StEvents LCD_vGetNextEvent(void){
 
 		if(sm.state == ST_ADJUST_TIME)
 			LCD_vSetNextEvent(EV_PREVIOUS_FIELD);
+
+		else if(sm.state == ST_TEST_LOG_PTC24)
+			ptc24Test_vFinishTest();
 	}
 
 	else if(getVirtualKeyState(KEY_DOWN)){
@@ -341,6 +354,15 @@ StEvents LCD_vGetNextEvent(void){
 		{
 			LCD_vSetNextEvent(EV_KBD_ENTER);
 			mpxTest_vFinishTest();
+		}
+
+		else if (sm.state == ST_TEST_PTC24)
+			LCD_vSetNextEvent(EV_KBD_ENTER);
+
+		else if (sm.state == ST_TEST_LOG_PTC24)
+		{
+			LCD_vSetNextEvent(EV_KBD_ENTER);
+			ptc24Test_vTestOk();
 		}
 
 	}
@@ -434,6 +456,8 @@ void LCD_vMainScreen(void)
 	/* Memorize current line */
 	static uint8_t currentLine=1;
 
+	mpx.MpxAlreadyInit = false;
+	deInitPTC24config();
 	enableTactShortDeadTime(false);
 
 	if(EV_REFRESH != sm.event)
@@ -650,6 +674,7 @@ void LCD_vTestMPX(void)
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
 	initMPXconfig();
+	enableTactShortDeadTime(false);
 
 	static uint8_t currentLine=1;
 
@@ -756,6 +781,8 @@ void LCD_vTestMPXManual(void)
 
 	static uint8_t currentLine=1;
 
+	enableTactShortDeadTime(true);
+
 	if(EV_REFRESH != sm.event)
 	{
 		lcd.sbLine = currentLine;
@@ -788,10 +815,32 @@ void LCD_vTestMPXManualStart(void)
 /* ---------------------------------------------------------------------------*/
 void LCD_vTestPTC24(void)
 {
-	LCD_printLine(0,"  TESTE PTC 24  ");
-	LCD_printLine(1,"Em construcao...");
+	char lines[][LINE_SIZE]={"  TESTE PTC 24  "
+   	                        ,"                "};
+
+	char finalpoint={' '};
+
+	initPTC24config();
+
+	if ((sysTickTimer%2000)>999)
+		finalpoint='.';
+
+	snprintf(lines[1],LINE_SIZE,"Iniciar o Teste%c",finalpoint);
+
+	LCD_printLine(0, lines[0]);
+	LCD_printLine(1, lines[1]);
 
 	LCD_vSetNextEvent(EV_REFRESH);
+}
+
+void LCD_vTestPTC24Start(void)
+{
+	LCD_printLine(0, "                ");
+	LCD_printLine(1, "                ");
+
+	ptc24Test_vSetTest(PTC24_TEST_START);
+
+	LCD_vSetNextEvent(EV_TEST_LOG);
 }
 
 /* ---------------------------------------------------------------------------*/

@@ -1,7 +1,6 @@
 #include "can.h"
 #include "multitask/multitask.h"
 #include "LCD/lcd_screen.h"
-#include "ios.h"
 
 void initCAN1();
 void initCAN2();
@@ -204,6 +203,8 @@ static inline void onCAN1ReceiveInterrupt(){
 	if ((msgId.SA & 0xF0) == DEVICE_MPX_MASK)
 		onCAN1ReceiveInterrupt_MPX(rxMessage, msgId);
 
+	else if (msgId.SA == PTC24_DEVICE_ID)
+		onCAN1ReceiveInterrupt_PTC24(rxMessage, msgId);
 
 	//receivedPackets++;
 }
@@ -272,6 +273,63 @@ static inline void onCAN1ReceiveInterrupt_MPX(CanRxMsg rxMessage, MsgId msgId)
 	}
 }
 
+static inline void onCAN1ReceiveInterrupt_PTC24(CanRxMsg rxMessage, MsgId msgId)
+{
+	ptc24.lastTimeSeen = sysTickTimer;
+
+	if (msgId.command == CAN_COMMAND_BROADCAST)
+	{
+		uint8_t broadcastType = (msgId.index & 0xf0);
+
+		if (broadcastType == CAN_BROADCAST_KEY_STATE_MASK)
+		{
+			uint8_t portOffset = (msgId.index & 0x0f) * 8;
+			if ( portOffset<=(NUM_PTC_KEY-8))
+				memcpy( &ptc24.keyState[portOffset],rxMessage.Data,8);
+		}
+
+
+		else
+		{
+
+		}
+	}
+
+	else if (msgId.command == CAN_COMMAND_WRITE)
+	{
+		if (msgId.index < NUM_PORTS)
+		{
+			memcpy(&ptc24.portOutputCommand[msgId.index],rxMessage.Data,8);
+
+			ptc24.outputCommandReceived = true;
+
+			if (ptc24.portOutputCommand[0].mode         == 3   &&
+				ptc24.portOutputCommand[0].duty         == 5   &&
+				ptc24.portOutputCommand[0].fastSoftUp   == 200 &&
+				ptc24.portOutputCommand[0].fastSoftDown == 200)
+			{
+				ptc24.odoReceivedCommand = true;
+			}
+
+			else
+			{
+				ptc24.odoReceivedCommand = false;
+			}
+
+			if (ptc24.portOutputCommand[1].mode         == 3   &&
+				ptc24.portOutputCommand[1].duty         == 5   &&
+				ptc24.portOutputCommand[1].fastSoftUp   == 200 &&
+				ptc24.portOutputCommand[1].fastSoftDown == 200)
+			{
+				ptc24.tacoReceivedCommand = true;
+			}
+
+			else
+				ptc24.tacoReceivedCommand = false;
+		}
+	}
+}
+
 static inline uint16_t getMpxAnalogMemoryAddress(uint8_t mpxIndex, uint8_t analogValue)
 {
 	return MEMORY_INDEX_MPX_START + mpxIndex * NUM_ANALOG_MPX_VALUES + analogValue;
@@ -287,6 +345,8 @@ static inline void onCAN2ReceiveInterrupt() {
 	CAN_Receive(CAN2, CAN_FIFO0, &rxMessage);
 
 	msgId.extId = rxMessage.ExtId;
+
+	sendCanPacket(CAN1, 0x0, 0xFF, 0xFF, 0xFF, 0, 0);
 
 	if (msgId.command == CAN_COMMAND_BROADCAST)
 	{
@@ -362,4 +422,18 @@ void sendCanPacket(CAN_TypeDef* CANx, uint8_t command,uint8_t index, uint8_t sou
 void CAN_writePort(CAN_TypeDef* CANx, uint8_t mpxId, uint8_t port, PortParameter *portParameter)
 {
 	sendCanPacket(CANx, CAN_COMMAND_WRITE, port, MY_ID, mpxId, (uint8_t*)portParameter, 8);
+}
+
+void sendCanRTC(void)
+{
+	int i;
+	uint8_t broadcastRTC[8];
+	time_t rtc_aux;
+
+	time(&rtc_aux);
+
+	for (i=0; i<8; i++)
+		broadcastRTC[i] = i < 4 ? (uint8_t)(rtc_aux >> (8 * i))  : 0x00;
+
+	sendCanPacket(CAN1, CAN_COMMAND_BROADCAST, CAN_BROADCAST_RTC, MY_ID, BROADCAST_DEST_ADDR, broadcastRTC, 8);
 }

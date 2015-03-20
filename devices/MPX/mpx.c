@@ -36,6 +36,7 @@ void initMPXconfig()
 	mpx.numPorts = NUM_PORTS;
 	mpx.MpxAlreadyInit = true;
 }
+
 void initMPXstruct()
 {
 	mpx.numPorts = NUM_PORTS;

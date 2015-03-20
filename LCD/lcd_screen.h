@@ -4,9 +4,11 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
-#include "MPX/mpx.h"
+#include "devices/MPX/mpx.h"
+#include "devices/PTC24/ptc24.h"
 #include "user_tactkeys/user_tactkeys.h"
 #include "tests/mpx_statemachine.h"
+#include "tests/ptc24_statemachine.h"
 #include "HD44780.h"
 #include <stdbool.h>
 
@@ -49,6 +51,7 @@ typedef enum {
 	ST_TEST_LOG_MPX_M,
 
 	ST_TEST_PTC24,
+	ST_TEST_LOG_PTC24,
 	ST_TEST_PTC16,
 
 	ST_MAIN,
@@ -83,6 +86,7 @@ typedef enum {
 	EV_KBD_UP,
 	EV_KBD_CANCEL,
 	EV_KBD_ENTER,
+	EV_RETURN,
 
 	EV_TEST_LOG
 }StEvents;

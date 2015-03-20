@@ -416,6 +416,11 @@ typedef struct {
 }Log;
 
 typedef struct {
+	uint64_t lastTimeSeen;
+
+	bool PtcAlreadyInit;
+	bool outputCommandReceived;
+
 	uint8_t keyState[NUM_PTC_KEY];
 	uint8_t numState[NUM_PTC_KEY];
 
@@ -432,6 +437,10 @@ typedef struct {
 	 * mapToVirtualKey[HARDWARE_KEY] = keyState index */
 	uint8_t mapToVirtualKey[NUM_PTC_KEY];
 	uint8_t mapToVirtualKeySlave[NUM_PTC_KEY];
+
+	PortParameter portOutputCommand[NUM_PORTS];
+	bool odoReceivedCommand;
+	bool tacoReceivedCommand;
 }Ptc;
 
 

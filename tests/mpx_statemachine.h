@@ -4,7 +4,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
-#include "MPX/mpx.h"
+#include "devices/MPX/mpx.h"
 #include "LCD/lcd_screen.h"
 
 /* Exported types ------------------------------------------------------------*/
@@ -27,7 +27,6 @@ typedef enum {
 	MPX_ST_FINALIZE,
 	MPX_ST_PRINT,
 	MPX_ST_FINISH
-
 } TestStStates;
 
 typedef enum
@@ -42,7 +41,6 @@ typedef enum
 	MPX_EV_FINALIZE,
 	MPX_EV_PRINT,
 	MPX_EV_FINISH
-
 } TestStEvents;
 
 typedef enum
