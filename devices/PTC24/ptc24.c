@@ -43,6 +43,12 @@ void initPTC24Ign()
 	GPIO_SetBits(CMD_IGN2_PORT, CMD_IGN2);
 }
 
+void tooglePTC24Ign()
+{
+	GPIO_ResetBits(CMD_IGN2_PORT, CMD_IGN2);
+	GPIO_SetBits(CMD_IGN2_PORT, CMD_IGN2);
+}
+
 void initPTC24Taco()
 {
 	GPIO_InitTypeDef	gpio_InitTypeDef;

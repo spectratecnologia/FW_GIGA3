@@ -65,7 +65,7 @@ int main(void)
 
     		executeEveryInterval(10, 8, &toggleTaco);
 
-    		executeEveryInterval(11, 10, &teste);
+    		//executeEveryInterval(11, 10, &teste);
     	}
     }
 }

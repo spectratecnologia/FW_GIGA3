@@ -34,9 +34,9 @@
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="can.c" partName="can.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/can/can.c" title="can.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/can/can.c" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="can.c" partName="can.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/can/can.c" title="can.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/can/can.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/can/can.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="23" selectionOffset="10108" selectionTopPixel="5265"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="10363" selectionTopPixel="4383"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="can.h" partName="can.h" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/can/can.h" title="can.h" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/can/can.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/can/can.h"/>
@@ -44,19 +44,19 @@
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/main.c" title="main.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/main.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/main.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="495" selectionTopPixel="42"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1587" selectionTopPixel="129"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ptc24_statemachine.c" partName="ptc24_statemachine.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/tests/ptc24_statemachine.c" title="ptc24_statemachine.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/tests/ptc24_statemachine.c" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="ptc24_statemachine.c" partName="ptc24_statemachine.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/tests/ptc24_statemachine.c" title="ptc24_statemachine.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/tests/ptc24_statemachine.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/tests/ptc24_statemachine.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="6513" selectionTopPixel="2520"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2454" selectionTopPixel="465"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="ptc24_statemachine.h" partName="ptc24_statemachine.h" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/tests/ptc24_statemachine.h" title="ptc24_statemachine.h" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/tests/ptc24_statemachine.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/tests/ptc24_statemachine.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="15" selectionOffset="1143" selectionTopPixel="294"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1314" selectionTopPixel="294"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="functions.h" partName="functions.h" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/functions/functions.h" title="functions.h" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/functions/functions.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/functions/functions.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="18" selectionOffset="11651" selectionTopPixel="6165"/>
+<editorState selectionHorizontalPixel="0" selectionLength="12" selectionOffset="11047" selectionTopPixel="6165"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="lcd_screens.c" partName="lcd_screens.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/LCD/lcd_screens.c" title="lcd_screens.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/LCD/lcd_screens.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/LCD/lcd_screens.c"/>
@@ -68,15 +68,15 @@
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="ptc24.c" partName="ptc24.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/devices/PTC24/ptc24.c" title="ptc24.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/devices/PTC24/ptc24.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/devices/PTC24/ptc24.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="645" selectionTopPixel="120"/>
+<editorState selectionHorizontalPixel="0" selectionLength="21" selectionOffset="1231" selectionTopPixel="0"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="ptc24.h" partName="ptc24.h" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/devices/PTC24/ptc24.h" title="ptc24.h" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/devices/PTC24/ptc24.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/devices/PTC24/ptc24.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="16" selectionOffset="1039" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="878" selectionTopPixel="0"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="beep.c" partName="beep.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/beep/beep.c" title="beep.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/beep/beep.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/beep/beep.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="878" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="876" selectionTopPixel="0"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="mpx.c" partName="mpx.c" path="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/devices/MPX/mpx.c" title="mpx.c" tooltip="E:/Work/Proj_New/MULTIPLEX3/GIGA3/SW.C/Firmware/devices/MPX/mpx.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/devices/MPX/mpx.c"/>
@@ -85,9 +85,10 @@
 </editors>
 <views>
 <view id="org.coocox.builder.ui.views.ProjectView" partName="Project">
-<viewState CommonNavigator.LINKING_ENABLED="0" horizontalPosition="0" org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets="0" verticalPosition="0">
+<viewState CommonNavigator.LINKING_ENABLED="0" horizontalPosition="0" org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets="0" verticalPosition="1">
 <expanded>
 <element path="/GIGA3"/>
+<element path="/GIGA3/beep"/>
 <element path="/GIGA3/can"/>
 <element path="/GIGA3/devices"/>
 <element path="/GIGA3/devices/MPX"/>
@@ -97,13 +98,15 @@
 <element path="/GIGA3/tests"/>
 </expanded>
 <selection>
-<element path="/GIGA3/can/can.c"/>
+<element path="/GIGA3/beep/beep.c"/>
 </selection>
 </viewState>
 </view>
 <view id="org.eclipse.search.ui.views.SearchView" partName="Search">
 <viewState isPinned="false">
 <view IMemento.internal.id="" org.eclipse.search.lastActivation="0"/>
+<view IMemento.internal.id="org.eclipse.search.text.FileSearchResultPage" org.eclipse.search.lastActivation="2" org.eclipse.search.resultpage.layout="2" org.eclipse.search.resultpage.limit="1000" org.eclipse.search.resultpage.sorting="2"/>
+<view IMemento.internal.id="org.eclipse.cdt.ui.pdomSearchViewPage" definitionColumnWidth="150" locationColumnWidth="300" matchColumnWidth="300" org.eclipse.search.lastActivation="1" org.eclipse.search.resultpage.layout="2" showEnclosingDefinitions="true"/>
 </viewState>
 </view>
 <view id="org.eclipse.ui.console.ConsoleView" partName="Console">
@@ -194,170 +197,167 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/main.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/devices/PTC24/ptc24.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/ptc24_statemachine.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/ptc24_statemachine.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/LCD/lcd_screens.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/multitask/multitask.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/devices/PTC24/ptc24.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/ptc24_statemachine.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/can/can.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/devices/MPX/mpx.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/ptc24_statemachine.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/devices/MPX/mpx.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/can/can.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/ptc24_statemachine.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/main.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/can/can.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/can/can.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/devices/PTC24/ptc24.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/devices/PTC24/ptc24.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/ptc24_statemachine.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/functions/functions.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/beep/beep.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/ptc24_statemachine.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/main.c"/>
 </editors>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="1650" y="0"/>
-</item>
-<item historyLabel="ptc24.c" index="1">
-<position info="not_deleted" x="2397" y="0"/>
-</item>
-<item historyLabel="ptc24_statemachine.h" index="2">
-<position info="not_deleted" x="453" y="0"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="3">
-<position info="not_deleted" x="9892" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="1679" y="0"/>
-</item>
-<item historyLabel="lcd_screens.c" index="4">
-<position info="not_deleted" x="16993" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="1689" y="0"/>
-</item>
-<item historyLabel="multitask.c" index="5">
-<position info="not_deleted" x="1014" y="20"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="1714" y="0"/>
-</item>
-<item historyLabel="ptc24.c" index="1">
-<position info="not_deleted" x="2356" y="10"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="1714" y="0"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="561" y="0"/>
-</item>
-<item historyLabel="ptc24.c" index="6">
-<position info="not_deleted" x="2278" y="10"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="10188" y="0"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position/>
-</item>
-<item historyLabel="can.c" index="8">
-<position info="not_deleted" x="8834" y="0"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="1418" y="4"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="1732" y="0"/>
-</item>
-<item historyLabel="ptc24.c" index="6">
-<position info="not_deleted" x="2845" y="7"/>
-</item>
-<item historyLabel="mpx.c" index="9">
-<position info="not_deleted" x="9837" y="7"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="453" y="7"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="1418" y="4"/>
-</item>
-<item historyLabel="can.c" index="8">
-<position info="not_deleted" x="10416" y="7"/>
-</item>
-<item historyLabel="can.c" index="8">
-<position info="not_deleted" x="11522" y="7"/>
-</item>
-<item historyLabel="can.c" index="8">
-<position info="not_deleted" x="11621" y="7"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="1418" y="4"/>
-</item>
-<item historyLabel="ptc24_statemachine.h" index="10">
-<position info="not_deleted" x="1143" y="15"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="12939" y="0"/>
-</item>
-<item historyLabel="can.c" index="8">
-<position info="not_deleted" x="8570" y="35"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="12939" y="0"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="10541" y="0"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="12656" y="18"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="12799" y="0"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="1418" y="7"/>
-</item>
-<item historyLabel="main.c" index="0">
-<position info="not_deleted" x="453" y="7"/>
-</item>
-<item historyLabel="mpx.c" index="11">
-<position info="not_deleted" x="9837" y="7"/>
-</item>
-<item historyLabel="can.c" index="8">
-<position info="not_deleted" x="11811" y="7"/>
-</item>
-<item historyLabel="can.c" index="8">
-<position info="not_deleted" x="11522" y="7"/>
-</item>
-<item historyLabel="can.c" index="8">
-<position info="not_deleted" x="10416" y="7"/>
-</item>
-<item historyLabel="can.c" index="8">
-<position info="not_deleted" x="8576" y="21"/>
-</item>
-<item historyLabel="ptc24.c" index="6">
-<position info="not_deleted" x="645" y="0"/>
-</item>
-<item historyLabel="ptc24_statemachine.c" index="7">
-<position info="not_deleted" x="1418" y="7"/>
-</item>
-<item historyLabel="main.c" index="12">
-<position info="not_deleted" x="453" y="7"/>
-</item>
-<item historyLabel="can.c" index="13">
-<position info="not_deleted" x="8576" y="21"/>
-</item>
-<item historyLabel="can.c" index="13">
-<position info="not_deleted" x="6186" y="0"/>
-</item>
-<item historyLabel="can.c" index="13">
+<item historyLabel="can.c" index="1">
 <position info="not_deleted" x="9479" y="22"/>
 </item>
-<item historyLabel="main.c" index="12">
+<item historyLabel="main.c" index="0">
 <position info="not_deleted" x="662" y="0"/>
 </item>
-<item historyLabel="can.c" index="14">
+<item historyLabel="can.c" index="2">
 <position info="not_deleted" x="9479" y="22"/>
 </item>
-<item historyLabel="can.c" index="14">
+<item historyLabel="can.c" index="2">
 <position info="not_deleted" x="6314" y="0"/>
 </item>
-<item active="true" historyLabel="can.c" index="14">
+<item historyLabel="can.c" index="2">
 <position info="not_deleted" x="10108" y="23"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="6580" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="10706" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="13173" y="0"/>
+</item>
+<item historyLabel="can.c" index="2">
+<position info="not_deleted" x="10363" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="13173" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="14270" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="14265" y="0"/>
+</item>
+<item historyLabel="main.c" index="4">
+<position info="not_deleted" x="1587" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="14461" y="0"/>
+</item>
+<item historyLabel="ptc24.c" index="5">
+<position info="not_deleted" x="645" y="0"/>
+</item>
+<item historyLabel="ptc24.c" index="5">
+<position info="not_deleted" x="1251" y="0"/>
+</item>
+<item historyLabel="ptc24.c" index="5">
+<position info="not_deleted" x="1272" y="0"/>
+</item>
+<item historyLabel="ptc24.h" index="6">
+<position info="not_deleted" x="1034" y="26"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="9712" y="0"/>
+</item>
+<item historyLabel="main.c" index="4">
+<position info="not_deleted" x="1587" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="9712" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.h" index="7">
+<position/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="12871" y="0"/>
+</item>
+<item historyLabel="ptc24.h" index="6">
+<position info="not_deleted" x="882" y="5"/>
+</item>
+<item historyLabel="functions.h" index="8">
+<position info="not_deleted" x="11651" y="18"/>
+</item>
+<item historyLabel="functions.h" index="8">
+<position info="not_deleted" x="11047" y="12"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="12871" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="10586" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="12986" y="43"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="10593" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="12821" y="19"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="554" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="10653" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.h" index="7">
+<position info="not_deleted" x="1140" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="10653" y="0"/>
+</item>
+<item historyLabel="beep.c" index="9">
+<position info="not_deleted" x="876" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="10586" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.h" index="7">
+<position info="not_deleted" x="1367" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="3">
+<position info="not_deleted" x="8829" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.h" index="7">
+<position info="not_deleted" x="1367" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="10">
+<position info="not_deleted" x="9140" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="10">
+<position info="not_deleted" x="18649" y="0"/>
+</item>
+<item historyLabel="main.c" index="11">
+<position info="not_deleted" x="1587" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="10">
+<position info="not_deleted" x="15454" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="10">
+<position info="not_deleted" x="11689" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="10">
+<position info="not_deleted" x="15454" y="21"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="10">
+<position info="not_deleted" x="15508" y="0"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="10">
+<position info="not_deleted" x="18488" y="17"/>
+</item>
+<item historyLabel="ptc24_statemachine.c" index="10">
+<position info="not_deleted" x="18511" y="0"/>
+</item>
+<item active="true" historyLabel="ptc24_statemachine.c" index="10">
+<position info="not_deleted" x="1522" y="8"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -368,6 +368,12 @@
 <mruList>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_can.h" tooltip="PTC/stm_lib/inc/stm32f10x_can.h">
 <persistable path="/PTC/stm_lib/inc/stm32f10x_can.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="startup_stm32f10x_cl.c" tooltip="PTC/cmsis_boot/startup/startup_stm32f10x_cl.c">
+<persistable path="/PTC/cmsis_boot/startup/startup_stm32f10x_cl.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="can.h" tooltip="PTC/can/can.h">
+<persistable path="/PTC/can/can.h"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="misc.h" tooltip="PTC/stm_lib/inc/misc.h">
 <persistable path="/PTC/stm_lib/inc/misc.h"/>
@@ -401,12 +407,6 @@
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="misc.h" tooltip="PTC/stm_lib/inc/misc.h">
 <persistable path="/PTC/stm_lib/inc/misc.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_can.h" tooltip="PTC/stm_lib/inc/stm32f10x_can.h">
-<persistable path="/PTC/stm_lib/inc/stm32f10x_can.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_can.c" tooltip="PTC/stm_lib/src/stm32f10x_can.c">
-<persistable path="/PTC/stm_lib/src/stm32f10x_can.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="taco.h" tooltip="PTC/taco/taco.h">
 <persistable path="/PTC/taco/taco.h"/>

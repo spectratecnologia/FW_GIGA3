@@ -27,6 +27,7 @@ Ptc ptc24;
 /* Exported functions ------------------------------------------------------- */
 void deInitPTC24config(void);
 void initPTC24config(void);
+void tooglePTC24Ign(void);
 void enableToogleTaco(bool);
 void toggleTaco(void);
 void enableToogleOdo(bool);
