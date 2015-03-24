@@ -28,10 +28,10 @@ Ptc ptc24;
 void deInitPTC24config(void);
 void initPTC24config(void);
 void tooglePTC24Ign(void);
-void enableToogleTaco(bool);
-void toggleTaco(void);
-void enableToogleOdo(bool);
-void toggleOdo(void);
+void ptc24_enableToogleTaco(bool);
+void ptc24_toggleTaco(void);
+void ptc24_enableToogleOdo(bool);
+void ptc24_toggleOdo(void);
 void emulateMpx(void);
 
 #endif /* __MPX_H */

@@ -87,12 +87,11 @@
     <Component id="498" name="CMSIS Boot" path="" type="2"/>
   </Components>
   <Files>
-    <File name="beep/beep.h" path="beep/beep.h" type="1"/>
     <File name="GIGA3board/src/giga3_sr.c" path="GIGA3board/src/giga3_sr.c" type="1"/>
     <File name="GIGA3board" path="" type="2"/>
+    <File name="beep/beep.h" path="beep/beep.h" type="1"/>
     <File name="stm_lib/inc/stm32f10x_can.h" path="stm_lib/inc/stm32f10x_can.h" type="1"/>
     <File name="cmsis_boot/startup/startup_stm32f10x_cl.c" path="cmsis_boot/startup/startup_stm32f10x_cl.c" type="1"/>
-    <File name="tests/ptc24_statemachine.c" path="tests/ptc24_statemachine.c" type="1"/>
     <File name="usb/lib/usbd_usr.h" path="usb/lib/usbd_usr.h" type="1"/>
     <File name="stm_lib/inc/stm32f10x_pwr.h" path="stm_lib/inc/stm32f10x_pwr.h" type="1"/>
     <File name="usb/user/usbd_cdc_vcp.c" path="usb/user/usbd_cdc_vcp.c" type="1"/>
@@ -104,26 +103,25 @@
     <File name="LCD" path="" type="2"/>
     <File name="usb/lib/usbd_cdc_if_template.c" path="usb/lib/usbd_cdc_if_template.c" type="1"/>
     <File name="devices" path="" type="2"/>
+    <File name="devices/inc/ptc24.h" path="devices/inc/ptc24.h" type="1"/>
     <File name="syscalls/syscalls.c" path="syscalls/syscalls.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_spi.h" path="stm_lib/inc/stm32f10x_spi.h" type="1"/>
     <File name="stm_lib/src/stm32f10x_adc.c" path="stm_lib/src/stm32f10x_adc.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_dma.h" path="stm_lib/inc/stm32f10x_dma.h" type="1"/>
     <File name="beep/beep.c" path="beep/beep.c" type="1"/>
     <File name="user_tactkeys" path="" type="2"/>
-    <File name="devices/PTC24" path="" type="2"/>
     <File name="can/can.h" path="can/can.h" type="1"/>
     <File name="stm_lib/src/stm32f10x_bkp.c" path="stm_lib/src/stm32f10x_bkp.c" type="1"/>
     <File name="stm_lib/src/stm32f10x_gpio.c" path="stm_lib/src/stm32f10x_gpio.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_usart.h" path="stm_lib/inc/stm32f10x_usart.h" type="1"/>
-    <File name="devices/MPX" path="" type="2"/>
     <File name="cmsis_boot/system_stm32f10x.c" path="cmsis_boot/system_stm32f10x.c" type="1"/>
     <File name="stm_lib/inc/misc.h" path="stm_lib/inc/misc.h" type="1"/>
     <File name="usb/lib/usbd_core.c" path="usb/lib/usbd_core.c" type="1"/>
     <File name="interrupts/stm32f10x_it.c" path="interrupts/stm32f10x_it.c" type="1"/>
     <File name="stm_lib/src/stm32f10x_rcc.c" path="stm_lib/src/stm32f10x_rcc.c" type="1"/>
     <File name="usb/lib/usbd_cdc_core.c" path="usb/lib/usbd_cdc_core.c" type="1"/>
-    <File name="tests/ptc24_statemachine.h" path="tests/ptc24_statemachine.h" type="1"/>
     <File name="stm_lib/inc/stm32f10x_bkp.h" path="stm_lib/inc/stm32f10x_bkp.h" type="1"/>
+    <File name="tests/inc/ptc16_statemachine.h" path="tests/inc/ptc16_statemachine.h" type="1"/>
     <File name="stm_lib/src/stm32f10x_dma.c" path="stm_lib/src/stm32f10x_dma.c" type="1"/>
     <File name="LCD/HD44780.c" path="LCD/HD44780.c" type="1"/>
     <File name="usb/lib/usb_dcd_int.h" path="usb/lib/usb_dcd_int.h" type="1"/>
@@ -140,79 +138,87 @@
     <File name="GIGA3board/src/giga3_cpu_led.c" path="GIGA3board/src/giga3_cpu_led.c" type="1"/>
     <File name="LCD/HD44780.h" path="LCD/HD44780.h" type="1"/>
     <File name="GIGA3board/src" path="" type="2"/>
+    <File name="tests/inc/ptc24_statemachine.h" path="tests/inc/ptc24_statemachine.h" type="1"/>
     <File name="usb/user/usbd_desc.h" path="usb/user/usbd_desc.h" type="1"/>
-    <File name="usart/usart.h" path="usart/usart.h" type="1"/>
     <File name="usb/user/usbd_cdc_vcp.h" path="usb/user/usbd_cdc_vcp.h" type="1"/>
+    <File name="usart/usart.h" path="usart/usart.h" type="1"/>
     <File name="stm_lib/src/stm32f10x_rtc.c" path="stm_lib/src/stm32f10x_rtc.c" type="1"/>
     <File name="usb/lib/usbd_cdc_core.h" path="usb/lib/usbd_cdc_core.h" type="1"/>
-    <File name="usb/lib/usbd_conf_template.h" path="usb/lib/usbd_conf_template.h" type="1"/>
     <File name="main.c" path="main.c" type="1"/>
+    <File name="usb/lib/usbd_conf_template.h" path="usb/lib/usbd_conf_template.h" type="1"/>
     <File name="interrupts" path="" type="2"/>
     <File name="virtual_keyboard/virtual_keyboard.c" path="virtual_keyboard/virtual_keyboard.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_tim.h" path="stm_lib/inc/stm32f10x_tim.h" type="1"/>
-    <File name="multitask" path="" type="2"/>
     <File name="cmsis_boot" path="" type="2"/>
+    <File name="multitask" path="" type="2"/>
+    <File name="devices/src" path="" type="2"/>
     <File name="multitask/multitask.c" path="multitask/multitask.c" type="1"/>
     <File name="usb/user/usbd_desc.c" path="usb/user/usbd_desc.c" type="1"/>
     <File name="usart/usart.c" path="usart/usart.c" type="1"/>
+    <File name="tests/src/ptc24_statemachine.c" path="tests/src/ptc24_statemachine.c" type="1"/>
     <File name="stm_lib/src/stm32f10x_tim.c" path="stm_lib/src/stm32f10x_tim.c" type="1"/>
     <File name="semihosting/sh_cmd.s" path="semihosting/sh_cmd.s" type="1"/>
     <File name="GIGA3board/inc" path="" type="2"/>
     <File name="cmsis_boot/startup" path="" type="2"/>
+    <File name="devices/inc/ptc16.h" path="devices/inc/ptc16.h" type="1"/>
     <File name="semihosting/semihosting.c" path="semihosting/semihosting.c" type="1"/>
     <File name="stm_lib/src/stm32f10x_spi.c" path="stm_lib/src/stm32f10x_spi.c" type="1"/>
     <File name="usb/lib/usb_regs.h" path="usb/lib/usb_regs.h" type="1"/>
     <File name="usb/user/usbd_usr.c" path="usb/user/usbd_usr.c" type="1"/>
     <File name="rtc/rtc.c" path="rtc/rtc.c" type="1"/>
+    <File name="devices/src/mpx.c" path="devices/src/mpx.c" type="1"/>
     <File name="tests" path="" type="2"/>
-    <File name="tests/mpx_statemachine.c" path="tests/mpx_statemachine.c" type="1"/>
+    <File name="tests/inc/mpx_statemachine.h" path="tests/inc/mpx_statemachine.h" type="1"/>
     <File name="cmsis/core_cm3.c" path="cmsis/core_cm3.c" type="1"/>
     <File name="usb/lib/usb_bsp.h" path="usb/lib/usb_bsp.h" type="1"/>
     <File name="multitask/multitask.h" path="multitask/multitask.h" type="1"/>
-    <File name="usb" path="" type="2"/>
     <File name="usb/lib/usbd_core.h" path="usb/lib/usbd_core.h" type="1"/>
+    <File name="usb" path="" type="2"/>
     <File name="virtual_keyboard/virtual_keyboard.h" path="virtual_keyboard/virtual_keyboard.h" type="1"/>
-    <File name="functions" path="" type="2"/>
     <File name="LCD/lcd_screen.h" path="LCD/lcd_screen.h" type="1"/>
+    <File name="functions" path="" type="2"/>
     <File name="stm_lib/src/stm32f10x_usart.c" path="stm_lib/src/stm32f10x_usart.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_rtc.h" path="stm_lib/inc/stm32f10x_rtc.h" type="1"/>
+    <File name="tests/src/mpx_statemachine.c" path="tests/src/mpx_statemachine.c" type="1"/>
     <File name="virtual_keyboard" path="" type="2"/>
     <File name="usb/lib/usbd_req.c" path="usb/lib/usbd_req.c" type="1"/>
     <File name="functions/functions.h" path="functions/functions.h" type="1"/>
-    <File name="usb/user/usb_bsp.c" path="usb/user/usb_bsp.c" type="1"/>
     <File name="stm_lib/src/stm32f10x_pwr.c" path="stm_lib/src/stm32f10x_pwr.c" type="1"/>
+    <File name="usb/user/usb_bsp.c" path="usb/user/usb_bsp.c" type="1"/>
     <File name="stm_lib/inc/stm32f10x_gpio.h" path="stm_lib/inc/stm32f10x_gpio.h" type="1"/>
-    <File name="devices/MPX/mpx.h" path="devices/MPX/mpx.h" type="1"/>
     <File name="usb/lib/usb_dcd.h" path="usb/lib/usb_dcd.h" type="1"/>
     <File name="usb/lib/usbd_ioreq.h" path="usb/lib/usbd_ioreq.h" type="1"/>
     <File name="rtc" path="" type="2"/>
-    <File name="devices/MPX/mpx.c" path="devices/MPX/mpx.c" type="1"/>
+    <File name="devices/src/ptc24.c" path="devices/src/ptc24.c" type="1"/>
     <File name="usb/user/usbd_conf.h" path="usb/user/usbd_conf.h" type="1"/>
     <File name="usart" path="" type="2"/>
     <File name="cmsis/core_cm3.h" path="cmsis/core_cm3.h" type="1"/>
     <File name="LCD/lcd_screens.c" path="LCD/lcd_screens.c" type="1"/>
+    <File name="devices/src/ptc16.c" path="devices/src/ptc16.c" type="1"/>
     <File name="semihosting" path="" type="2"/>
     <File name="user_tactkeys/user_tactkeys.h" path="user_tactkeys/user_tactkeys.h" type="1"/>
+    <File name="tests/src" path="" type="2"/>
     <File name="usb/user/usb_conf.h" path="usb/user/usb_conf.h" type="1"/>
     <File name="usb/lib/usb_core.h" path="usb/lib/usb_core.h" type="1"/>
-    <File name="devices/PTC24/ptc24.h" path="devices/PTC24/ptc24.h" type="1"/>
     <File name="usb/user" path="" type="2"/>
     <File name="can" path="" type="2"/>
     <File name="usb/lib/usb_core.c" path="usb/lib/usb_core.c" type="1"/>
     <File name="usb/lib/usbd_cdc_if_template.h" path="usb/lib/usbd_cdc_if_template.h" type="1"/>
+    <File name="tests/inc" path="" type="2"/>
     <File name="stm_lib/inc/stm32f10x_rcc.h" path="stm_lib/inc/stm32f10x_rcc.h" type="1"/>
+    <File name="devices/inc" path="" type="2"/>
     <File name="usb/lib/usb_defines.h" path="usb/lib/usb_defines.h" type="1"/>
     <File name="syscalls" path="" type="2"/>
     <File name="usb/lib/usbd_ioreq.c" path="usb/lib/usbd_ioreq.c" type="1"/>
-    <File name="rtc/rtc.h" path="rtc/rtc.h" type="1"/>
+    <File name="devices/inc/mpx.h" path="devices/inc/mpx.h" type="1"/>
     <File name="usb/lib" path="" type="2"/>
+    <File name="rtc/rtc.h" path="rtc/rtc.h" type="1"/>
     <File name="semihosting/semihosting.h" path="semihosting/semihosting.h" type="1"/>
-    <File name="devices/PTC24/ptc24.c" path="devices/PTC24/ptc24.c" type="1"/>
     <File name="stm_lib/inc" path="" type="2"/>
     <File name="stm_lib/src/stm32f10x_can.c" path="stm_lib/src/stm32f10x_can.c" type="1"/>
     <File name="usb/lib/usb_dcd.c" path="usb/lib/usb_dcd.c" type="1"/>
     <File name="user_tactkeys/user_tactkeys.c" path="user_tactkeys/user_tactkeys.c" type="1"/>
     <File name="can/can.c" path="can/can.c" type="1"/>
-    <File name="tests/mpx_statemachine.h" path="tests/mpx_statemachine.h" type="1"/>
+    <File name="tests/src/ptc16_statemachine.c" path="tests/src/ptc16_statemachine.c" type="1"/>
   </Files>
 </Project>

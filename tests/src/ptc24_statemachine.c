@@ -1,5 +1,5 @@
 /* Includes ------------------------------------------------------------------*/
-#include "tests/ptc24_statemachine.h"
+#include "ptc24_statemachine.h"
 
 /* Local functions declaration #1 --------------------------------------------*/
 void ptc24_vUpdateTests(void);
@@ -173,8 +173,8 @@ void ptc24_vResetTests(void)
 	Ptc24Tests.finishedTestBeep = false;
 	Ptc24Tests.testError = false;
 	Ptc24Tests.seriousError = false;
-	enableToogleOdo(false);
-	enableToogleTaco(false);
+	ptc24_enableToogleOdo(false);
+	ptc24_enableToogleTaco(false);
 	ptc24.outputCommandReceived = false;
 
 	for (i=0; i<NUM_PTC24_KEYS; i++)
@@ -330,10 +330,10 @@ void ptc24_vExecute(void)
 		tooglePTC24Ign();
 
 	if (Ptc24Tests.currentTest == PTC24_TEST_ODO_ON)
-		enableToogleOdo(true);
+		ptc24_enableToogleOdo(true);
 
 	if (Ptc24Tests.currentTest == PTC24_TEST_TACO_ON)
-		enableToogleTaco(true);
+		ptc24_enableToogleTaco(true);
 
 	ptc24_vSetNextEvent(PTC24_EV_WAIT);
 }
@@ -496,7 +496,7 @@ void ptc24_vAnalyse_Taco()
 				Ptc24Tests.testFinished = true;
 				setBeep(1, 2000);
 				printTestResult = ptc24print_TacoError;
-				enableToogleTaco(false);
+				ptc24_enableToogleTaco(false);
 			}
 		}
 	}
@@ -541,7 +541,7 @@ void ptc24_vAnalyse_Odo()
 				Ptc24Tests.testFinished = true;
 				setBeep(1, 2000);
 				printTestResult = ptc24print_OdoError;
-				enableToogleOdo(false);
+				ptc24_enableToogleOdo(false);
 			}
 		}
 	}

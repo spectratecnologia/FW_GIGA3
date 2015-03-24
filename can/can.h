@@ -5,7 +5,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
 #include "stm32f10x_can.h"
-#include "MPX/mpx.h"
+#include "mpx.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
@@ -13,15 +13,11 @@
 
 #define MY_ID 0x03
 #define PTC24_DEVICE_ID 0x20
+#define PTC16_DEVICE_ID 0x21
+#define MPX_DEVICE_MASK 0x80
 #define MXP_DEVICE_ID0 0x80
 #define MXP_DEVICE_ID1 0x81
 #define MXP_DEVICE_ID2 0x82
-
-typedef enum
-{
-	DEVICE_PTC24_MASK = 0x20,
-	DEVICE_MPX_MASK = 0x80
-} CanDeviceMask;
 
 typedef enum
 {
@@ -72,6 +68,7 @@ void CAN2_SCE_IRQHandler();
 static inline void onCAN1ReceiveInterrupt();
 static inline void onCAN1ReceiveInterrupt_MPX(CanRxMsg, MsgId);
 static inline void onCAN1ReceiveInterrupt_PTC24(CanRxMsg, MsgId);
+static inline void onCAN1ReceiveInterrupt_PTC16(CanRxMsg, MsgId);
 static inline uint16_t getMpxAnalogMemoryAddress(uint8_t, uint8_t);
 
 static inline void onCAN2ReceiveInterrupt();

@@ -39,6 +39,7 @@ void LCD_vTestMPXManualStart();
 void LCD_vTestPTC24();
 void LCD_vTestPTC24Start(void);
 void LCD_vTestPTC16();
+void LCD_vTestPTC16Start(void);
 
 void LCD_vDisplayTestMessage();
 
@@ -192,7 +193,16 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_LOG_PTC24		,EV_ANY			  	,ST_TEST_LOG_PTC24      ,&LCD_vDisplayTestMessage	},
 
 {ST_TEST_PTC16 			,EV_REFRESH		  	,ST_TEST_PTC16          ,&LCD_vTestPTC16			},
-{ST_TEST_PTC16 			,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen			}
+{ST_TEST_PTC16 			,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen			},
+{ST_TEST_PTC16 			,EV_KBD_ENTER	  	,ST_TEST_PTC16 			,&LCD_vTestPTC16Start		},
+{ST_TEST_PTC16 			,EV_TEST_LOG	  	,ST_TEST_LOG_PTC16 		,&LCD_vDisplayTestMessage	},
+{ST_TEST_PTC16 			,EV_ANY			  	,ST_TEST_PTC16          ,&LCD_vTestPTC16			},
+
+{ST_TEST_LOG_PTC16		,EV_REFRESH		  	,ST_TEST_LOG_PTC16      ,&LCD_vDisplayTestMessage	},
+{ST_TEST_LOG_PTC16		,EV_KBD_ENTER	  	,ST_TEST_LOG_PTC16      ,&LCD_vDisplayTestMessage	},
+{ST_TEST_LOG_PTC16		,EV_KBD_CANCEL	  	,ST_TEST_PTC16 		    ,&LCD_vTestPTC16			},
+{ST_TEST_LOG_PTC16		,EV_RETURN		  	,ST_TEST_PTC16 		    ,&LCD_vTestPTC16			},
+{ST_TEST_LOG_PTC16		,EV_ANY			  	,ST_TEST_LOG_PTC16      ,&LCD_vDisplayTestMessage	}
 };
 
 #define TRANS_COUNT (sizeof(smTrans)/sizeof(*smTrans))
@@ -286,6 +296,9 @@ StEvents LCD_vGetNextEvent(void){
 
 		else if(sm.state == ST_TEST_LOG_PTC24)
 			ptc24Test_vFinishTest();
+
+		else if(sm.state == ST_TEST_LOG_PTC16)
+			ptc16Test_vFinishTest();
 	}
 
 	else if(getVirtualKeyState(KEY_DOWN)){
@@ -363,6 +376,15 @@ StEvents LCD_vGetNextEvent(void){
 		{
 			LCD_vSetNextEvent(EV_KBD_ENTER);
 			ptc24Test_vTestOk();
+		}
+
+		else if (sm.state == ST_TEST_PTC16)
+			LCD_vSetNextEvent(EV_KBD_ENTER);
+
+		else if (sm.state == ST_TEST_LOG_PTC16)
+		{
+			LCD_vSetNextEvent(EV_KBD_ENTER);
+			ptc16Test_vTestOk();
 		}
 
 	}
@@ -458,6 +480,7 @@ void LCD_vMainScreen(void)
 
 	mpx.MpxAlreadyInit = false;
 	deInitPTC24config();
+	deInitPTC16config();
 	enableTactShortDeadTime(false);
 
 	if(EV_REFRESH != sm.event)
@@ -496,6 +519,16 @@ void LCD_vMainScreen(void)
 	LCD_printLine(1,lines[currentLine]);
 
 	LCD_vSetNextEvent(EV_REFRESH);
+
+	/* Automatic device detection */
+	if(sysTickTimer-mpx.lastTimeSeen<100)
+		LCD_vSetNextEvent(EV_LINE2);
+
+	else if(sysTickTimer-ptc24.lastTimeSeen<100)
+		LCD_vSetNextEvent(EV_LINE3);
+
+	else if(sysTickTimer-ptc16.lastTimeSeen<100)
+		LCD_vSetNextEvent(EV_LINE4);
 }
 
 void LCD_vAdjustTime(void){
@@ -848,10 +881,34 @@ void LCD_vTestPTC24Start(void)
 /* ---------------------------------------------------------------------------*/
 void LCD_vTestPTC16(void)
 {
-	LCD_printLine(0,"  TESTE PTC 16  ");
-	LCD_printLine(1,"Em construcao...");
+	char lines[][LINE_SIZE]={"  TESTE PTC 16  "
+   	                        ,"                "};
+
+	char finalpoint={' '};
+
+	initPTC16config();
+
+	if ((sysTickTimer%2000)>999)
+		finalpoint='.';
+
+	snprintf(lines[1],LINE_SIZE,"Iniciar o Teste%c",finalpoint);
+
+	LCD_printLine(0, lines[0]);
+	LCD_printLine(1, lines[1]);
 
 	LCD_vSetNextEvent(EV_REFRESH);
+
+	LCD_vSetNextEvent(EV_REFRESH);
+}
+
+void LCD_vTestPTC16Start(void)
+{
+	LCD_printLine(0, "                ");
+	LCD_printLine(1, "                ");
+
+	ptc16Test_vSetTest(PTC16_TEST_START);
+
+	LCD_vSetNextEvent(EV_TEST_LOG);
 }
 
 /* ---------------------------------------------------------------------------*/

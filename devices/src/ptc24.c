@@ -81,12 +81,12 @@ void initPTC24Odo()
 	GPIO_ResetBits(CMDFL_ODO_PORT, CMDFL_TACO);
 }
 
-void enableToogleTaco(bool ena)
+void ptc24_enableToogleTaco(bool ena)
 {
 	boolEnableToogleTaco = ena;
 }
 
-void toggleTaco()
+void ptc24_toggleTaco()
 {
 	if(boolEnableToogleTaco)
 	{
@@ -97,12 +97,12 @@ void toggleTaco()
 	}
 }
 
-void enableToogleOdo(bool ena)
+void ptc24_enableToogleOdo(bool ena)
 {
 	boolEnableToogleOdo = ena;
 }
 
-void toggleOdo()
+void ptc24_toggleOdo()
 {
 	if (boolEnableToogleOdo)
 	{
@@ -118,4 +118,3 @@ void emulateMpx()
 	uint8_t data[8]={0,0,0,0,0,0,0,0};
 	sendCanPacket(CAN1, CAN_COMMAND_BROADCAST, CAN_BROADCAST_MPX_INFO, MXP_DEVICE_ID0, BROADCAST_DEST_ADDR, &data[0], 8);
 }
-

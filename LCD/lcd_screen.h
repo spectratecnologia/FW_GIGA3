@@ -4,11 +4,13 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
-#include "devices/MPX/mpx.h"
-#include "devices/PTC24/ptc24.h"
+#include "mpx.h"
+#include "ptc24.h"
+#include "ptc16.h"
 #include "user_tactkeys/user_tactkeys.h"
-#include "tests/mpx_statemachine.h"
-#include "tests/ptc24_statemachine.h"
+#include "mpx_statemachine.h"
+#include "ptc24_statemachine.h"
+#include "ptc16_statemachine.h"
 #include "HD44780.h"
 #include <stdbool.h>
 
@@ -53,6 +55,7 @@ typedef enum {
 	ST_TEST_PTC24,
 	ST_TEST_LOG_PTC24,
 	ST_TEST_PTC16,
+	ST_TEST_LOG_PTC16,
 
 	ST_MAIN,
 	ST_IDLE

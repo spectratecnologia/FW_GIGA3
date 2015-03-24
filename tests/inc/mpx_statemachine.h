@@ -4,7 +4,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
-#include "devices/MPX/mpx.h"
+#include "mpx.h"
 #include "LCD/lcd_screen.h"
 
 /* Exported types ------------------------------------------------------------*/

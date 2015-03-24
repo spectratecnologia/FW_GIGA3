@@ -8,10 +8,10 @@
 #include "beep/beep.h"
 #include "virtual_keyboard/virtual_keyboard.h"
 #include "usb/user/usbd_cdc_vcp.h"
-#include "devices/MPX/mpx.h"
-#include "devices/PTC24/ptc24.h"
-#include "tests/mpx_statemachine.h"
-#include "tests/ptc24_statemachine.h"
+#include "mpx.h"
+#include "ptc24.h"
+#include "mpx_statemachine.h"
+#include "ptc24_statemachine.h"
 
 void teste()
 {
@@ -33,6 +33,7 @@ int main(void)
 	LCD_vStateMachineInit();
 	mpxTest_vStateMachineInit();
 	ptc24Test_vStateMachineInit();
+	ptc16Test_vStateMachineInit();
 
 	//teste();
 
@@ -55,17 +56,26 @@ int main(void)
     		executeEveryInterval(6, 5, &sendChangedOutputsToMPXs);
     	}
 
-    	if (ptc24.PtcAlreadyInit)
+    	else if (ptc24.PtcAlreadyInit)
     	{
     		executeEveryInterval(7, 40, &emulateMpx);
 
     		executeEveryInterval(8, 10, &ptc24Test_vStateMachineLoop);
 
-    		executeEveryInterval(9, 10, &toggleOdo);
+    		executeEveryInterval(9, 10, &ptc24_toggleOdo);
 
-    		executeEveryInterval(10, 8, &toggleTaco);
+    		executeEveryInterval(10, 8, &ptc24_toggleTaco);
+    	}
 
-    		//executeEveryInterval(11, 10, &teste);
+    	else if (ptc16.PtcAlreadyInit)
+    	{
+    		executeEveryInterval(7, 40, &emulateMpx);
+
+    		executeEveryInterval(11, 10, &ptc16Test_vStateMachineLoop);
+
+    		executeEveryInterval(12, 10, &ptc16_toggleOdo);
+
+    		executeEveryInterval(13, 8, &ptc16_toggleTaco);
     	}
     }
 }

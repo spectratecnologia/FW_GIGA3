@@ -200,11 +200,14 @@ static inline void onCAN1ReceiveInterrupt(){
 
 	//setBeep(2,1000);
 
-	if ((msgId.SA & 0xF0) == DEVICE_MPX_MASK)
+	if ((msgId.SA & 0xF0) == MPX_DEVICE_MASK)
 		onCAN1ReceiveInterrupt_MPX(rxMessage, msgId);
 
-	else if (msgId.SA == PTC24_DEVICE_ID)
+	if (msgId.SA == PTC24_DEVICE_ID)
 		onCAN1ReceiveInterrupt_PTC24(rxMessage, msgId);
+
+	if (msgId.SA == PTC16_DEVICE_ID)
+		onCAN1ReceiveInterrupt_PTC16(rxMessage, msgId);
 
 	//receivedPackets++;
 }
@@ -326,6 +329,62 @@ static inline void onCAN1ReceiveInterrupt_PTC24(CanRxMsg rxMessage, MsgId msgId)
 
 			else
 				ptc24.tacoReceivedCommand = false;
+		}
+	}
+}
+
+static inline void onCAN1ReceiveInterrupt_PTC16(CanRxMsg rxMessage, MsgId msgId)
+{
+	ptc16.lastTimeSeen = sysTickTimer;
+
+	if (msgId.command == CAN_COMMAND_BROADCAST)
+	{
+		uint8_t broadcastType = (msgId.index & 0xf0);
+
+		if (broadcastType == CAN_BROADCAST_KEY_STATE_MASK)
+		{
+			uint8_t portOffset = (msgId.index & 0x0f) * 8;
+			if ( portOffset<=(NUM_PTC_KEY-8))
+				memcpy( &ptc16.keyState[portOffset],rxMessage.Data,8);
+		}
+
+		else
+		{
+
+		}
+	}
+
+	else if (msgId.command == CAN_COMMAND_WRITE)
+	{
+		if (msgId.index < NUM_PORTS)
+		{
+			memcpy(&ptc16.portOutputCommand[msgId.index],rxMessage.Data,8);
+
+			ptc16.outputCommandReceived = true;
+
+			if (ptc16.portOutputCommand[0].mode         == 3   &&
+				ptc16.portOutputCommand[0].duty         == 5   &&
+				ptc16.portOutputCommand[0].fastSoftUp   == 200 &&
+				ptc16.portOutputCommand[0].fastSoftDown == 200)
+			{
+				ptc16.odoReceivedCommand = true;
+			}
+
+			else
+			{
+				ptc16.odoReceivedCommand = false;
+			}
+
+			if (ptc16.portOutputCommand[1].mode         == 3   &&
+				ptc16.portOutputCommand[1].duty         == 5   &&
+				ptc16.portOutputCommand[1].fastSoftUp   == 200 &&
+				ptc16.portOutputCommand[1].fastSoftDown == 200)
+			{
+				ptc16.tacoReceivedCommand = true;
+			}
+
+			else
+				ptc16.tacoReceivedCommand = false;
 		}
 	}
 }

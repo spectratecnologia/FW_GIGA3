@@ -1,5 +1,5 @@
 /* Includes ------------------------------------------------------------------*/
-#include "tests/mpx_statemachine.h"
+#include "mpx_statemachine.h"
 
 /* Local functions declaration #1 --------------------------------------------*/
 void mpxTest_vUpdateTests(void);

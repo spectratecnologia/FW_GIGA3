@@ -4,7 +4,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include <stdbool.h>
-#include "devices/PTC24/ptc24.h"
+#include "ptc24.h"
 #include "LCD/lcd_screen.h"
 
 /* Exported types ------------------------------------------------------------*/
