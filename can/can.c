@@ -219,17 +219,6 @@ static inline void onCAN1ReceiveInterrupt_MPX(CanRxMsg rxMessage, MsgId msgId)
 
 	mpx.mpxId = msgId.SA;
 
-	if (msgId.command == CAN_COMMAND_WRITE_ACK)
-	{
-		if( (!mpx.ackReceived) && (mpx.ackIndex == msgId.index))
-			mpx.ackReceived = true;
-
-		/* Process received  ACK from outputPorts*/
-		if (msgId.index < NUM_PORTS)
-			mpx.outputChanged[msgId.index] = false;
-	}
-
-
 	if (msgId.command == CAN_COMMAND_BROADCAST)
 	{
 		uint8_t broadcastType = (msgId.index & 0xf0);
@@ -243,9 +232,9 @@ static inline void onCAN1ReceiveInterrupt_MPX(CanRxMsg rxMessage, MsgId msgId)
 			}
 		}
 
-		else if (broadcastType == CAN_BROADCAST_ANALOG_INPUT_MASK)
+		else if (msgId.index == CAN_BROADCAST_ANALOG_INPUT_MASK)
 		{
-
+			memcpy(&mpx.ntcTemperature, &rxMessage.Data[6], 2);
 		}
 
 
@@ -261,7 +250,8 @@ static inline void onCAN1ReceiveInterrupt_MPX(CanRxMsg rxMessage, MsgId msgId)
 
 		else if(msgId.index == CAN_BROADCAST_MPX_FLASH_INFO)
 		{
-
+			memcpy(&mpx.readChecksum, &rxMessage.Data[4],2);
+			memcpy(&mpx.calculatedChecksum, &rxMessage.Data[6],2);
 		}
 
 		else if(msgId.index == CAN_BROADCAST_RTC)
@@ -272,6 +262,24 @@ static inline void onCAN1ReceiveInterrupt_MPX(CanRxMsg rxMessage, MsgId msgId)
 		else
 		{
 
+		}
+	}
+
+
+	else if (msgId.command == CAN_COMMAND_WRITE_ACK)
+	{
+		if( (!mpx.ackReceived) && (mpx.ackIndex == msgId.index))
+			mpx.ackReceived = true;
+
+		/* Process received  ACK from outputPorts*/
+		if (msgId.index < NUM_PORTS)
+			mpx.outputChanged[msgId.index] = false;
+
+		/* Emergency mode ACK. */
+		if (( (msgId.index >= CAN_INDEX_EME_IGN_START) && (msgId.index <= CAN_INDEX_EME_IGN_START + NUM_PORTS) ) ||
+			( (msgId.index >= CAN_INDEX_EME_N_IGN_START) && (msgId.index <= CAN_INDEX_EME_N_IGN_START + NUM_PORTS) ) )
+		{
+			mpx.ackIndex = msgId.index;
 		}
 	}
 }
@@ -330,6 +338,11 @@ static inline void onCAN1ReceiveInterrupt_PTC24(CanRxMsg rxMessage, MsgId msgId)
 			else
 				ptc24.tacoReceivedCommand = false;
 		}
+	}
+
+	else if (msgId.command == CAN_COMMAND_READ_ACK)
+	{
+		memcpy(&ptc24.memory[msgId.index],rxMessage.Data,1);
 	}
 }
 

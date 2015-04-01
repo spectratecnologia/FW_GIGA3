@@ -32,6 +32,10 @@ typedef enum {PORT_LOW = 0, PORT_HIGH = 1, PORT_OFF = 2} FunctionalState_MPXport
 #define CMD_IGN1 GPIO_Pin_12
 #define CMD_IGN1_PORT GPIOC
 
+/* Temperature */
+#define PWM_NTC GPIO_Pin_8
+#define PWM_NTC_PORT GPIOC
+
 /* ID ports code */
 #define CMDFLID0 GPIO_Pin_9
 #define CMDFLID1 GPIO_Pin_10
@@ -69,6 +73,7 @@ void setMPXIDports(MPX_ID);
 void activeMPXports(uint8_t, FunctionalState_MPXports);
 uint8_t getPortStatus(uint8_t);
 void activeMPXIgnition(FunctionalState_MPXports);
+void toogleMPXNTC(void);
 void turningOffMpxEmergencyMode();
 void turnOffMpxPorts(void);
 void sendChangedOutputsToMPXs();

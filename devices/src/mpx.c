@@ -8,6 +8,7 @@ void initMPXstruct();
 void initMPXIDports();
 void initPP10Apins();
 void initMPXIgn();
+void initMPXTempPin();
 
 inline void activePP10Aports(uint8_t, FunctionalState_MPXports);
 inline void activePP10AportX(uint8_t, uint8_t, uint8_t, FunctionalState_MPXports);
@@ -32,6 +33,8 @@ void initMPXconfig()
 	initPP10Apins();
 	/* Initialize ignition command pin */
 	initMPXIgn();
+	/* Initialize temperature command pin */
+	initMPXTempPin();
 
 	mpx.numPorts = NUM_PORTS;
 	mpx.MpxAlreadyInit = true;
@@ -42,6 +45,8 @@ void initMPXstruct()
 	mpx.numPorts = NUM_PORTS;
 	mpx.lastTimeSeen = 0;
 	mpx.ackReceived = false;
+	mpx.ackIndex = 0;
+	mpx.lastAckIndex = 0;
 }
 
 void initMPXIDpins()
@@ -91,6 +96,21 @@ void initMPXIgn()
 	GPIO_ResetBits(CMD_IGN1_PORT, CMD_IGN1);
 }
 
+void initMPXTempPin()
+{
+	GPIO_InitTypeDef	gpio_InitTypeDef;
+
+	/* Enable clock GPIOC's peripheric  */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE);
+
+	/* 	Initializes the High and Low side Push Pull 10A transistors' pins */
+	gpio_InitTypeDef.GPIO_Pin	= PWM_NTC;
+	gpio_InitTypeDef.GPIO_Mode	= GPIO_Mode_Out_PP;
+	gpio_InitTypeDef.GPIO_Speed	= GPIO_Speed_50MHz;
+	GPIO_Init(PWM_NTC_PORT, &gpio_InitTypeDef);
+
+	GPIO_ResetBits(PWM_NTC_PORT, PWM_NTC);
+}
 
 /* ---------------------------------------------------------------------------*/
 /* Functions to enable or disable pins relative to the MPX device ------------*/
@@ -253,6 +273,14 @@ void activeMPXIgnition(FunctionalState_MPXports state)
 		GPIO_ResetBits(CMD_IGN1_PORT, CMD_IGN1);
 	else
 		return;
+}
+
+void toogleMPXNTC(void)
+{
+	if(GPIO_ReadOutputDataBit(PWM_NTC_PORT, PWM_NTC))
+		GPIO_ResetBits(PWM_NTC_PORT, PWM_NTC);
+	else
+		GPIO_SetBits(PWM_NTC_PORT, PWM_NTC);
 }
 /* ---------------------------------------------------------------------------*/
 /* Active or deactive MPX device ports ---------------------------------------*/

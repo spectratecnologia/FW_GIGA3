@@ -9,10 +9,11 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+#define DELAY_TO_RECEIVE_NEW_MEMORY_ACK 100
 #define DELAY_TO_CAN_SEND_DATA 100
-#define DELAY_TO_ANALISE_FLASH_TEST 1000
+#define DELAY_TO_ANALISE_FLASH_TEST 5000
 #define DELAY_TO_ANALISE_SLOW_TEST 1000
-#define DELAY_TO_ANALISE_FAST_TEST 60
+#define DELAY_TO_ANALISE_FAST_TEST 65
 /* Exported macro ------------------------------------------------------------*/
 
 typedef enum {
@@ -51,6 +52,7 @@ typedef enum
 	TEST_FLASH,
 	TEST_ID1,     TEST_ID2,     TEST_ID4,     TEST_ID0,
 	TEST_IGN_L,   TEST_IGN_H,
+	TEST_NTC,
 	TEST_P0_L,    TEST_P1_L,    TEST_P2_L, 	  TEST_P3_L,
 	TEST_P0_H,    TEST_P1_H,    TEST_P2_H,    TEST_P3_H,
 	TEST_P4,      TEST_P5,      TEST_P6,      TEST_P7,
@@ -70,6 +72,7 @@ typedef struct
 	int16_t currentTest;
 	uint8_t switchPort;
 	uint64_t statedTestTime;
+	uint64_t startedMemoryAnalyseTime;
 	bool boolIsAutoTest;
 	bool boolIsLoopTest;
 	bool testFinished;
@@ -77,6 +80,7 @@ typedef struct
 	bool finishedTestBeep;
 	bool testError;
 	bool seriousError;
+	bool boolEraseFlash;
 	uint16_t numberTestDone;
 } Test;
 
@@ -88,6 +92,8 @@ typedef struct
 void mpxTest_vStateMachineLoop(void);
 void mpxTest_vStateMachineInit(void);
 void mpxTest_vSetTest(TestList);
+void mpxTest_vContinueTest(void);
 void mpxTest_vFinishTest(void);
+int mpxTest_vGetTest(void);
 
 #endif /* __SMTEST_H */

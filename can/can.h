@@ -41,6 +41,10 @@ typedef enum
 	CAN_BROADCAST_RTC=0x90
 } BroadcastType;
 
+/* Read/Write definitions */
+#define CAN_INDEX_EME_IGN_START 64
+#define CAN_INDEX_EME_N_IGN_START 128
+
 typedef union
 {
 	uint32_t extId;

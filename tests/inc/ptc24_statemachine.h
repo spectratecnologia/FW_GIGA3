@@ -9,7 +9,7 @@
 
 /* Exported types ------------------------------------------------------------*/
 #define NUM_PTC24_KEYS 24
-#define DELAY_FAST_TESTS 50
+#define DELAY_FAST_TESTS 60
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 
@@ -46,6 +46,7 @@ typedef enum
 	PTC24_TEST_NOTHING,
 	PTC24_TEST_START,
 	PTC24_TEST_IGN,
+	PTC24_TEST_FLASH,
 	PTC24_TEST_TACO_OFF, PTC24_TEST_TACO_ON,
 	PTC24_TEST_ODO_OFF, PTC24_TEST_ODO_ON,
 	PTC24_TEST_KEYS_ON,

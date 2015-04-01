@@ -67,7 +67,8 @@ const int RearrangedTests[] = {TEST_FLASH,								   //Line1
 							   TEST_P5,   TEST_P19,  TEST_P32,  TEST_P20,
 							   TEST_P21,  TEST_P33,  TEST_P22,  TEST_P6,
 							   TEST_P23,  TEST_P7,   TEST_P24,  TEST_P34,
-							   TEST_P25,  TEST_P26,  TEST_P35,  TEST_P27};
+							   TEST_P25,  TEST_P26,  TEST_P35,  TEST_P27,
+							   TEST_NTC};
 
 const Transition smTrans[] =  		//TABELA DE ESTADOS
 {
@@ -172,6 +173,8 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_MPX_MANUAL	  	,EV_LINE44	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE45	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 {ST_TEST_MPX_MANUAL	  	,EV_LINE46	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
+// TESTE NTC
+{ST_TEST_MPX_MANUAL	  	,EV_LINE47	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 // Ev. ANY
 {ST_TEST_MPX_MANUAL	  	,EV_ANY		  		,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManual		},
 
@@ -294,8 +297,14 @@ StEvents LCD_vGetNextEvent(void){
 		if(sm.state == ST_ADJUST_TIME)
 			LCD_vSetNextEvent(EV_PREVIOUS_FIELD);
 
+		else if((sm.state == ST_TEST_LOG_MPX_M) || (sm.state == ST_TEST_LOG_MPX))
+			mpxTest_vFinishTest();
+
 		else if(sm.state == ST_TEST_LOG_PTC24)
+		{
 			ptc24Test_vFinishTest();
+			deInitPTC24config();
+		}
 
 		else if(sm.state == ST_TEST_LOG_PTC16)
 			ptc16Test_vFinishTest();
@@ -363,7 +372,19 @@ StEvents LCD_vGetNextEvent(void){
 		else if (sm.state == ST_TEST_MPX_MANUAL)
 			LCD_vSetNextEvent(lcd.sbLine);
 
-		else if ((sm.state == ST_TEST_LOG_MPX) || (sm.state == ST_TEST_LOG_MPX_M))
+		else if (sm.state == ST_TEST_LOG_MPX)
+		{
+			if (mpxTest_vGetTest() == TEST_END)
+			{
+				LCD_vSetNextEvent(EV_KBD_ENTER);
+				mpxTest_vFinishTest();
+			}
+
+			else
+				mpxTest_vContinueTest();
+		}
+
+		else if (sm.state == ST_TEST_LOG_MPX_M)
 		{
 			LCD_vSetNextEvent(EV_KBD_ENTER);
 			mpxTest_vFinishTest();
@@ -808,7 +829,8 @@ void LCD_vTestMPXManual(void)
 		,"Teste 31: CN3.3 "	,"Teste 32: CN3.4 " ,"Teste 33: CN3.5 "	,"Teste 34: CN3.6 "
 		,"Teste 35: CN3.7 "	,"Teste 36: CN3.8 " ,"Teste 37: CN3.9 "	,"Teste 38: CN4.1 "
 		,"Teste 39: CN4.2 "	,"Teste 40: CN4.3 " ,"Teste 41: CN4.4 "	,"Teste 42: CN4.5 "
-		,"Teste 43: CN4.6 "	,"Teste 44: CN4.7 " ,"Teste 45: CN4.8 "	,"Teste 46: CN4.9 "};
+		,"Teste 43: CN4.6 "	,"Teste 44: CN4.7 " ,"Teste 45: CN4.8 "	,"Teste 46: CN4.9 "
+		,"Teste 47: NTC   "};
 
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
@@ -853,7 +875,8 @@ void LCD_vTestPTC24(void)
 
 	char finalpoint={' '};
 
-	initPTC24config();
+	if (!ptc24.PtcAlreadyInit)
+		initPTC24config();
 
 	if ((sysTickTimer%2000)>999)
 		finalpoint='.';
@@ -870,6 +893,8 @@ void LCD_vTestPTC24Start(void)
 {
 	LCD_printLine(0, "                ");
 	LCD_printLine(1, "                ");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "                ");
+	snprintf(TestMessages.lines[1], LINE_SIZE, "                ");
 
 	ptc24Test_vSetTest(PTC24_TEST_START);
 

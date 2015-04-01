@@ -128,6 +128,7 @@ typedef struct {
 } PortParameter;
 
 #define NUM_PORTS 48
+#define NUM_EFFECTIVE_PORTS 28
 #define STRING_DESCRIPTION_SIZE 16
 
 #define INPUT_HIGH_MASK 0x01
@@ -159,14 +160,21 @@ typedef struct{
 	/* Mudar contagem de erro */
 	uint8_t lastPortInput[NUM_PORTS];
 
+	uint16_t ntcTemperature;
+
 	uint8_t MpxFlags[8];
 	/* Count MPX timeout */
 	uint64_t lastTimeSeen;
 
 	/* Used to configure MPX emergency */
 	uint8_t ackIndex;
+	uint8_t lastAckIndex;
 	bool ackReceived;
-}Mpx;
+
+	/* Flash memory checksum. */
+	uint16_t readChecksum;
+	uint16_t calculatedChecksum;
+} Mpx;
 
 
 typedef struct  {
@@ -385,6 +393,7 @@ typedef enum{
     /* End of Timers */
 
 	MEMORY_INDEX_TEST_STEP = 49,
+	MEMORY_INDEX_FLASH,
 
 	MEMORY_INDEX_MPX_NUM_PORTS_ON_START = 128,
 	MEMORY_INDEX_MPX_NUM_PORTS_ON_END = MEMORY_INDEX_MPX_NUM_PORTS_ON_START + NUM_MPX,

@@ -15,6 +15,7 @@ void ptc24_vFinish(void);
 /* Local functions declaration #2 --------------------------------------------*/
 void ptc24_vAnalyse_CAN1(void);
 void ptc24_vAnalyse_Ign(void);
+void ptc24_vAnalyse_Flash(void);
 void ptc24_vAnalyse_Taco(void);
 void ptc24_vAnalyse_Odo(void);
 void ptc24_vAnalyse_Buzzer(void);
@@ -28,6 +29,7 @@ void (*printTestResult)(void);
 void ptc24printTestMessage(char*, char*, uint8_t);
 void ptc24print_CAN1Error(void);
 void ptc24print_IgnError(void);
+void ptc24print_FlashError(void);
 void ptc24print_TacoError(void);
 void ptc24print_OdoError(void);
 void ptc24print_Buzzer(void);
@@ -199,96 +201,20 @@ void ptc24_vUpdateTests(void)
 		/* Do first test: next test from PTC24_TEST_START. */
 		Ptc24Tests.currentTest = PTC24_TEST_START + 1;
 
-	else if (Ptc24Tests.currentTest == PTC24_TEST_IGN)
+	else if ((Ptc24Tests.currentTest >= PTC24_TEST_IGN) && (Ptc24Tests.currentTest <= PTC24_TEST_ODO_ON))
 	{
 		if (Ptc24Tests.testFinished)
 		{
-			Ptc24Tests.currentTest = PTC24_TEST_TACO_OFF;
+			Ptc24Tests.currentTest++;
 			Ptc24Tests.testFinished = false;
 		}
 	}
 
-	else if (Ptc24Tests.currentTest == PTC24_TEST_TACO_OFF)
-	{
-		if (Ptc24Tests.testFinished)
-		{
-			Ptc24Tests.currentTest = PTC24_TEST_TACO_ON;
-			Ptc24Tests.testFinished = false;
-		}
-	}
-
-	else if (Ptc24Tests.currentTest == PTC24_TEST_TACO_ON)
-	{
-		if (Ptc24Tests.testFinished)
-		{
-			Ptc24Tests.currentTest = PTC24_TEST_ODO_OFF;
-			Ptc24Tests.testFinished = false;
-		}
-	}
-
-	else if (Ptc24Tests.currentTest == PTC24_TEST_ODO_OFF)
-	{
-		if (Ptc24Tests.testFinished)
-		{
-			Ptc24Tests.currentTest = PTC24_TEST_ODO_ON;
-			Ptc24Tests.testFinished = false;
-		}
-	}
-
-	else if (Ptc24Tests.currentTest == PTC24_TEST_ODO_ON)
-	{
-		if (Ptc24Tests.testFinished)
-		{
-			Ptc24Tests.currentTest = PTC24_TEST_KEYS_ON;
-			Ptc24Tests.testFinished = false;
-		}
-	}
-
-	else if (Ptc24Tests.currentTest == PTC24_TEST_KEYS_ON)
+	else if ((Ptc24Tests.currentTest >= PTC24_TEST_KEYS_ON) && (Ptc24Tests.currentTest <= PTC24_TEST_WARNINGLEDS_OFF))
 	{
 		if (Ptc24Tests.testOk && Ptc24Tests.testFinished)
 		{
-			Ptc24Tests.currentTest = PTC24_TEST_BUZZER;
-			Ptc24Tests.testFinished = false;
-			Ptc24Tests.testOk = false;
-		}
-	}
-
-	else if (Ptc24Tests.currentTest == PTC24_TEST_BUZZER)
-	{
-		if (Ptc24Tests.testOk && Ptc24Tests.testFinished)
-		{
-			Ptc24Tests.currentTest = PTC24_TEST_WARNINGLEDS_ON;
-			Ptc24Tests.testFinished = false;
-			Ptc24Tests.testOk = false;
-		}
-	}
-
-	else if (Ptc24Tests.currentTest == PTC24_TEST_WARNINGLEDS_ON)
-	{
-		if (Ptc24Tests.testOk && Ptc24Tests.testFinished)
-		{
-			Ptc24Tests.currentTest = PTC24_TEST_KEYS_OFF;
-			Ptc24Tests.testFinished = false;
-			Ptc24Tests.testOk = false;
-		}
-	}
-
-	else if (Ptc24Tests.currentTest == PTC24_TEST_KEYS_OFF)
-	{
-		if (Ptc24Tests.testOk && Ptc24Tests.testFinished)
-		{
-			Ptc24Tests.currentTest = PTC24_TEST_WARNINGLEDS_OFF;
-			Ptc24Tests.testFinished = false;
-			Ptc24Tests.testOk = false;
-		}
-	}
-
-	else if (Ptc24Tests.currentTest == PTC24_TEST_WARNINGLEDS_OFF)
-	{
-		if (Ptc24Tests.testOk && Ptc24Tests.testFinished)
-		{
-			Ptc24Tests.currentTest = PTC24_TEST_END;
+			Ptc24Tests.currentTest++;
 			Ptc24Tests.testFinished = false;
 			Ptc24Tests.testOk = false;
 		}
@@ -329,6 +255,9 @@ void ptc24_vExecute(void)
 	if (Ptc24Tests.currentTest == PTC24_TEST_IGN)
 		tooglePTC24Ign();
 
+	if (Ptc24Tests.currentTest == PTC24_TEST_FLASH)
+		sendCanPacket(CAN1, CAN_COMMAND_READ, MEMORY_INDEX_FLASH, MY_ID, PTC24_DEVICE_ID, MEMORY_INDEX_FLASH, 1);
+
 	if (Ptc24Tests.currentTest == PTC24_TEST_ODO_ON)
 		ptc24_enableToogleOdo(true);
 
@@ -350,6 +279,10 @@ void ptc24_vWait(void)
 			  (sysTickTimer - Ptc24Tests.statedTestTime < DELAY_FAST_TESTS) )
 		ptc24_vSetNextEvent(PTC24_EV_REFRESH);
 
+	else if ( (Ptc24Tests.currentTest == PTC24_TEST_FLASH) &&
+			  (sysTickTimer - Ptc24Tests.statedTestTime < DELAY_FAST_TESTS) )
+		ptc24_vSetNextEvent(PTC24_EV_REFRESH);
+
 	else
 		ptc24_vSetNextEvent(PTC24_EV_ANALYSE);
 }
@@ -363,6 +296,9 @@ void ptc24_vAnalyse(void)
 
 	if ((Ptc24Tests.currentTest == PTC24_TEST_IGN) && (!Ptc24Tests.testFinished))
 		ptc24_vAnalyse_Ign();
+
+	if ((Ptc24Tests.currentTest == PTC24_TEST_FLASH) && (!Ptc24Tests.testFinished))
+		ptc24_vAnalyse_Flash();
 
 	if ((Ptc24Tests.currentTest == PTC24_TEST_TACO_OFF) && (!Ptc24Tests.testFinished))
 		ptc24_vAnalyse_Taco();
@@ -457,9 +393,25 @@ void ptc24_vAnalyse_Ign()
 	}
 
 }
+
+void ptc24_vAnalyse_Flash()
+{
+	Ptc24Tests.testError = false;
+	Ptc24Tests.testFinished = true;
+
+	if (ptc24.memory[MEMORY_INDEX_FLASH] != 0xFF)
+	{
+		Ptc24Tests.testError = true;
+		setBeep(1, 2000);
+		printTestResult = ptc24print_FlashError;
+	}
+
+}
+
 void ptc24_vAnalyse_Taco()
 {
 	int i, num_tries = 5;
+	bool boolPrintTestError;
 
 	for (i=0; i<num_tries; i++)
 	{
@@ -469,6 +421,7 @@ void ptc24_vAnalyse_Taco()
 			{
 				Ptc24Tests.testError = false;
 				Ptc24Tests.testFinished = true;
+				boolPrintTestError = false;
 				break;
 			}
 
@@ -477,7 +430,7 @@ void ptc24_vAnalyse_Taco()
 				Ptc24Tests.testError = true;
 				Ptc24Tests.testFinished = true;
 				setBeep(1, 2000);
-				printTestResult = ptc24print_TacoError;
+				boolPrintTestError = true;
 			}
 		}
 
@@ -487,6 +440,7 @@ void ptc24_vAnalyse_Taco()
 			{
 				Ptc24Tests.testError = false;
 				Ptc24Tests.testFinished = true;
+				boolPrintTestError = false;
 				break;
 			}
 
@@ -495,16 +449,20 @@ void ptc24_vAnalyse_Taco()
 				Ptc24Tests.testError = true;
 				Ptc24Tests.testFinished = true;
 				setBeep(1, 2000);
-				printTestResult = ptc24print_TacoError;
+				boolPrintTestError = true;
 				ptc24_enableToogleTaco(false);
 			}
 		}
 	}
+
+	if (boolPrintTestError)
+		printTestResult = ptc24print_TacoError;
 }
 
 void ptc24_vAnalyse_Odo()
 {
 	int i, num_tries = 5;
+	bool boolPrintTestError;
 
 	for (i=0; i<num_tries; i++)
 	{
@@ -514,6 +472,7 @@ void ptc24_vAnalyse_Odo()
 			{
 				Ptc24Tests.testError = false;
 				Ptc24Tests.testFinished = true;
+				boolPrintTestError = false;
 				break;
 			}
 
@@ -522,7 +481,7 @@ void ptc24_vAnalyse_Odo()
 				Ptc24Tests.testError = true;
 				Ptc24Tests.testFinished = true;
 				setBeep(1, 2000);
-				printTestResult = ptc24print_OdoError;
+				boolPrintTestError = true;
 			}
 		}
 
@@ -532,6 +491,7 @@ void ptc24_vAnalyse_Odo()
 			{
 				Ptc24Tests.testError = false;
 				Ptc24Tests.testFinished = true;
+				boolPrintTestError = false;
 				break;
 			}
 
@@ -540,11 +500,14 @@ void ptc24_vAnalyse_Odo()
 				Ptc24Tests.testError = true;
 				Ptc24Tests.testFinished = true;
 				setBeep(1, 2000);
-				printTestResult = ptc24print_OdoError;
+				boolPrintTestError = true;
 				ptc24_enableToogleOdo(false);
 			}
 		}
 	}
+
+	if (boolPrintTestError)
+		printTestResult = ptc24print_OdoError;
 }
 
 void ptc24_vAnalyse_Buzzer()
@@ -652,6 +615,13 @@ void ptc24print_IgnError(void)
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
+void ptc24print_FlashError(void)
+{
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Flash Erro: Veri");
+	sprintf(message, "ficar comp. U8");
+	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
 void ptc24print_OdoError(void)
 {
 	snprintf(TestMessages.lines[0], LINE_SIZE, "ODO Erro: Veri- ");
@@ -734,6 +704,7 @@ void ptc24print_OnGoing(void)
 	sprintf(message, "Pressione Enter", 1);
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
+
 
 void ptc24printTestMessage(char *line, char *sentence, uint8_t dots)
 {

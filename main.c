@@ -10,12 +10,16 @@
 #include "usb/user/usbd_cdc_vcp.h"
 #include "mpx.h"
 #include "ptc24.h"
+#include "ptc16.h"
 #include "mpx_statemachine.h"
 #include "ptc24_statemachine.h"
+#include "ptc16_statemachine.h"
 
 void teste()
 {
-	sendCanPacket(CAN2, 0x00, 0x00, 0xAB, 0x20, 0, 0);
+	GPIO_SetBits(PWM_NTC_PORT, PWM_NTC);
+	delayMsUsingSysTick(20);
+	GPIO_ResetBits(PWM_NTC_PORT, PWM_NTC);
 }
 
 int main(void)
@@ -54,28 +58,30 @@ int main(void)
     		executeEveryInterval(5, 80, &turningOffMpxEmergencyMode);
 
     		executeEveryInterval(6, 5, &sendChangedOutputsToMPXs);
+
+    		executeEveryInterval(7, 1, &toogleMPXNTC);
     	}
 
     	else if (ptc24.PtcAlreadyInit)
     	{
-    		executeEveryInterval(7, 40, &emulateMpx);
+    		executeEveryInterval(8, 40, &emulateMpx);
 
-    		executeEveryInterval(8, 10, &ptc24Test_vStateMachineLoop);
+    		executeEveryInterval(9, 10, &ptc24Test_vStateMachineLoop);
 
-    		executeEveryInterval(9, 10, &ptc24_toggleOdo);
+    		executeEveryInterval(10, 10, &ptc24_toggleOdo);
 
-    		executeEveryInterval(10, 8, &ptc24_toggleTaco);
+    		executeEveryInterval(11, 8, &ptc24_toggleTaco);
     	}
 
     	else if (ptc16.PtcAlreadyInit)
     	{
-    		executeEveryInterval(7, 40, &emulateMpx);
+    		executeEveryInterval(8, 40, &emulateMpx);
 
-    		executeEveryInterval(11, 10, &ptc16Test_vStateMachineLoop);
+    		executeEveryInterval(12, 10, &ptc16Test_vStateMachineLoop);
 
-    		executeEveryInterval(12, 10, &ptc16_toggleOdo);
+    		executeEveryInterval(13, 10, &ptc16_toggleOdo);
 
-    		executeEveryInterval(13, 8, &ptc16_toggleTaco);
+    		executeEveryInterval(14, 8, &ptc16_toggleTaco);
     	}
     }
 }
