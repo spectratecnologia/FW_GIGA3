@@ -450,6 +450,11 @@ typedef struct {
 	PortParameter portOutputCommand[NUM_PORTS];
 	bool odoReceivedCommand;
 	bool tacoReceivedCommand;
+
+	uint8_t CAN2DataReceived[8];
+
+	uint8_t pendriveTestLog;
+	bool pendriveTestStarted;
 }Ptc;
 
 

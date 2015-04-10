@@ -27,6 +27,7 @@ void ptc24_vAnalyse_EndTest(void);
 /* Local functions declaration #3 --------------------------------------------*/
 void (*printTestResult)(void);
 void ptc24printTestMessage(char*, char*, uint8_t);
+void ptc24print_ClearMessages(void);
 void ptc24print_CAN1Error(void);
 void ptc24print_IgnError(void);
 void ptc24print_FlashError(void);
@@ -52,6 +53,8 @@ StateMachine Ptc24StateMachine;
 StructPtc24Test Ptc24Tests;
 char message[LINE_SIZE];
 static volatile int8_t nextEvent;
+static volatile int PTC24_NUM_TACO_TRIES;
+static volatile int PTC24_NUM_ODO_TRIES;
 
 const Transition Ptc24SMTrans[] =  		//TABELA DE ESTADOS
 {
@@ -178,6 +181,9 @@ void ptc24_vResetTests(void)
 	ptc24_enableToogleOdo(false);
 	ptc24_enableToogleTaco(false);
 	ptc24.outputCommandReceived = false;
+	ptc24print_ClearMessages();
+	PTC24_NUM_TACO_TRIES=0;
+	PTC24_NUM_ODO_TRIES=0;
 
 	for (i=0; i<NUM_PTC24_KEYS; i++)
 	{
@@ -201,7 +207,7 @@ void ptc24_vUpdateTests(void)
 		/* Do first test: next test from PTC24_TEST_START. */
 		Ptc24Tests.currentTest = PTC24_TEST_START + 1;
 
-	else if ((Ptc24Tests.currentTest >= PTC24_TEST_IGN) && (Ptc24Tests.currentTest <= PTC24_TEST_ODO_ON))
+	else if ((Ptc24Tests.currentTest >= PTC24_TEST_IGN_OFF) && (Ptc24Tests.currentTest <= PTC24_TEST_ODO_ON))
 	{
 		if (Ptc24Tests.testFinished)
 		{
@@ -252,8 +258,11 @@ void ptc24_vExecute(void)
 {
 	Ptc24Tests.statedTestTime = sysTickTimer;
 
-	if (Ptc24Tests.currentTest == PTC24_TEST_IGN)
-		tooglePTC24Ign();
+	if (Ptc24Tests.currentTest == PTC24_TEST_IGN_OFF)
+		activePTC24Ign(DISABLE);
+
+	if (Ptc24Tests.currentTest == PTC24_TEST_IGN_ON)
+		activePTC24Ign(ENABLE);
 
 	if (Ptc24Tests.currentTest == PTC24_TEST_FLASH)
 		sendCanPacket(CAN1, CAN_COMMAND_READ, MEMORY_INDEX_FLASH, MY_ID, PTC24_DEVICE_ID, MEMORY_INDEX_FLASH, 1);
@@ -271,17 +280,47 @@ void ptc24_vExecute(void)
 /* Wait ---------------------------------------------------------------------*/
 void ptc24_vWait(void)
 {
-	if ( (Ptc24Tests.currentTest == PTC24_TEST_ODO_ON) &&
-		 (sysTickTimer - Ptc24Tests.statedTestTime < DELAY_FAST_TESTS) )
+	if ( (Ptc24Tests.currentTest == PTC24_TEST_ODO_OFF) &&
+		 (sysTickTimer - Ptc24Tests.statedTestTime < PTC24_DELAY_SLOW_TESTS) )
+	{
 		ptc24_vSetNextEvent(PTC24_EV_REFRESH);
+		printTestResult = ptc24print_WaitMessage;
+	}
+
+	else if ( (Ptc24Tests.currentTest == PTC24_TEST_ODO_ON) &&
+		 (sysTickTimer - Ptc24Tests.statedTestTime < PTC24_DELAY_SLOW_TESTS) )
+	{
+		ptc24_vSetNextEvent(PTC24_EV_REFRESH);
+		printTestResult = ptc24print_WaitMessage;
+	}
+
+	else if ( (Ptc24Tests.currentTest == PTC24_TEST_TACO_OFF) &&
+			  (sysTickTimer - Ptc24Tests.statedTestTime < 2*PTC24_DELAY_SLOW_TESTS) )
+	{
+		ptc24_vSetNextEvent(PTC24_EV_REFRESH);
+		printTestResult = ptc24print_WaitMessage;
+	}
 
 	else if ( (Ptc24Tests.currentTest == PTC24_TEST_TACO_ON) &&
-			  (sysTickTimer - Ptc24Tests.statedTestTime < DELAY_FAST_TESTS) )
+			  (sysTickTimer - Ptc24Tests.statedTestTime < 2*PTC24_DELAY_SLOW_TESTS) )
+	{
 		ptc24_vSetNextEvent(PTC24_EV_REFRESH);
+		printTestResult = ptc24print_WaitMessage;
+	}
 
-	else if ( (Ptc24Tests.currentTest == PTC24_TEST_FLASH) &&
-			  (sysTickTimer - Ptc24Tests.statedTestTime < DELAY_FAST_TESTS) )
+	else if ( (Ptc24Tests.currentTest == PTC24_TEST_IGN_OFF) &&
+			  (sysTickTimer - Ptc24Tests.statedTestTime < 3*PTC24_DELAY_SLOW_TESTS) )
+	{
 		ptc24_vSetNextEvent(PTC24_EV_REFRESH);
+		printTestResult = ptc24print_WaitMessage;
+	}
+
+	else if ( (Ptc24Tests.currentTest == PTC24_TEST_IGN_ON) &&
+			  (sysTickTimer - Ptc24Tests.statedTestTime < PTC24_DELAY_SLOW_TESTS) )
+	{
+		ptc24_vSetNextEvent(PTC24_EV_REFRESH);
+		printTestResult = ptc24print_WaitMessage;
+	}
 
 	else
 		ptc24_vSetNextEvent(PTC24_EV_ANALYSE);
@@ -294,7 +333,10 @@ void ptc24_vAnalyse(void)
 
 	ptc24_vAnalyse_CAN1();
 
-	if ((Ptc24Tests.currentTest == PTC24_TEST_IGN) && (!Ptc24Tests.testFinished))
+	if ((Ptc24Tests.currentTest == PTC24_TEST_IGN_OFF) && (!Ptc24Tests.testFinished))
+		Ptc24Tests.testFinished = true;
+
+	if ((Ptc24Tests.currentTest == PTC24_TEST_IGN_ON) && (!Ptc24Tests.testFinished))
 		ptc24_vAnalyse_Ign();
 
 	if ((Ptc24Tests.currentTest == PTC24_TEST_FLASH) && (!Ptc24Tests.testFinished))
@@ -411,103 +453,75 @@ void ptc24_vAnalyse_Flash()
 void ptc24_vAnalyse_Taco()
 {
 	int i, num_tries = 5;
-	bool boolPrintTestError;
 
-	for (i=0; i<num_tries; i++)
+	if (Ptc24Tests.currentTest == PTC24_TEST_TACO_OFF)
 	{
-		if (Ptc24Tests.currentTest == PTC24_TEST_TACO_OFF)
+		if (!ptc24.tacoReceivedCommand)
 		{
-			if (!ptc24.tacoReceivedCommand)
-			{
-				Ptc24Tests.testError = false;
-				Ptc24Tests.testFinished = true;
-				boolPrintTestError = false;
-				break;
-			}
-
-			else
-			{
-				Ptc24Tests.testError = true;
-				Ptc24Tests.testFinished = true;
-				setBeep(1, 2000);
-				boolPrintTestError = true;
-			}
-		}
-
-		else if (Ptc24Tests.currentTest == PTC24_TEST_TACO_ON)
-		{
-			if (ptc24.tacoReceivedCommand)
-			{
-				Ptc24Tests.testError = false;
-				Ptc24Tests.testFinished = true;
-				boolPrintTestError = false;
-				break;
-			}
-
-			else
-			{
-				Ptc24Tests.testError = true;
-				Ptc24Tests.testFinished = true;
-				setBeep(1, 2000);
-				boolPrintTestError = true;
-				ptc24_enableToogleTaco(false);
-			}
+			Ptc24Tests.testError = false;
+			Ptc24Tests.testFinished = true;
+			PTC24_NUM_TACO_TRIES=0;
+			return;
 		}
 	}
 
-	if (boolPrintTestError)
+	else if (Ptc24Tests.currentTest == PTC24_TEST_TACO_ON)
+	{
+		if (ptc24.tacoReceivedCommand)
+		{
+			Ptc24Tests.testError = false;
+			Ptc24Tests.testFinished = true;
+			PTC24_NUM_TACO_TRIES=0;
+			return;
+		}
+	}
+
+	if (PTC24_NUM_TACO_TRIES == num_tries)
+	{
+		Ptc24Tests.testError = true;
+		Ptc24Tests.testFinished = true;
+		setBeep(1, 2000);
 		printTestResult = ptc24print_TacoError;
+		ptc24_enableToogleTaco(false);
+	}
+	PTC24_NUM_TACO_TRIES++;
 }
 
 void ptc24_vAnalyse_Odo()
 {
 	int i, num_tries = 5;
-	bool boolPrintTestError;
 
-	for (i=0; i<num_tries; i++)
+	if (Ptc24Tests.currentTest == PTC24_TEST_ODO_OFF)
 	{
-		if (Ptc24Tests.currentTest == PTC24_TEST_ODO_OFF)
+		if (!ptc24.odoReceivedCommand)
 		{
-			if (!ptc24.odoReceivedCommand)
-			{
-				Ptc24Tests.testError = false;
-				Ptc24Tests.testFinished = true;
-				boolPrintTestError = false;
-				break;
-			}
-
-			else
-			{
-				Ptc24Tests.testError = true;
-				Ptc24Tests.testFinished = true;
-				setBeep(1, 2000);
-				boolPrintTestError = true;
-			}
-		}
-
-		else if (Ptc24Tests.currentTest == PTC24_TEST_ODO_ON)
-		{
-			if (ptc24.odoReceivedCommand)
-			{
-				Ptc24Tests.testError = false;
-				Ptc24Tests.testFinished = true;
-				boolPrintTestError = false;
-				break;
-			}
-
-			else
-			{
-				Ptc24Tests.testError = true;
-				Ptc24Tests.testFinished = true;
-				setBeep(1, 2000);
-				boolPrintTestError = true;
-				ptc24_enableToogleOdo(false);
-			}
+			Ptc24Tests.testError = false;
+			Ptc24Tests.testFinished = true;
+			PTC24_NUM_ODO_TRIES=0;
+			return;
 		}
 	}
 
-	if (boolPrintTestError)
+	else if (Ptc24Tests.currentTest == PTC24_TEST_ODO_ON)
+	{
+		if (ptc24.odoReceivedCommand)
+		{
+			Ptc24Tests.testError = false;
+			Ptc24Tests.testFinished = true;
+			PTC24_NUM_ODO_TRIES=0;
+			return;
+		}
+	}
+
+	if (PTC24_NUM_ODO_TRIES == num_tries)
+	{
+		Ptc24Tests.testError = true;
+		Ptc24Tests.testFinished = true;
+		setBeep(1, 2000);
 		printTestResult = ptc24print_OdoError;
+		ptc24_enableToogleOdo(false);
+	}
+	PTC24_NUM_ODO_TRIES++;
 }
 
 void ptc24_vAnalyse_Buzzer()
@@ -601,6 +615,12 @@ void ptc24print_WaitMessage(void)
 	printTestMessage(TestMessages.lines[1], message, 3);
 }
 
+void ptc24print_ClearMessages(void)
+{
+	snprintf(TestMessages.lines[0],LINE_SIZE,"                  ");
+	snprintf(TestMessages.lines[1],LINE_SIZE,"                  ");
+}
+
 void ptc24print_CAN1Error(void)
 {
 	snprintf(TestMessages.lines[0], LINE_SIZE, "CAN1 Erro: Veri-");
@@ -638,7 +658,7 @@ void ptc24print_TacoError(void)
 
 void ptc24print_Buzzer(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "   Buzzer ok?   ");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Buzzer ok?      ");
 	snprintf(TestMessages.lines[1], LINE_SIZE, "(Primeira tecla)");
 }
 
@@ -651,7 +671,7 @@ void ptc24print_PressKeyOn(void)
 
 	sprintf(message, "Press. tecla %d", i+1);
 
-	snprintf(TestMessages.lines[0], LINE_SIZE, "   Ligar LEDS   ");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Ligar LEDS      ");
 	snprintf(TestMessages.lines[1], LINE_SIZE, "%s              ", message);
 }
 
@@ -663,37 +683,37 @@ void ptc24print_PressKeyOff(void)
 			break;
 
 	sprintf(message, "Press. tecla %d", i+1);
-	snprintf(TestMessages.lines[0], LINE_SIZE, " Desligar LEDS  ");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Desligar LEDS   ");
 	snprintf(TestMessages.lines[1], LINE_SIZE, "%s              ", message);
 }
 
 void ptc24print_AllLedsKeyOn(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, " Leds das teclas ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, " todos ligados?  ");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas  ");
+	snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
 }
 
 void ptc24print_AllLedsKeyOff(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, " Leds das teclas");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas ");
 	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado?");
 }
 
 void ptc24print_AllWarningLedsOn(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, " Leds de avisos  ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, " todos ligados?  ");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
+	snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
 }
 
 void ptc24print_AllWarningLedsOff(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, " Leds de avisos  ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado?");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
+	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado? ");
 }
 
 void ptc24print_EndTestOk(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE," Teste PTC24: OK");
+	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste PTC24: OK ");
 	sprintf(message, "Pressione Enter", 1);
 	printTestMessage(TestMessages.lines[1], message, 1);
 }

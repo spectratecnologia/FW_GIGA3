@@ -43,10 +43,12 @@ void initPTC24Ign()
 	GPIO_SetBits(CMD_IGN2_PORT, CMD_IGN2);
 }
 
-void tooglePTC24Ign()
+void activePTC24Ign(FunctionalState fs)
 {
-	GPIO_ResetBits(CMD_IGN2_PORT, CMD_IGN2);
-	GPIO_SetBits(CMD_IGN2_PORT, CMD_IGN2);
+	if(fs == DISABLE)
+		GPIO_ResetBits(CMD_IGN2_PORT, CMD_IGN2);
+	else
+		GPIO_SetBits(CMD_IGN2_PORT, CMD_IGN2);
 }
 
 void initPTC24Taco()

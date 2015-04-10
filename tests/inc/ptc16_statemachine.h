@@ -9,7 +9,7 @@
 
 /* Exported types ------------------------------------------------------------*/
 #define NUM_PTC16_KEYS 12
-#define DELAY_FAST_TESTS 50
+#define PTC16_DELAY_SLOW_TESTS 200
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 
@@ -45,9 +45,11 @@ typedef enum
 {
 	PTC16_TEST_NOTHING,
 	PTC16_TEST_START,
-	PTC16_TEST_IGN,
+	PTC16_TEST_IGN_OFF, PTC16_TEST_IGN_ON,
+	PTC16_TEST_CAN2,
 	PTC16_TEST_TACO_OFF, PTC16_TEST_TACO_ON,
 	PTC16_TEST_ODO_OFF, PTC16_TEST_ODO_ON,
+	PTC16_TEST_PENDRIVE,
 	PTC16_TEST_KEYS_ON,
 	PTC16_TEST_WARNINGLEDS_ON,
 	PTC16_TEST_BUZZER,
@@ -75,6 +77,29 @@ typedef struct
 	/* This boolean shows if finished test beep occurred (true) or not (false). */
 	bool finishedTestBeep;
 } StructPtc16Test;
+
+/*LCD USB Message state number */
+#define LCD_USB_MSG_NEW_LOGS 						0
+#define LCD_USB_MSG_ALL_LOGS 						1
+#define LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE 	2
+#define LCD_USB_MSG_SAVING 							3
+#define LCD_USB_MSG_FINISHED 						4
+
+#define LCD_USB_MSG_SAVE_TIMEOUT_ERROR				5
+#define LCD_USB_MSG_SAVE_ERROR						6
+
+/* Error Message Number */
+/* Try to keep this error message with lowest value */
+#define LCD_USB_MSG_ERROR_CANT_MOUNT  		7
+#define LCD_USB_MSG_ERROR_CANT_CREATE_FILE	8
+#define LCD_USB_MSG_ERROR_CANT_WRITE 		9
+#define LCD_USB_MSG_ERROR_CANT_OPEN_FILE    10
+#define LCD_USB_MSG_RM_ERROR 				11
+/* Try to keep this error message with highest value */
+#define LCD_USB_MSG_ERROR_CANT_CLOSE		12
+
+#define LCD_USB_WAIT_MESSAGE				0x20
+
 
 /* Exported macro ------------------------------------------------------------*/
 

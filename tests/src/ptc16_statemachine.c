@@ -13,20 +13,25 @@ void ptc16_vPrint(void);
 void ptc16_vFinish(void);
 
 /* Local functions declaration #2 --------------------------------------------*/
+void ptc16_vExecute_Pendrive(void);
 void ptc16_vAnalyse_CAN1(void);
-void ptc16_vAnalyse_Ign(void);
+void ptc16_vAnalyse_CAN2(void);
+void ptc16_vAnalyse_IgnOn(void);
 void ptc16_vAnalyse_Taco(void);
 void ptc16_vAnalyse_Odo(void);
 void ptc16_vAnalyse_Buzzer(void);
 void ptc16_vAnalyse_KeysOn(void);
 void ptc16_vAnalyse_KeysOff(void);
 void ptc16_vAnalyse_WarningLeds(void);
+void ptc16_vAnalyse_Pendrive(void);
 void ptc16_vAnalyse_EndTest(void);
 
 /* Local functions declaration #3 --------------------------------------------*/
 void (*printTestResult)(void);
 void ptc16printTestMessage(char*, char*, uint8_t);
+void prc16print_ClearMessages(void);
 void ptc16print_CAN1Error(void);
+void ptc16print_CAN2Error(void);
 void ptc16print_IgnError(void);
 void ptc16print_TacoError(void);
 void ptc16print_OdoError(void);
@@ -37,6 +42,7 @@ void ptc16print_AllLedsKeyOn(void);
 void ptc16print_AllLedsKeyOff(void);
 void ptc16print_AllWarningLedsOn(void);
 void ptc16print_AllWarningLedsOff(void);
+void ptc16print_USBTestMessage(void);
 void ptc16print_EndTestOk(void);
 void ptc16print_WaitMessage(void);
 
@@ -50,6 +56,9 @@ StateMachine Ptc16StateMachine;
 StructPtc16Test Ptc16Tests;
 char message[LINE_SIZE];
 static volatile int8_t nextEvent;
+static volatile int PTC16_NUM_TACO_TRIES;
+static volatile int PTC16_NUM_ODO_TRIES;
+uint8_t CAN2DataReference[8] = {0x12, 0x45, 0x32, 0xA3, 0x7F, 0x90, 0xDC, 0x1E};
 
 const Transition Ptc16SMTrans[] =  		//TABELA DE ESTADOS
 {
@@ -174,6 +183,11 @@ void ptc16_vResetTests(void)
 	ptc16_enableToogleOdo(false);
 	ptc16_enableToogleTaco(false);
 	ptc16.outputCommandReceived = false;
+	ptc16.pendriveTestLog = 0xFF;
+	ptc16.pendriveTestStarted = false;
+	ptc16print_ClearMessages();
+	PTC16_NUM_TACO_TRIES=0;
+	PTC16_NUM_ODO_TRIES=0;
 }
 
 void ptc16_vUpdateTests(void)
@@ -182,12 +196,22 @@ void ptc16_vUpdateTests(void)
 		/* Do first test: next test from PTC16_TEST_START. */
 		Ptc16Tests.currentTest = PTC16_TEST_START + 1;
 
-	else if ((Ptc16Tests.currentTest >= PTC16_TEST_IGN) && (Ptc16Tests.currentTest <= PTC16_TEST_ODO_ON))
+	else if ((Ptc16Tests.currentTest >= PTC16_TEST_IGN_OFF) && (Ptc16Tests.currentTest <= PTC16_TEST_ODO_ON))
 	{
 		if (Ptc16Tests.testFinished)
 		{
 			Ptc16Tests.currentTest++;
 			Ptc16Tests.testFinished = false;
+		}
+	}
+
+	else if (Ptc16Tests.currentTest == PTC16_TEST_PENDRIVE)
+	{
+		if (Ptc16Tests.testOk)
+		{
+			Ptc16Tests.currentTest++;
+			Ptc16Tests.testFinished = false;
+			Ptc16Tests.testOk = false;
 		}
 	}
 
@@ -233,14 +257,24 @@ void ptc16_vExecute(void)
 {
 	Ptc16Tests.statedTestTime = sysTickTimer;
 
-	if (Ptc16Tests.currentTest == PTC16_TEST_IGN)
-		tooglePTC16Ign();
+	if (Ptc16Tests.currentTest == PTC16_TEST_IGN_OFF)
+		activePTC16Ign(DISABLE);
+
+	if (Ptc16Tests.currentTest == PTC16_TEST_IGN_ON)
+		activePTC16Ign(ENABLE);
+
+	if(Ptc16Tests.currentTest == PTC16_TEST_CAN2)
+		sendCanPacket(CAN2, CAN_COMMAND_BROADCAST, 0x00, MY_ID, PTC16_DEVICE_ID, CAN2DataReference, 8);
 
 	if (Ptc16Tests.currentTest == PTC16_TEST_ODO_ON)
 		ptc16_enableToogleOdo(true);
 
 	if (Ptc16Tests.currentTest == PTC16_TEST_TACO_ON)
 		ptc16_enableToogleTaco(true);
+
+	if(Ptc16Tests.currentTest == PTC16_TEST_PENDRIVE)
+		if (!ptc16.pendriveTestStarted)
+			ptc16_vExecute_Pendrive();
 
 	ptc16_vSetNextEvent(PTC16_EV_WAIT);
 }
@@ -249,13 +283,47 @@ void ptc16_vExecute(void)
 /* Wait ---------------------------------------------------------------------*/
 void ptc16_vWait(void)
 {
-	if ( (Ptc16Tests.currentTest == PTC16_TEST_ODO_ON) &&
-		 (sysTickTimer - Ptc16Tests.statedTestTime < DELAY_FAST_TESTS) )
+	if ( (Ptc16Tests.currentTest == PTC16_TEST_ODO_OFF) &&
+		 (sysTickTimer - Ptc16Tests.statedTestTime < PTC16_DELAY_SLOW_TESTS) )
+	{
 		ptc16_vSetNextEvent(PTC16_EV_REFRESH);
+		printTestResult = ptc16print_WaitMessage;
+	}
+
+	else if ( (Ptc16Tests.currentTest == PTC16_TEST_ODO_ON) &&
+		 (sysTickTimer - Ptc16Tests.statedTestTime < PTC16_DELAY_SLOW_TESTS) )
+	{
+		ptc16_vSetNextEvent(PTC16_EV_REFRESH);
+		printTestResult = ptc16print_WaitMessage;
+	}
+
+	else if ( (Ptc16Tests.currentTest == PTC16_TEST_TACO_OFF) &&
+			  (sysTickTimer - Ptc16Tests.statedTestTime < 2*PTC16_DELAY_SLOW_TESTS) )
+	{
+		ptc16_vSetNextEvent(PTC16_EV_REFRESH);
+		printTestResult = ptc16print_WaitMessage;
+	}
 
 	else if ( (Ptc16Tests.currentTest == PTC16_TEST_TACO_ON) &&
-			  (sysTickTimer - Ptc16Tests.statedTestTime < DELAY_FAST_TESTS) )
+			  (sysTickTimer - Ptc16Tests.statedTestTime < 2*PTC16_DELAY_SLOW_TESTS) )
+	{
 		ptc16_vSetNextEvent(PTC16_EV_REFRESH);
+		printTestResult = ptc16print_WaitMessage;
+	}
+
+	else if ( (Ptc16Tests.currentTest == PTC16_TEST_IGN_OFF) &&
+			  (sysTickTimer - Ptc16Tests.statedTestTime < PTC16_DELAY_SLOW_TESTS) )
+	{
+		ptc16_vSetNextEvent(PTC16_EV_REFRESH);
+		printTestResult = ptc16print_WaitMessage;
+	}
+
+	else if ( (Ptc16Tests.currentTest == PTC16_TEST_IGN_ON) &&
+			  (sysTickTimer - Ptc16Tests.statedTestTime < PTC16_DELAY_SLOW_TESTS) )
+	{
+		ptc16_vSetNextEvent(PTC16_EV_REFRESH);
+		printTestResult = ptc16print_WaitMessage;
+	}
 
 	else
 		ptc16_vSetNextEvent(PTC16_EV_ANALYSE);
@@ -268,8 +336,14 @@ void ptc16_vAnalyse(void)
 
 	ptc16_vAnalyse_CAN1();
 
-	if ((Ptc16Tests.currentTest == PTC16_TEST_IGN) && (!Ptc16Tests.testFinished))
-		ptc16_vAnalyse_Ign();
+	if ((Ptc16Tests.currentTest == PTC16_TEST_IGN_OFF) && (!Ptc16Tests.testFinished))
+		Ptc16Tests.testFinished = true;
+
+	if ((Ptc16Tests.currentTest == PTC16_TEST_IGN_ON) && (!Ptc16Tests.testFinished))
+		ptc16_vAnalyse_IgnOn();
+
+	if ((Ptc16Tests.currentTest == PTC16_TEST_CAN2) && (!Ptc16Tests.testFinished))
+		ptc16_vAnalyse_CAN2();
 
 	if ((Ptc16Tests.currentTest == PTC16_TEST_TACO_OFF) && (!Ptc16Tests.testFinished))
 		ptc16_vAnalyse_Taco();
@@ -297,6 +371,9 @@ void ptc16_vAnalyse(void)
 
 	if ((Ptc16Tests.currentTest == PTC16_TEST_WARNINGLEDS_OFF) && (!Ptc16Tests.testFinished))
 		ptc16_vAnalyse_WarningLeds();
+
+	if ((Ptc16Tests.currentTest == PTC16_TEST_PENDRIVE) && (!Ptc16Tests.testFinished))
+		ptc16_vAnalyse_Pendrive();
 
 	if ((Ptc16Tests.currentTest == PTC16_TEST_END) && (!Ptc16Tests.testFinished))
 		ptc16_vAnalyse_EndTest();
@@ -333,12 +410,25 @@ void ptc16_vFinish(void)
 /* ---------------------------------------------------------------------------*/
 
 /* Execute -------------------------------------------------------------------*/
-
+void ptc16_vExecute_Pendrive()
+{
+	uint8_t activePendriveTest[8] = {0x0, 0x0, 0x0, MEMORY_INDEX_TEST_STEP, 0x0, 0x0, 0x0, 16};
+	sendCanPacket(CAN1, CAN_COMMAND_WRITE, 0xE0, MY_ID, PTC16_DEVICE_ID, activePendriveTest, 8);
+	ptc16.pendriveTestStarted = true;
+}
 
 /* Analysis ------------------------------------------------------------------*/
 void ptc16_vAnalyse_CAN1()
 {
-	if (sysTickTimer - ptc16.lastTimeSeen > 100)
+	if ( (sysTickTimer - ptc16.lastTimeSeen > 200) && ((Ptc16Tests.currentTest > PTC16_TEST_PENDRIVE+1) || (Ptc16Tests.currentTest < PTC16_TEST_PENDRIVE-1)) )
+	{
+		Ptc16Tests.testError = true;
+		Ptc16Tests.testFinished = true;
+		setBeep(1, 2000);
+		printTestResult = ptc16print_CAN1Error;
+	}
+
+	if ( (sysTickTimer - ptc16.lastTimeSeen > 7000) && (Ptc16Tests.currentTest <= PTC16_TEST_PENDRIVE+1) && (Ptc16Tests.currentTest >= PTC16_TEST_PENDRIVE-1) )
 	{
 		Ptc16Tests.testError = true;
 		Ptc16Tests.testFinished = true;
@@ -347,7 +437,31 @@ void ptc16_vAnalyse_CAN1()
 	}
 }
 
-void ptc16_vAnalyse_Ign()
+void ptc16_vAnalyse_CAN2()
+{
+	int i, j;
+
+	for (i=0; i<8; i++)
+	{
+		if (CAN2DataReference[i] != ptc16.CAN2DataReceived[i])
+		{
+			Ptc16Tests.testError = true;
+			Ptc16Tests.testFinished = true;
+			setBeep(1, 2000);
+			printTestResult = ptc16print_CAN2Error;
+			/* Erase ptc16.CAN2DataReceived aiming doesn't leave residues for future tests. */
+			for (j=0; j<8; j++)
+				ptc16.CAN2DataReceived[j]=0;
+			return;
+		}
+	}
+
+	/* This functions is only reached if doesn't have any errors at CAN2's received data. */
+	Ptc16Tests.testError = false;
+	Ptc16Tests.testFinished = true;
+}
+
+void ptc16_vAnalyse_IgnOn()
 {
 	if (ptc16.outputCommandReceived)
 	{
@@ -364,94 +478,101 @@ void ptc16_vAnalyse_Ign()
 	}
 
 }
+
 void ptc16_vAnalyse_Taco()
 {
 	int i, num_tries = 5;
 
-	for (i=0; i<num_tries; i++)
+	if (Ptc16Tests.currentTest == PTC16_TEST_TACO_OFF)
 	{
-		if (Ptc16Tests.currentTest == PTC16_TEST_TACO_OFF)
+		if (!ptc16.tacoReceivedCommand)
 		{
-			if (!ptc16.tacoReceivedCommand)
-			{
-				Ptc16Tests.testError = false;
-				Ptc16Tests.testFinished = true;
-				break;
-			}
-
-			else
-			{
-				Ptc16Tests.testError = true;
-				Ptc16Tests.testFinished = true;
-				setBeep(1, 2000);
-				printTestResult = ptc16print_TacoError;
-			}
+			Ptc16Tests.testError = false;
+			Ptc16Tests.testFinished = true;
+			PTC16_NUM_TACO_TRIES=0;
+			return;
 		}
 
-		else if (Ptc16Tests.currentTest == PTC16_TEST_TACO_ON)
+		/*
+		else
 		{
-			if (ptc16.tacoReceivedCommand)
-			{
-				Ptc16Tests.testError = false;
-				Ptc16Tests.testFinished = true;
-				break;
-			}
-
-			else
-			{
-				Ptc16Tests.testError = true;
-				Ptc16Tests.testFinished = true;
-				setBeep(1, 2000);
-				printTestResult = ptc16print_TacoError;
-				ptc16_enableToogleTaco(false);
-			}
+			Ptc16Tests.testError = true;
+			Ptc16Tests.testFinished = true;
+			setBeep(1, 2000);
+			printTestResult = ptc16print_TacoError;
 		}
+		*/
 	}
+
+	else if (Ptc16Tests.currentTest == PTC16_TEST_TACO_ON)
+	{
+		if (ptc16.tacoReceivedCommand)
+		{
+			Ptc16Tests.testError = false;
+			Ptc16Tests.testFinished = true;
+			PTC16_NUM_TACO_TRIES=0;
+			return;
+		}
+
+		/*
+		else
+		{
+			Ptc16Tests.testError = true;
+			Ptc16Tests.testFinished = true;
+			setBeep(1, 2000);
+			printTestResult = ptc16print_TacoError;
+			ptc16_enableToogleTaco(false);
+		}
+		*/
+	}
+
+	if (PTC16_NUM_TACO_TRIES == num_tries)
+	{
+		Ptc16Tests.testError = true;
+		Ptc16Tests.testFinished = true;
+		setBeep(1, 2000);
+		printTestResult = ptc16print_TacoError;
+		ptc16_enableToogleTaco(false);
+	}
+
+	PTC16_NUM_TACO_TRIES++;
 }
 
 void ptc16_vAnalyse_Odo()
 {
 	int i, num_tries = 5;
 
-	for (i=0; i<num_tries; i++)
+	if (Ptc16Tests.currentTest == PTC16_TEST_ODO_OFF)
 	{
-		if (Ptc16Tests.currentTest == PTC16_TEST_ODO_OFF)
+		if (!ptc16.odoReceivedCommand)
 		{
-			if (!ptc16.odoReceivedCommand)
-			{
-				Ptc16Tests.testError = false;
-				Ptc16Tests.testFinished = true;
-				break;
-			}
-
-			else
-			{
-				Ptc16Tests.testError = true;
-				Ptc16Tests.testFinished = true;
-				setBeep(1, 2000);
-				printTestResult = ptc16print_OdoError;
-			}
-		}
-
-		else if (Ptc16Tests.currentTest == PTC16_TEST_ODO_ON)
-		{
-			if (ptc16.odoReceivedCommand)
-			{
-				Ptc16Tests.testError = false;
-				Ptc16Tests.testFinished = true;
-				break;
-			}
-
-			else
-			{
-				Ptc16Tests.testError = true;
-				Ptc16Tests.testFinished = true;
-				setBeep(1, 2000);
-				printTestResult = ptc16print_OdoError;
-				ptc16_enableToogleOdo(false);
-			}
+			Ptc16Tests.testError = false;
+			Ptc16Tests.testFinished = true;
+			PTC16_NUM_ODO_TRIES=0;
+			return;
 		}
 	}
+
+	else if (Ptc16Tests.currentTest == PTC16_TEST_ODO_ON)
+	{
+		if (ptc16.odoReceivedCommand)
+		{
+			Ptc16Tests.testError = false;
+			Ptc16Tests.testFinished = true;
+			PTC16_NUM_ODO_TRIES=0;
+			return;
+		}
+	}
+
+	if (PTC16_NUM_ODO_TRIES == num_tries)
+	{
+		Ptc16Tests.testError = true;
+		Ptc16Tests.testFinished = true;
+		setBeep(1, 2000);
+		printTestResult = ptc16print_OdoError;
+		ptc16_enableToogleOdo(false);
+	}
+	PTC16_NUM_ODO_TRIES++;
 }
 
 void ptc16_vAnalyse_Buzzer()
@@ -463,7 +584,7 @@ void ptc16_vAnalyse_Buzzer()
 
 void ptc16_vAnalyse_KeysOn()
 {
-	int i;
+	int i,j;
 
 	printTestResult = ptc16print_PressKeyOn;
 
@@ -483,6 +604,8 @@ void ptc16_vAnalyse_KeysOn()
 		{
 			setBeep(3, 100);
 			printTestResult = ptc16print_AllLedsKeyOn;
+			for (j=0; j<NUM_PTC16_KEYS; j++)
+				Ptc16Tests.keysOn[j] = 0;
 			Ptc16Tests.testFinished = true;
 		}
 	}
@@ -490,7 +613,7 @@ void ptc16_vAnalyse_KeysOn()
 
 void ptc16_vAnalyse_KeysOff()
 {
-	int i;
+	int i,j;
 
 	printTestResult = ptc16print_PressKeyOff;
 
@@ -510,6 +633,8 @@ void ptc16_vAnalyse_KeysOff()
 		{
 			setBeep(3, 100);
 			printTestResult = ptc16print_AllLedsKeyOff;
+			for (j=0; j<NUM_PTC16_KEYS; j++)
+				Ptc16Tests.keysOff[j] = 0;
 			Ptc16Tests.testFinished = true;
 		}
 	}
@@ -527,6 +652,41 @@ void ptc16_vAnalyse_WarningLeds()
 	Ptc16Tests.testFinished = true;
 }
 
+void ptc16_vAnalyse_Pendrive()
+{
+	printTestResult = ptc16print_USBTestMessage;
+
+	switch (ptc16.pendriveTestLog)
+	{
+		case LCD_USB_MSG_FINISHED:
+			setBeep(3, 100);
+			Ptc16Tests.testFinished = true;
+			ptc16.pendriveTestStarted = false;
+			break;
+
+		case LCD_USB_MSG_SAVE_TIMEOUT_ERROR:
+		case LCD_USB_MSG_SAVE_ERROR:
+		case LCD_USB_MSG_ERROR_CANT_CLOSE:
+		case LCD_USB_MSG_ERROR_CANT_MOUNT:
+		case LCD_USB_MSG_ERROR_CANT_CREATE_FILE:
+		case LCD_USB_MSG_ERROR_CANT_WRITE:
+		case LCD_USB_MSG_RM_ERROR:
+		case LCD_USB_MSG_ERROR_CANT_OPEN_FILE:
+			Ptc16Tests.testError = true;
+			Ptc16Tests.testFinished = true;
+			setBeep(1, 2000);
+			ptc16.pendriveTestStarted = false;
+			break;
+
+		default:
+			/* If cases above wasn't called, it's because test is not done
+			 * on PTC16 and it's necessary keep state machine in analyse loop.
+			 */
+			//ptc16_vSetNextEvent(PTC16_EV_REFRESH);
+			break;
+	}
+}
+
 void ptc16_vAnalyse_EndTest()
 {
 	printTestResult = ptc16print_EndTestOk;
@@ -537,6 +697,12 @@ void ptc16_vAnalyse_EndTest()
 /* ---------------------------------------------------------------------------*/
 /* Print LCD functions -------------------------------------------------------*/
 /* ---------------------------------------------------------------------------*/
+
+void ptc16print_ClearMessages(void)
+{
+	snprintf(TestMessages.lines[0],LINE_SIZE,"                  ");
+	snprintf(TestMessages.lines[1],LINE_SIZE,"                  ");
+}
 
 void ptc16print_WaitMessage(void)
 {
@@ -549,6 +715,13 @@ void ptc16print_CAN1Error(void)
 {
 	snprintf(TestMessages.lines[0], LINE_SIZE, "CAN1 Erro: Veri-");
 	sprintf(message, "ficarCN1.5,12,13");
+	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
+void ptc16print_CAN2Error(void)
+{
+	snprintf(TestMessages.lines[0], LINE_SIZE, "CAN2 Erro: Veri-");
+	sprintf(message, "ficarCN1.7,14,15");
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
@@ -575,8 +748,8 @@ void ptc16print_TacoError(void)
 
 void ptc16print_Buzzer(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "   Buzzer ok?   ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "(Primeira tecla)");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Buzzer ok?       ");
+	snprintf(TestMessages.lines[1], LINE_SIZE, "(Primeira tecla) ");
 }
 
 void ptc16print_PressKeyOn(void)
@@ -588,7 +761,7 @@ void ptc16print_PressKeyOn(void)
 
 	sprintf(message, "Press. tecla %d", i+1);
 
-	snprintf(TestMessages.lines[0], LINE_SIZE, "   Ligar LEDS   ");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Ligar LEDS      ");
 	snprintf(TestMessages.lines[1], LINE_SIZE, "%s              ", message);
 }
 
@@ -600,37 +773,139 @@ void ptc16print_PressKeyOff(void)
 			break;
 
 	sprintf(message, "Press. tecla %d", i+1);
-	snprintf(TestMessages.lines[0], LINE_SIZE, " Desligar LEDS  ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "%s              ", message);
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Desligar LEDS    ");
+	snprintf(TestMessages.lines[1], LINE_SIZE, "%s               ", message);
 }
 
 void ptc16print_AllLedsKeyOn(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, " Leds das teclas ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, " todos ligados?  ");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas  ");
+	snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
 }
 
 void ptc16print_AllLedsKeyOff(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, " Leds das teclas");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado?");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas  ");
+	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado? ");
 }
 
 void ptc16print_AllWarningLedsOn(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, " Leds de avisos  ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, " todos ligados?  ");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
+	snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
 }
 
 void ptc16print_AllWarningLedsOff(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, " Leds de avisos  ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado?");
+	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
+	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado? ");
+}
+
+void ptc16print_USBTestMessage()
+{
+	/* This command makes message doesn't change at GIGA3 display if PTC sends
+	 * other log message with pen drive test already finished. */
+	//if (Ptc16Tests.testFinished)
+		//return;
+
+	switch (ptc16.pendriveTestLog)
+	{
+		case 0xFF:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Teste: Pendrive ");
+			sprintf(message, "Insira pendrive");
+			printTestMessage(TestMessages.lines[1], message, 3);
+			break;
+
+		case LCD_USB_WAIT_MESSAGE:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Teste: Pendrive ");
+			sprintf(message, "Executando");
+			printTestMessage(TestMessages.lines[1], message, 3);
+			break;
+
+		case LCD_USB_MSG_NEW_LOGS:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Testar Escrita/ ");
+			snprintf(TestMessages.lines[1], LINE_SIZE, "Leitura Pendrive");
+			break;
+
+		case LCD_USB_MSG_ALL_LOGS:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Testar Escrita/ ");
+			snprintf(TestMessages.lines[1], LINE_SIZE, "Leitura Pendrive");
+			break;
+
+		case LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Nao desconecte  ");
+			sprintf(message, "o pendrive");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		case LCD_USB_MSG_SAVING:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Testando        ");
+			sprintf(message, "Aguarde");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		case LCD_USB_MSG_FINISHED:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Teste realizado ");
+			sprintf(message, "com sucesso");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		case LCD_USB_MSG_SAVE_TIMEOUT_ERROR:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro: USB time- ");
+			sprintf(message, "out");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		case LCD_USB_MSG_SAVE_ERROR:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao salvar ");
+			sprintf(message, "USB");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		case LCD_USB_MSG_ERROR_CANT_CLOSE:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao fechar ");
+			sprintf(message, "arquivo");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		case LCD_USB_MSG_ERROR_CANT_MOUNT:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao montar ");
+			sprintf(message, "FAT-FS");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		case LCD_USB_MSG_ERROR_CANT_CREATE_FILE:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
+			sprintf(message, "criar arquivo");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		case LCD_USB_MSG_ERROR_CANT_WRITE:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
+			sprintf(message, "escrever arquivo");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		case LCD_USB_MSG_RM_ERROR:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
+			sprintf(message, "remover arquivo");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		case LCD_USB_MSG_ERROR_CANT_OPEN_FILE:
+			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
+			sprintf(message, "abrir arquivo");
+			printTestMessage(TestMessages.lines[1], message, 1);
+			break;
+
+		default:
+			break;
+	}
 }
 
 void ptc16print_EndTestOk(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE," Teste PTC16: OK");
+	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste PTC16: OK ");
 	sprintf(message, "Pressione Enter", 1);
 	printTestMessage(TestMessages.lines[1], message, 1);
 }

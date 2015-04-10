@@ -89,6 +89,7 @@ StateMachine MpxStateMachine;
 Test MpxTests;
 char message[LINE_SIZE];
 static volatile int8_t nextEvent;
+static volatile int NUM_NTC_TRIES;
 
 const Transition MpxSMTrans[] =  		//TABELA DE ESTADOS
 {
@@ -220,6 +221,7 @@ void mpxTest_vResetTests(void)
 	activeMPXIgnition(PORT_LOW);
 	initMPXstruct();
 	print_ClearMessages();
+	NUM_NTC_TRIES = 0;
 }
 
 void mpxTest_vUpdateTests(void)
@@ -916,24 +918,34 @@ void mpxTest_vAnalyse_LODIN(void)
 
 void mpxTest_vAnalyse_NTC(void)
 {
-	int NUM_TRIES = 3;
-	int i;
+	int max_tries=10;
 
-	for (i=0; i<NUM_TRIES; i++)
+	if ((mpx.ntcTemperature >= 0x17) && (mpx.ntcTemperature <= 0x23))
 	{
-		if ((mpx.ntcTemperature >= 0x19) && (mpx.ntcTemperature <= 0x21))
-		{
-			MpxTests.testError = false;
-			printTestResult = print_NTCTest_OK;
-			break;
-		}
-
-		else
-		{
-			MpxTests.testError = true;
-			printTestResult = print_NTCTest_error;
-		}
+		MpxTests.testError = false;
+		printTestResult = print_NTCTest_OK;
+		NUM_NTC_TRIES = 0;
+		return;
 	}
+
+	else
+	{
+		printTestResult = print_NTCTest_error;
+	}
+
+	NUM_NTC_TRIES++;
+
+	/* Stop Analyse loop if number of tries reaches a max value. */
+	if (NUM_NTC_TRIES == max_tries*4)
+	{
+		MpxTests.testError = true;
+		mpxTest_vSetNextEvent(MPX_EV_FINALIZE);
+		NUM_NTC_TRIES = 0;
+	}
+
+	else
+		/* Keep the program in Analyse state until it reaches max_tries. */
+		mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 }
 
 /* ---------------------------------------------------------------------------*/

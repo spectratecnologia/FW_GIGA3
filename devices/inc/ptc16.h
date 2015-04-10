@@ -27,7 +27,7 @@ Ptc ptc16;
 /* Exported functions ------------------------------------------------------- */
 void deInitPTC16config(void);
 void initPTC16config(void);
-void tooglePTC16Ign(void);
+void activePTC16Ign(FunctionalState);
 void ptc16_enableToogleTaco(bool);
 void ptc16_toggleTaco(void);
 void ptc16_enableToogleOdo(bool);

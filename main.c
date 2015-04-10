@@ -17,9 +17,7 @@
 
 void teste()
 {
-	GPIO_SetBits(PWM_NTC_PORT, PWM_NTC);
-	delayMsUsingSysTick(20);
-	GPIO_ResetBits(PWM_NTC_PORT, PWM_NTC);
+
 }
 
 int main(void)
@@ -39,7 +37,6 @@ int main(void)
 	ptc24Test_vStateMachineInit();
 	ptc16Test_vStateMachineInit();
 
-	//teste();
 
     while(1)
     {
@@ -82,6 +79,8 @@ int main(void)
     		executeEveryInterval(13, 10, &ptc16_toggleOdo);
 
     		executeEveryInterval(14, 8, &ptc16_toggleTaco);
+
+    		//executeEveryInterval(15, 10000, &teste);
     	}
     }
 }

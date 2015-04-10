@@ -198,8 +198,6 @@ static inline void onCAN1ReceiveInterrupt(){
 
 	msgId.extId = rxMessage.ExtId;
 
-	//setBeep(2,1000);
-
 	if ((msgId.SA & 0xF0) == MPX_DEVICE_MASK)
 		onCAN1ReceiveInterrupt_MPX(rxMessage, msgId);
 
@@ -358,7 +356,7 @@ static inline void onCAN1ReceiveInterrupt_PTC16(CanRxMsg rxMessage, MsgId msgId)
 		{
 			uint8_t portOffset = (msgId.index & 0x0f) * 8;
 			if ( portOffset<=(NUM_PTC_KEY-8))
-				memcpy( &ptc16.keyState[portOffset],rxMessage.Data,8);
+				memcpy(&ptc16.keyState[portOffset],rxMessage.Data,8);
 		}
 
 		else
@@ -369,6 +367,12 @@ static inline void onCAN1ReceiveInterrupt_PTC16(CanRxMsg rxMessage, MsgId msgId)
 
 	else if (msgId.command == CAN_COMMAND_WRITE)
 	{
+
+		if (msgId.index == 0xFF)
+		{
+			memcpy(&ptc16.pendriveTestLog,rxMessage.Data,1);
+		}
+
 		if (msgId.index < NUM_PORTS)
 		{
 			memcpy(&ptc16.portOutputCommand[msgId.index],rxMessage.Data,8);
@@ -418,11 +422,9 @@ static inline void onCAN2ReceiveInterrupt() {
 
 	msgId.extId = rxMessage.ExtId;
 
-	sendCanPacket(CAN1, 0x0, 0xFF, 0xFF, 0xFF, 0, 0);
-
 	if (msgId.command == CAN_COMMAND_BROADCAST)
 	{
-		uint8_t broadcastType = (msgId.index & 0xf0);
+		memcpy(ptc16.CAN2DataReceived, rxMessage.Data, 8);
 	}
 }
 

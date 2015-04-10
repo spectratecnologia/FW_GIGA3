@@ -43,10 +43,12 @@ void initPTC16Ign()
 	GPIO_SetBits(PTC16_CMD_IGN2_PORT, PTC16_CMD_IGN2);
 }
 
-void tooglePTC16Ign()
+void activePTC16Ign(FunctionalState fs)
 {
-	GPIO_ResetBits(PTC16_CMD_IGN2_PORT, PTC16_CMD_IGN2);
-	GPIO_SetBits(PTC16_CMD_IGN2_PORT, PTC16_CMD_IGN2);
+	if(fs == DISABLE)
+		GPIO_ResetBits(PTC16_CMD_IGN2_PORT, PTC16_CMD_IGN2);
+	else
+		GPIO_SetBits(PTC16_CMD_IGN2_PORT, PTC16_CMD_IGN2);
 }
 
 void initPTC16Taco()
