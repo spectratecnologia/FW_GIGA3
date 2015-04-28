@@ -17,7 +17,7 @@
 
 void teste()
 {
-
+	setBeep(10, 1000);
 }
 
 int main(void)
@@ -36,7 +36,6 @@ int main(void)
 	mpxTest_vStateMachineInit();
 	ptc24Test_vStateMachineInit();
 	ptc16Test_vStateMachineInit();
-
 
     while(1)
     {

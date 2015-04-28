@@ -423,9 +423,6 @@ void mpxTest_vPrint(void)
 	if (printTestResult)
 		printTestResult();
 
-	if (MpxTests.seriousError)
-		//setBeep(1,100);
-
 	if (MpxTests.testFinished  && !MpxTests.finishedTestBeep)
 	{
 		if (MpxTests.testError)
