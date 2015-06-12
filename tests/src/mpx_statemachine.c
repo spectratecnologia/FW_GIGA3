@@ -289,6 +289,15 @@ void mpxTest_vExecute(void)
 	MpxTests.statedTestTime = sysTickTimer;
 	mpxTest_vSetNextEvent(MPX_EV_WAIT);
 
+	/* CAN test */
+	mpxTest_vAnalyse_CAN();
+	/* If occur CAN error, this program does not continue with the tests. */
+	if (MpxTests.testError)
+	{
+		mpxTest_vSetNextEvent(MPX_EV_PRINT);
+		return;
+	}
+
 	if (MpxTests.currentTest == TEST_FLASH)
 		mpxTest_vExecute_Flash();
 
@@ -310,7 +319,7 @@ void mpxTest_vExecute(void)
 	else if ((MpxTests.currentTest >= TEST_P28) && (MpxTests.currentTest <= TEST_P35 ))
 		mpxTest_vExecute_LODIN();
 
-	/* This state is only reached by automatic test when all tests is working. */
+	/* This state is only reached by automatic test when all tests is working fine. */
 	else if (MpxTests.currentTest == TEST_END)
 	{
 		MpxTests.testFinished = true;
@@ -423,13 +432,14 @@ void mpxTest_vPrint(void)
 	if (printTestResult)
 		printTestResult();
 
+	/*
 	if (MpxTests.testFinished  && !MpxTests.finishedTestBeep)
 	{
 		if (MpxTests.testError)
-			setBeep(1, 2000);
+			errorBeep()
 
 		else
-			setBeep(3, 100);
+			notErrorBeep()
 
 		MpxTests.finishedTestBeep = true;
 	}
@@ -438,7 +448,7 @@ void mpxTest_vPrint(void)
 	{
 		setBeep(1, 250);
 		MpxTests.finishedTestBeep = true;
-	}
+	}*/
 
 	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 
@@ -485,14 +495,14 @@ void mpxTest_vExecute_Flash(void)
 
 	print_WaitMessage();
 
-	/* Keep execute function until send all emergency port configuration. */
+	/* Keep Execute function until send all emergency port configuration. */
 	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 
 	/* Stop this function if GIGA3 did not receive a new ack. If elapsed a large time since last CAN message,
 	 * it will be assumed a memory flash error. */
 	if ((mpx.ackIndex == mpx.lastAckIndex) && mpx.ackIndex)
 	{
-		if (sysTickTimer - MpxTests.startedMemoryAnalyseTime > DELAY_TO_RECEIVE_NEW_MEMORY_ACK)
+		if (sysTickTimer - mpx.lastTimeSeen > DELAY_TO_RECEIVE_NEW_MEMORY_ACK)
 		{
 			MpxTests.testError = true;
 			printTestResult = print_FlashTest_error;
@@ -554,6 +564,17 @@ void mpxTest_vExecute_Flash(void)
 		mpx.ackIndex = 0;
 		mpx.lastAckIndex = 0;
 	}
+
+	if (mpx.ackReceived == false)
+	{
+		if (sysTickTimer - mpx.lastTimeSeen > DELAY_TO_RECEIVE_NEW_MEMORY_ACK)
+		{
+			MpxTests.testError = true;
+			printTestResult = print_FlashTest_error;
+			mpxTest_vSetNextEvent(MPX_EV_FINALIZE);
+		}
+		return;
+	}
 }
 
 void mpxTest_vExecute_IGN(void)
@@ -597,6 +618,7 @@ void mpxTest_vAnalyse_CAN(void)
 	{
 		MpxTests.testError = true;
 		MpxTests.seriousError = true;
+		errorBeep();
 		printTestResult = print_CANTest_error;
 	}
 }
@@ -627,6 +649,8 @@ void mpxTest_vAnalyse_Flash(void)
 		if ((mpx.readChecksum == checkSum) && (mpx.calculatedChecksum == checkSum))
 		{
 			printTestResult = print_FlashTest_OK;
+			if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
+				notErrorBeep();
 			MpxTests.boolEraseFlash = true;
 			/* To keep this function until flash be erased. */
 			mpxTest_vSetNextEvent(MPX_EV_REFRESH);
@@ -636,9 +660,10 @@ void mpxTest_vAnalyse_Flash(void)
 		{
 			printTestResult = print_FlashTest_error;
 			MpxTests.testError = true;
+			errorBeep();
 		}
 
-		/* Set parameters to the program erase memory flash. */
+		/* Set parameters to program erases memory flash. */
 		mpx.ackIndex = 0;
 		mpx.lastAckIndex = 0;
 	}
@@ -703,20 +728,23 @@ void EraseFlash(void)
 
 void mpxTest_vAnalyse_IGN(void)
 {
-	if (MpxTests.currentTest == TEST_IGN_H && (mpx.MpxFlags[0] && 0x40))
+	if (MpxTests.currentTest == TEST_IGN_H && (mpx.MpxFlags[0] && 0x02))
 	{
 		printTestResult = print_IgnTest_OK;
+		if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
+			notErrorBeep();
 	}
 
-	else if (MpxTests.currentTest == TEST_IGN_L && !(mpx.MpxFlags[0] && 0x40))
+	else if (MpxTests.currentTest == TEST_IGN_L && !(mpx.MpxFlags[0] && 0x02))
 	{
-		/* Both next code line is used to analyse high ignition. */
+		/* Next code lines is used to analyse high ignition. */
 		MpxTests.currentTest = TEST_IGN_H;
 		mpxTest_vSetNextEvent(MPX_EV_EXECUTE);
 	}
 
 	else
 	{
+		errorBeep();
 		MpxTests.testError = true;
 		printTestResult = print_IgnTest_error;
 	}
@@ -738,6 +766,7 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 			{
 				MpxTests.switchPort = i;
 				MpxTests.testError = true;
+				errorBeep();
 				printTestResult = print_SwitchedPortTest_error;
 				return;
 			}
@@ -753,6 +782,7 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 			{
 				MpxTests.switchPort = i;
 				MpxTests.testError = true;
+				errorBeep();
 				printTestResult = print_SwitchedPortTest_error;
 				return;
 			}
@@ -768,6 +798,7 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 			{
 				MpxTests.switchPort = i;
 				MpxTests.testError = true;
+				errorBeep();
 				printTestResult = print_SwitchedPortTest_error;
 				return;
 			}
@@ -782,11 +813,14 @@ void mpxTest_vAnalyse_ID(void)
 		 ( (MpxTests.currentTest == TEST_ID0) && (mpx.mpxId == 0x80) ) )
 	{
 		printTestResult = print_IDTest_OK;
+		if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
+			notErrorBeep();
 	}
 
 	else
 	{
 		printTestResult = print_IDTest_error;
+		errorBeep();
 		MpxTests.testError = true;
 	}
 }
@@ -822,6 +856,8 @@ void mpxTest_vAnalyse_PP10A(void)
 			if (isGiga3HighSideMosfetDrivingCurrent)
 			{
 				MpxTests.testError = false;
+				if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
+					notErrorBeep();
 				printTestResult = print_PortTest_OK;
 			}
 		}
@@ -833,12 +869,14 @@ void mpxTest_vAnalyse_PP10A(void)
 			if (mpx.portInput[MpxTests.currentTest-TEST_P0_L] && 0x01)
 			{
 				MpxTests.testError = true;
+				errorBeep();
 				printTestResult = print_PortTest_FetError;
 			}
 			/* Is MPX device port low? */
 			else
 			{
 				MpxTests.testError = true;
+				errorBeep();
 				printTestResult = print_PortTest_PortOpenError;
 			}
 		}
@@ -851,12 +889,15 @@ void mpxTest_vAnalyse_PP10A(void)
 		if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x01)
 		{
 			MpxTests.testError = false;
+			if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
+				notErrorBeep();
 			printTestResult = print_PortTest_OK;
 		}
 
 		else
 		{
 			MpxTests.testError = true;
+			errorBeep();
 			if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x0D)
 				printTestResult = print_PortTest_PortOpenError;
 
@@ -878,12 +919,16 @@ void mpxTest_vAnalyse_BIDI(void)
 	if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x01)
 	{
 		MpxTests.testError = false;
+		if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
+			notErrorBeep();
 		printTestResult = print_PortTest_OK;
 	}
 
 	else
 	{
 		MpxTests.testError = true;
+		errorBeep();
+
 		if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x0D)
 			printTestResult = print_PortTest_PortOpenError;
 
@@ -903,12 +948,15 @@ void mpxTest_vAnalyse_LODIN(void)
 	if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x02)
 	{
 		MpxTests.testError = false;
+		if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
+			notErrorBeep();
 		printTestResult = print_PortTest_OK;
 	}
 
 	else
 	{
 		MpxTests.testError = true;
+		errorBeep();
 		printTestResult = print_PortTest_error;
 	}
 }
@@ -920,6 +968,8 @@ void mpxTest_vAnalyse_NTC(void)
 	if ((mpx.ntcTemperature >= 0x17) && (mpx.ntcTemperature <= 0x23))
 	{
 		MpxTests.testError = false;
+		if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
+			notErrorBeep();
 		printTestResult = print_NTCTest_OK;
 		NUM_NTC_TRIES = 0;
 		return;
@@ -928,6 +978,7 @@ void mpxTest_vAnalyse_NTC(void)
 	else
 	{
 		printTestResult = print_NTCTest_error;
+		errorBeep();
 	}
 
 	NUM_NTC_TRIES++;
@@ -953,19 +1004,41 @@ void print_WaitMessage(void)
 {
 	if (MpxTests.boolIsLoopTest)
 	{
-		snprintf(TestMessages.lines[0],LINE_SIZE," Teste em Loop  ");
-		if (MpxTests.numberTestDone < 10)
-			sprintf(message, "  Contagem: %d    ", MpxTests.numberTestDone);
-		else
-			sprintf(message, " Contagem: %d     ", MpxTests.numberTestDone);
+		if (LCD_languageChosen() == PORTUGUESE)
+		{
+			snprintf(TestMessages.lines[0],LINE_SIZE," Teste em Loop  ");
+			if (MpxTests.numberTestDone < 10)
+				sprintf(message, "  Contagem: %d    ", MpxTests.numberTestDone);
+			else
+				sprintf(message, " Contagem: %d     ", MpxTests.numberTestDone);
+		}
+
+		else if (LCD_languageChosen() == SPANISH)
+		{
+			snprintf(TestMessages.lines[0],LINE_SIZE," Prueba en Loop ");
+			if (MpxTests.numberTestDone < 10)
+				sprintf(message, "  Recuento: %d    ", MpxTests.numberTestDone);
+			else
+				sprintf(message, " Recuento: %d     ", MpxTests.numberTestDone);
+		}
+
 		printTestMessage(TestMessages.lines[1], message, 0);
 	}
 
 	else
 	{
-		snprintf(TestMessages.lines[0], LINE_SIZE, "    Aguarde!    ");
-		sprintf(message, "Fazendo Testes");
-		sprintf(message, "  Executando");
+		if (LCD_languageChosen() == PORTUGUESE)
+		{
+			snprintf(TestMessages.lines[0], LINE_SIZE, "    Aguarde!    ");
+			sprintf(message, "  Executando");
+		}
+
+		else if (LCD_languageChosen() == SPANISH)
+		{
+			snprintf(TestMessages.lines[0], LINE_SIZE, "     Espere!    ");
+			sprintf(message, "  Ejecutando");
+		}
+
 		printTestMessage(TestMessages.lines[1], message, 3);
 	}
 }
@@ -978,54 +1051,128 @@ void print_ClearMessages(void)
 
 void print_CANTest_error(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste CAN: erro ");
-	snprintf(TestMessages.lines[1],LINE_SIZE,"Erro COM1 2 ou 4");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste CAN: erro ");
+		snprintf(TestMessages.lines[1],LINE_SIZE,"Erro COM1 2 ou 4");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"PruebaCAN: error");
+		snprintf(TestMessages.lines[1],LINE_SIZE,"Error COM1 2 o 4");
+	}
+
 }
 
 void print_FlashTest_OK(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Flash: OK  ");
-	sprintf(message, "Pressione Enter");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Flash: OK  ");
+		sprintf(message, "Pressione Enter");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba Flash: OK ");
+		sprintf(message, "Presione Enter");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_FlashTest_error(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Flash:erro");
-	sprintf(message, "Pressione Enter");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Flash:erro");
+		sprintf(message, "Pressione Enter");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"PruebaFlash erro");
+		sprintf(message, "Presione Enter");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_SwitchedPortTest_error(void)
 {
-	if ( (MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L) )
-		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro: Conect %s ", CN2[MpxTests.currentTest - TEST_P0_L]);
-	else if ( (MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P35) )
-		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro: Conect %s ", CN2[MpxTests.currentTest - TEST_P0_H]);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		if ( (MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L) )
+			snprintf(TestMessages.lines[0],LINE_SIZE,"Erro: Conect %s ", CN2[MpxTests.currentTest - TEST_P0_L]);
+		else if ( (MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P35) )
+			snprintf(TestMessages.lines[0],LINE_SIZE,"Erro: Conect %s ", CN2[MpxTests.currentTest - TEST_P0_H]);
 
-	sprintf(message,"e %s trocados", CN2[MpxTests.switchPort]);
+		sprintf(message,"e %s trocados", CN2[MpxTests.switchPort]);
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		if ( (MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L) )
+			snprintf(TestMessages.lines[0],LINE_SIZE,"Error Conect %s ", CN2[MpxTests.currentTest - TEST_P0_L]);
+		else if ( (MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P35) )
+			snprintf(TestMessages.lines[0],LINE_SIZE,"Error Conect %s ", CN2[MpxTests.currentTest - TEST_P0_H]);
+
+		sprintf(message,"y %s cambiados", CN2[MpxTests.switchPort]);
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_AutoTest_OK(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Auto: Fim ");
-	sprintf(message, "Pressione Enter");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Auto: Fim ");
+		sprintf(message, "Pressione Enter");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba Auto: Fin ");
+		sprintf(message, "Presione Enter");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 /* Ignition test print functions ---------------------------------------------*/
 void print_IgnTest_OK(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Ignicao:OK");
-	sprintf(message, "Pressione Enter");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Ignicao:OK");
+		sprintf(message, "Pressione Enter");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba Igni: OK");
+		sprintf(message, "Presione Enter");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_IgnTest_error(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Falha Ignicao   ");
-	sprintf(message, "Problema COM7");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro Ignicao  ");
+		sprintf(message, "Verificar COM7");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Error Ignicion  ");
+		sprintf(message, "Comprobrar COM7");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 3);
 }
 
@@ -1043,8 +1190,18 @@ void print_IDTest_OK(void)
 	else if (MpxTests.currentTest == TEST_ID4)
 		ID = '4';
 
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste ID%c: OK     ", ID);
-	sprintf(message, "Pressione Enter", 1);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste ID%c: OK     ", ID);
+		sprintf(message, "Pressione Enter", 1);
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba ID%c: OK     ", ID);
+		sprintf(message, "Presione Enter", 1);
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
@@ -1061,57 +1218,137 @@ void print_IDTest_error(void)
 	else if (MpxTests.currentTest == TEST_ID4)
 		ID = '4';
 
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste ID%c: FALHA ", ID);
-	snprintf(TestMessages.lines[1],LINE_SIZE,"Erro COM6 8 ou 9");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste ID%c: FALHA ", ID);
+		snprintf(TestMessages.lines[1],LINE_SIZE,"Erro COM6 8 ou 9");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba ID%c: ERROR", ID);
+		snprintf(TestMessages.lines[1],LINE_SIZE,"Error COM6 8 o 9");
+	}
 }
 
 /* ID test print functions ---------------------------------------------------*/
 void print_PortTest_OK(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste CN%s: OK  ", CN[MpxTests.currentTest - TEST_P0_L]);
-	sprintf(message, "Pressione Enter", 1);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste CN%s: OK  ", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Pressione Enter", 1);
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba CN%s: OK  ", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Presione Enter", 1);
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_PortTest_error(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-	sprintf(message, "Pressione Enter", 1);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Pressione Enter", 1);
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Presione Enter", 1);
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_PortTest_PortOpenError(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-	sprintf(message, "Canal em aberto");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Canal em aberto");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Canal abierto");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_PortTest_PortShortError(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-	sprintf(message, "Canal em curto");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Canal em curto");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Cortocircuito");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_PortTest_FetError(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-	sprintf(message, "Problema %s", FET[MpxTests.currentTest - TEST_P0_L]);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Problema %s", FET[MpxTests.currentTest - TEST_P0_L]);
+	}
+
+	else if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Problema %s", FET[MpxTests.currentTest - TEST_P0_L]);
+	}
+
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_NTCTest_OK(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste NTC: OK    ");
-	sprintf(message, "Pressione Enter");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste NTC: OK    ");
+		sprintf(message, "Pressione Enter");
+	}
+
+	if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba NTC: OK    ");
+		sprintf(message, "Presione Enter");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void print_NTCTest_error(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste NTC: erro    ");
-	sprintf(message, "Verificar CN5");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste NTC: erro    ");
+		sprintf(message, "Verificar CN5");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba NTC: error    ");
+		sprintf(message, "Comprobar CN5");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 3);
 }
 

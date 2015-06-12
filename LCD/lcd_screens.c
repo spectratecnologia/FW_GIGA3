@@ -20,6 +20,8 @@ static bool inDebugMode=false;
 
 static volatile int ptcTemperature = 0;
 
+static idioma=SPANISH;
+
 bool isUSBHostMode=false;
 uint8_t usbSaveMode=0;
 
@@ -27,6 +29,7 @@ static inline bool msgTimoutReached (uint32_t timeout);
 
 void LCD_vMainScreen();
 void LCD_vAdjustTime();
+void LCD_vChooseLanguage(void);
 
 void LCD_vTestMPX();
 void LCD_vTestMPXAuto();
@@ -78,6 +81,7 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_MAIN				,EV_LINE2		  	,ST_TEST_MPX          	,&LCD_vTestMPX				},
 {ST_MAIN				,EV_LINE3		  	,ST_TEST_PTC24			,&LCD_vTestPTC24    		},
 {ST_MAIN				,EV_LINE4		  	,ST_TEST_PTC16			,&LCD_vTestPTC16    		},
+{ST_MAIN				,EV_LINE5		  	,ST_LANGUAGE			,&LCD_vChooseLanguage  		},
 {ST_MAIN				,EV_KBD_CANCEL    	,ST_MAIN           		,&LCD_vMainScreen			},
 {ST_MAIN				,EV_ANY		       	,ST_MAIN           		,&LCD_vMainScreen			},
 
@@ -88,23 +92,33 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_ADJUST_TIME			,EV_DOWN     		,ST_ADJUST_TIME    		,&LCD_vAdjustTime			},
 {ST_ADJUST_TIME			,EV_BACK_TO_MAIN    ,ST_MAIN    	   		,&LCD_vMainScreen			},
 
+{ST_LANGUAGE			,EV_REFRESH         ,ST_LANGUAGE	 	  	,&LCD_vChooseLanguage		},
+{ST_LANGUAGE			,EV_KBD_ENTER		,ST_MAIN   				,&LCD_vMainScreen			},
+{ST_LANGUAGE			,EV_KBD_CANCEL      ,ST_MAIN   				,&LCD_vMainScreen			},
+{ST_LANGUAGE			,EV_UP      		,ST_LANGUAGE	   		,&LCD_vChooseLanguage		},
+{ST_LANGUAGE			,EV_DOWN     		,ST_LANGUAGE    		,&LCD_vChooseLanguage		},
+{ST_LANGUAGE			,EV_BACK_TO_MAIN    ,ST_MAIN    	   		,&LCD_vMainScreen			},
+
 {ST_TEST_MPX 		  	,EV_REFRESH			,ST_TEST_MPX          	,&LCD_vTestMPX				},
 {ST_TEST_MPX 		  	,EV_LINE1		  	,ST_TEST_MPX_AUTO      	,&LCD_vTestMPXAuto			},
 {ST_TEST_MPX 		  	,EV_LINE2		  	,ST_TEST_MPX_LOOP    	,&LCD_vTestMPXLoop			},
 {ST_TEST_MPX 		  	,EV_LINE3		  	,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManual		},
 {ST_TEST_MPX 		  	,EV_KBD_CANCEL		,ST_MAIN    	   		,&LCD_vMainScreen	      	},
+{ST_TEST_MPX 		  	,EV_BACK_TO_MAIN	,ST_MAIN    	   		,&LCD_vMainScreen	      	},
 {ST_TEST_MPX 		  	,EV_ANY				,ST_TEST_MPX          	,&LCD_vTestMPX				},
 
 {ST_TEST_MPX_AUTO 	  	,EV_REFRESH			,ST_TEST_MPX_AUTO      	,&LCD_vTestMPXAuto			},
 {ST_TEST_MPX_AUTO	  	,EV_KBD_ENTER		,ST_TEST_MPX_AUTO		,&LCD_vTestMPXAutoStart	    },
 {ST_TEST_MPX_AUTO		,EV_TEST_LOG		,ST_TEST_LOG_MPX		,&LCD_vDisplayTestMessage	},
 {ST_TEST_MPX_AUTO	 	,EV_KBD_CANCEL		,ST_TEST_MPX  	     	,&LCD_vTestMPX				},
+{ST_TEST_MPX_AUTO	 	,EV_BACK_TO_MAIN	,ST_MAIN		     	,&LCD_vMainScreen			},
 {ST_TEST_MPX_AUTO 	  	,EV_ANY				,ST_TEST_MPX_AUTO      	,&LCD_vTestMPXAuto			},
 
 {ST_TEST_MPX_LOOP 	  	,EV_REFRESH			,ST_TEST_MPX_LOOP      	,&LCD_vTestMPXLoop			},
 {ST_TEST_MPX_LOOP	  	,EV_KBD_ENTER		,ST_TEST_MPX_LOOP		,&LCD_vTestMPXLoopStart	    },
 {ST_TEST_MPX_LOOP	 	,EV_TEST_LOG		,ST_TEST_LOG_MPX		,&LCD_vDisplayTestMessage	},
 {ST_TEST_MPX_LOOP 		,EV_KBD_CANCEL		,ST_TEST_MPX  	     	,&LCD_vTestMPX				},
+{ST_TEST_MPX_LOOP	 	,EV_BACK_TO_MAIN	,ST_MAIN		     	,&LCD_vMainScreen			},
 {ST_TEST_MPX_LOOP 	  	,EV_ANY				,ST_TEST_MPX_LOOP      	,&LCD_vTestMPXLoop			},
 
 {ST_TEST_LOG_MPX		,EV_REFRESH		  	,ST_TEST_LOG_MPX   		,&LCD_vDisplayTestMessage	},
@@ -175,7 +189,8 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_MPX_MANUAL	  	,EV_LINE46	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
 // TESTE NTC
 {ST_TEST_MPX_MANUAL	  	,EV_LINE47	  		,ST_TEST_MPX_MANUAL		,&LCD_vTestMPXManualStart	},
-// Ev. ANY
+// Ev. ANY and Back to Main
+{ST_TEST_MPX_MANUAL 	,EV_BACK_TO_MAIN	,ST_MAIN		     	,&LCD_vMainScreen			},
 {ST_TEST_MPX_MANUAL	  	,EV_ANY		  		,ST_TEST_MPX_MANUAL    	,&LCD_vTestMPXManual		},
 
 {ST_TEST_LOG_MPX_M		,EV_REFRESH		  	,ST_TEST_LOG_MPX_M 		,&LCD_vDisplayTestMessage	},
@@ -187,6 +202,7 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_PTC24 			,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen			},
 {ST_TEST_PTC24 			,EV_KBD_ENTER	  	,ST_TEST_PTC24 			,&LCD_vTestPTC24Start		},
 {ST_TEST_PTC24 			,EV_TEST_LOG	  	,ST_TEST_LOG_PTC24 		,&LCD_vDisplayTestMessage	},
+{ST_TEST_PTC24		 	,EV_BACK_TO_MAIN	,ST_MAIN		     	,&LCD_vMainScreen			},
 {ST_TEST_PTC24 			,EV_ANY			  	,ST_TEST_PTC24          ,&LCD_vTestPTC24			},
 
 {ST_TEST_LOG_PTC24		,EV_REFRESH		  	,ST_TEST_LOG_PTC24      ,&LCD_vDisplayTestMessage	},
@@ -199,6 +215,7 @@ const Transition smTrans[] =  		//TABELA DE ESTADOS
 {ST_TEST_PTC16 			,EV_KBD_CANCEL	  	,ST_MAIN    	   		,&LCD_vMainScreen			},
 {ST_TEST_PTC16 			,EV_KBD_ENTER	  	,ST_TEST_PTC16 			,&LCD_vTestPTC16Start		},
 {ST_TEST_PTC16 			,EV_TEST_LOG	  	,ST_TEST_LOG_PTC16 		,&LCD_vDisplayTestMessage	},
+{ST_TEST_PTC16		 	,EV_BACK_TO_MAIN	,ST_MAIN		     	,&LCD_vMainScreen			},
 {ST_TEST_PTC16 			,EV_ANY			  	,ST_TEST_PTC16          ,&LCD_vTestPTC16			},
 
 {ST_TEST_LOG_PTC16		,EV_REFRESH		  	,ST_TEST_LOG_PTC16      ,&LCD_vDisplayTestMessage	},
@@ -290,6 +307,8 @@ StEvents LCD_vGetNextEvent(void){
 
 	if(getVirtualKeyState(KEY_CANCEL))
 	{
+		setBeep(1,0);
+
 		setVirtualKeyState(KEY_CANCEL,0); //consumer
 
 		LCD_vSetNextEvent(EV_KBD_CANCEL);
@@ -359,6 +378,12 @@ StEvents LCD_vGetNextEvent(void){
 
 		else if (sm.state == ST_ADJUST_TIME)
 			LCD_vSetNextEvent(EV_NEXT_FIELD);
+
+		else if (sm.state == ST_LANGUAGE)
+		{
+			LCD_vSetNextEvent(EV_KBD_ENTER);
+			idioma = lcd.sbLine - 1 - PORTUGUESE;
+		}
 
 		else if (sm.state == ST_TEST_MPX)
 			LCD_vSetNextEvent(lcd.sbLine);
@@ -492,7 +517,15 @@ void LCD_vMainScreen(void)
 			                ,"      __:__     "
 			                ,"    TESTE MPX   "
 			                ,"  TESTE PTC 24  "
-							,"  TESTE PTC 16  "};
+							,"  TESTE PTC 16  "
+							,"     IDIOMA     "};
+
+	char lines_spanish[][LINE_SIZE]={"     GIGA 3     "
+									,"      __:__     "
+									,"   PRUEBA MPX   "
+									,"  PRUEBA PTC24  "
+									,"  PRUEBA PTC16  "
+									,"     IDIOMA     "};
 
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
@@ -531,13 +564,24 @@ void LCD_vMainScreen(void)
 		timerSeparationChar=':';
 	}
 
-	snprintf(lines[1],LINE_SIZE,"     %02d%c%02d      ",currentTime.currentHour,timerSeparationChar,
-							currentTime.currentMinute);
+
+
+	LCD_CursorBlink(false);
 
 	/* Print currentLine */
-	LCD_CursorBlink(false);
-	LCD_printLine(0,lines[0]);
-	LCD_printLine(1,lines[currentLine]);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(lines[1],LINE_SIZE,"     %02d%c%02d      ",currentTime.currentHour,timerSeparationChar,currentTime.currentMinute);
+		LCD_printLine(0,lines[0]);
+		LCD_printLine(1,lines[currentLine]);
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(lines_spanish[1],LINE_SIZE,"     %02d%c%02d      ",currentTime.currentHour,timerSeparationChar,currentTime.currentMinute);
+		LCD_printLine(0,lines_spanish[0]);
+		LCD_printLine(1,lines_spanish[currentLine]);
+	}
 
 	LCD_vSetNextEvent(EV_REFRESH);
 
@@ -554,7 +598,7 @@ void LCD_vMainScreen(void)
 
 void LCD_vAdjustTime(void){
 	char lines[][LINE_SIZE]={"AJUSTE DATA/HORA"
-			                       ,"DD/MM/YYYY __:__"};
+			                ,"DD/MM/YYYY __:__"};
 
 	static uint8_t maxFieldValues[5]={60,24,130,13,32};
 	static uint8_t cursorPosition[5]={0x4F, 0x4C, 0x49, 0x44, 0x41};
@@ -631,6 +675,49 @@ void LCD_vAdjustTime(void){
 	LCD_printLine(0,lines[0]);
 	LCD_printLine(1,lines[1]);
 	LCD_MoveCursor(cursorPosition[currentField]);
+}
+
+void LCD_vChooseLanguage()
+{
+	char lines[][LINE_SIZE]={"ESCOLHA O IDIOMA"
+				            ,"   Portugues    "
+				            ,"   Espanhol     "};
+
+	char lines_spanish[][LINE_SIZE]={"ELIJA EL IDIOMA "
+					        		,"   Portugues    "
+					        		,"    Espanol     "};
+
+	uint8_t numLines = sizeof(lines)/LINE_SIZE;
+
+	/* Memorize current line */
+	static uint8_t currentLine=1;
+
+	if(EV_REFRESH != sm.event)
+	{
+		lcd.sbLine = currentLine;
+		lcd.sbLineMin = 1;
+		lcd.sbLineMax = numLines-1;
+	}
+
+	else
+	{
+		currentLine = lcd.sbLine;
+	}
+
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		LCD_printLine(0,lines[0]);
+		LCD_printLine(1,lines[lcd.sbLine]);
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		LCD_printLine(0,lines_spanish[0]);
+		LCD_printLine(1,lines_spanish[lcd.sbLine]);
+	}
+
+	LCD_vSetNextEvent(EV_REFRESH);
+
 }
 
 void LCD_vAdjustUSBMode() {
@@ -725,6 +812,11 @@ void LCD_vTestMPX(void)
 				            ," Teste em Loop  "
 							,"  Teste Manual  "};
 
+	char lines_spanish[][LINE_SIZE]={"   PRUEBA MPX   "
+					        		,"PruebaAutomatica"
+					        		," Prueba en Loop "
+					        		," Prueba  Manual "};
+
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
 	initMPXconfig();
@@ -743,10 +835,37 @@ void LCD_vTestMPX(void)
 		currentLine = lcd.sbLine;
 	}
 
-	LCD_printLine(0,lines[0]);
-	LCD_printLine(1,lines[lcd.sbLine]);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		LCD_printLine(0,lines[0]);
+		LCD_printLine(1,lines[lcd.sbLine]);
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		LCD_printLine(0,lines_spanish[0]);
+		LCD_printLine(1,lines_spanish[lcd.sbLine]);
+	}
 
 	LCD_vSetNextEvent(EV_REFRESH);
+
+	/* This if sequence determines the return to main screen if device connected
+	 * does not belong to this test screen.
+	 */
+	if(sysTickTimer-mpx.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_REFRESH);
+	}
+
+	else if(sysTickTimer-ptc24.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
+
+	else if(sysTickTimer-ptc16.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
 }
 
 /* ---------------------------------------------------------------------------*/
@@ -754,20 +873,50 @@ void LCD_vTestMPX(void)
 /* ---------------------------------------------------------------------------*/
 void LCD_vTestMPXAuto(void)
 {
+	char lines_spanish[][LINE_SIZE]={"PRUEBA MPX: AUTO"
+   	                        		,"Conecte el MPX  "};
+
 	char lines[][LINE_SIZE]={"TESTE MPX: AUTO "
-   	                        ,"Conecte o MPX   "};
+	   	                    ,"Conecte o MPX   "};
 
 	char finalpoint={' '};
 
 	if ((sysTickTimer%2000)>999)
 		finalpoint='.';
 
-	snprintf(lines[1],LINE_SIZE,"Iniciar o Teste%c",finalpoint);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(lines[1],LINE_SIZE,"Iniciar o Teste%c",finalpoint);
+		LCD_printLine(0, lines[0]);
+		LCD_printLine(1, lines[1]);
+	}
 
-	LCD_printLine(0, lines[0]);
-	LCD_printLine(1, lines[1]);
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(lines_spanish[1],LINE_SIZE,"Iniciar la Prueba%c",finalpoint);
+		LCD_printLine(0, lines_spanish[0]);
+		LCD_printLine(1, lines_spanish[1]);
+	}
 
 	LCD_vSetNextEvent(EV_REFRESH);
+
+	/* This if sequence determines the return to main screen if device connected
+	 * does not belong to this test screen.
+	 */
+	if(sysTickTimer-mpx.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_REFRESH);
+	}
+
+	else if(sysTickTimer-ptc24.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
+
+	else if(sysTickTimer-ptc16.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
 }
 
 void LCD_vTestMPXAutoStart(void)
@@ -788,17 +937,47 @@ void LCD_vTestMPXLoop(void)
 	char lines[][LINE_SIZE]={"TESTE MPX: LOOP "
    	                        ,"Conecte o MPX   "};
 
+	char lines_spanish[][LINE_SIZE]={"PRUEBA MPX: LOOP"
+   	                        		,"Conecte el MPX  "};
+
 	char finalpoint={' '};
 
 	if ((sysTickTimer%2000)>999)
 		finalpoint='.';
 
-	snprintf(lines[1],LINE_SIZE,"Iniciar o Teste%c",finalpoint);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(lines[1],LINE_SIZE,"Iniciar o Teste%c",finalpoint);
+		LCD_printLine(0, lines[0]);
+		LCD_printLine(1, lines[1]);
+	}
 
-	LCD_printLine(0, lines[0]);
-	LCD_printLine(1, lines[1]);
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(lines_spanish[1],LINE_SIZE,"Iniciar la Prueba%c",finalpoint);
+		LCD_printLine(0, lines_spanish[0]);
+		LCD_printLine(1, lines_spanish[1]);
+	}
 
 	LCD_vSetNextEvent(EV_REFRESH);
+
+	/* This if sequence determines the return to main screen if device connected
+	 * does not belong to this test screen.
+	 */
+	if(sysTickTimer-mpx.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_REFRESH);
+	}
+
+	else if(sysTickTimer-ptc24.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
+
+	else if(sysTickTimer-ptc16.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
 }
 
 void LCD_vTestMPXLoopStart(void)
@@ -832,6 +1011,22 @@ void LCD_vTestMPXManual(void)
 		,"Teste 43: CN4.6 "	,"Teste 44: CN4.7 " ,"Teste 45: CN4.8 "	,"Teste 46: CN4.9 "
 		,"Teste 47: NTC   "};
 
+	char lines_spanish[][LINE_SIZE]={"   PRUEBA MPX   "
+		,"Prueba1: Memoria"
+		,"Prueba2: ID1    " ,"Prueba3: ID2    "	,"Prueba4: ID4    "	,"Prueba5: ID0    "
+		,"Prueba6:Ignicion"
+		,"Prueba7: CN1.1L " ,"Prueba8: CN1.1H "	,"Prueba9: CN1.2  " ,"Prueba10: CN1.3L"
+		,"Prueba11: CN1.3H" ,"Prueba12: CN1.4 "	,"Prueba13: CN1.5 " ,"Prueba14: CN1.6 "
+		,"Prueba15: CN1.7 "	,"Prueba16: CN1.8 "	,"Prueba17: CN1.9 " ,"Prueba18: CN2.1L"
+		,"Prueba19: CN2.1H"	,"Prueba20: CN2.2 " ,"Prueba21: CN2.3L"	,"Prueba22: CN2.3H"
+		,"Prueba23: CN2.4 "	,"Prueba24: CN2.5 " ,"Prueba25: CN2.6 "	,"Prueba26: CN2.7 "
+		,"Prueba27: CN2.8 "	,"Prueba28: CN2.9 " ,"Prueba29: CN3.1 "	,"Prueba30: CN3.2 "
+		,"Prueba31: CN3.3 "	,"Prueba32: CN3.4 " ,"Prueba33: CN3.5 "	,"Prueba34: CN3.6 "
+		,"Prueba35: CN3.7 "	,"Prueba36: CN3.8 " ,"Prueba37: CN3.9 "	,"Prueba38: CN4.1 "
+		,"Prueba39: CN4.2 "	,"Prueba40: CN4.3 " ,"Prueba41: CN4.4 "	,"Prueba42: CN4.5 "
+		,"Prueba43: CN4.6 "	,"Prueba44: CN4.7 " ,"Prueba45: CN4.8 "	,"Prueba46: CN4.9 "
+		,"Prueba47: NTC   "};
+
 	uint8_t numLines = sizeof(lines)/LINE_SIZE;
 
 	static uint8_t currentLine=1;
@@ -849,10 +1044,37 @@ void LCD_vTestMPXManual(void)
 		currentLine = lcd.sbLine;
 	}
 
-	LCD_printLine(0, lines[0]);
-	LCD_printLine(1, lines[lcd.sbLine]);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		LCD_printLine(0, lines[0]);
+		LCD_printLine(1, lines[lcd.sbLine]);
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		LCD_printLine(0, lines_spanish[0]);
+		LCD_printLine(1, lines_spanish[lcd.sbLine]);
+	}
 
 	LCD_vSetNextEvent(EV_REFRESH);
+
+	/* This if sequence determines the return to main screen if device connected
+	 * does not belong to this test screen.
+	 */
+	if(sysTickTimer-mpx.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_REFRESH);
+	}
+
+	else if(sysTickTimer-ptc24.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
+
+	else if(sysTickTimer-ptc16.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
 }
 
 void LCD_vTestMPXManualStart(void)
@@ -873,6 +1095,9 @@ void LCD_vTestPTC24(void)
 	char lines[][LINE_SIZE]={"  TESTE PTC 24  "
    	                        ,"                "};
 
+	char lines_spanish[][LINE_SIZE]={"  PRUEBA PTC24  "
+   	                        		,"                "};
+
 	char finalpoint={' '};
 
 	if (!ptc24.PtcAlreadyInit)
@@ -881,12 +1106,39 @@ void LCD_vTestPTC24(void)
 	if ((sysTickTimer%2000)>999)
 		finalpoint='.';
 
-	snprintf(lines[1],LINE_SIZE,"Iniciar o Teste%c",finalpoint);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(lines[1],LINE_SIZE,"Iniciar o Teste%c",finalpoint);
+		LCD_printLine(0, lines[0]);
+		LCD_printLine(1, lines[1]);
+	}
 
-	LCD_printLine(0, lines[0]);
-	LCD_printLine(1, lines[1]);
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(lines_spanish[1],LINE_SIZE,"Iniciar Prueba%c ",finalpoint);
+		LCD_printLine(0, lines_spanish[0]);
+		LCD_printLine(1, lines_spanish[1]);
+	}
 
 	LCD_vSetNextEvent(EV_REFRESH);
+
+	/* This if sequence determines the return to main screen if device connected
+	 * does not belong to this test screen.
+	 */
+	if(sysTickTimer-mpx.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
+
+	else if(sysTickTimer-ptc24.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_REFRESH);
+	}
+
+	else if(sysTickTimer-ptc16.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
 }
 
 void LCD_vTestPTC24Start(void)
@@ -909,21 +1161,50 @@ void LCD_vTestPTC16(void)
 	char lines[][LINE_SIZE]={"  TESTE PTC 16  "
    	                        ,"                "};
 
+	char lines_spanish[][LINE_SIZE]={"  PRUEBA PTC16  "
+   	                        		,"                "};
+
 	char finalpoint={' '};
 
-	initPTC16config();
+	if (!ptc16.PtcAlreadyInit)
+		initPTC16config();
 
 	if ((sysTickTimer%2000)>999)
 		finalpoint='.';
 
-	snprintf(lines[1],LINE_SIZE,"Iniciar o Teste%c",finalpoint);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(lines[1],LINE_SIZE,"Iniciar o Teste%c",finalpoint);
+		LCD_printLine(0, lines[0]);
+		LCD_printLine(1, lines[1]);
+	}
 
-	LCD_printLine(0, lines[0]);
-	LCD_printLine(1, lines[1]);
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(lines_spanish[1],LINE_SIZE,"Iniciar Prueba%c ",finalpoint);
+		LCD_printLine(0, lines_spanish[0]);
+		LCD_printLine(1, lines_spanish[1]);
+	}
 
 	LCD_vSetNextEvent(EV_REFRESH);
 
-	LCD_vSetNextEvent(EV_REFRESH);
+	/* This if sequence determines the return to main screen if device connected
+	 * does not belong to this test screen.
+	 */
+	if(sysTickTimer-mpx.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
+
+	else if(sysTickTimer-ptc24.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
+	}
+
+	else if(sysTickTimer-ptc16.lastTimeSeen<100)
+	{
+		LCD_vSetNextEvent(EV_REFRESH);
+	}
 }
 
 void LCD_vTestPTC16Start(void)
@@ -944,6 +1225,11 @@ void LCD_vDisplayTestMessage(void)
 	LCD_printLine(0,TestMessages.lines[0]);
 	LCD_printLine(1,TestMessages.lines[1]);
 	LCD_vSetNextEvent(EV_REFRESH);
+}
+
+languages LCD_languageChosen(void)
+{
+	return idioma;
 }
 
 void LCD_vADCScreen(void){

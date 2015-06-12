@@ -1,5 +1,5 @@
-E:
-cd E:\Work\Proj_New\MULTIPLEX3\GIGA3\SW.C\Firmware\programmer
+D:
+cd D:\Work\PROJETOS\MULTIPLEX3\GIGA3\SW.C\Firmware\programmer
 echo "Rebooting.."
 SerialSend COM5 ##BOOTLOADER_GIGA3##
 echo "Waiting 2s for device reboot.."

@@ -424,7 +424,7 @@ void ptc16_vAnalyse_CAN1()
 	{
 		Ptc16Tests.testError = true;
 		Ptc16Tests.testFinished = true;
-		setBeep(1, 2000);
+		errorBeep();
 		printTestResult = ptc16print_CAN1Error;
 	}
 
@@ -432,7 +432,7 @@ void ptc16_vAnalyse_CAN1()
 	{
 		Ptc16Tests.testError = true;
 		Ptc16Tests.testFinished = true;
-		setBeep(1, 2000);
+		errorBeep();
 		printTestResult = ptc16print_CAN1Error;
 	}
 }
@@ -447,7 +447,7 @@ void ptc16_vAnalyse_CAN2()
 		{
 			Ptc16Tests.testError = true;
 			Ptc16Tests.testFinished = true;
-			setBeep(1, 2000);
+			errorBeep();
 			printTestResult = ptc16print_CAN2Error;
 			/* Erase ptc16.CAN2DataReceived aiming doesn't leave residues for future tests. */
 			for (j=0; j<8; j++)
@@ -473,7 +473,7 @@ void ptc16_vAnalyse_IgnOn()
 	{
 		Ptc16Tests.testError = true;
 		Ptc16Tests.testFinished = true;
-		setBeep(1, 2000);
+		errorBeep();
 		printTestResult = ptc16print_IgnError;
 	}
 
@@ -498,7 +498,7 @@ void ptc16_vAnalyse_Taco()
 		{
 			Ptc16Tests.testError = true;
 			Ptc16Tests.testFinished = true;
-			setBeep(1, 2000);
+			errorBeep()
 			printTestResult = ptc16print_TacoError;
 		}
 		*/
@@ -519,7 +519,7 @@ void ptc16_vAnalyse_Taco()
 		{
 			Ptc16Tests.testError = true;
 			Ptc16Tests.testFinished = true;
-			setBeep(1, 2000);
+			errorBeep()
 			printTestResult = ptc16print_TacoError;
 			ptc16_enableToogleTaco(false);
 		}
@@ -530,7 +530,7 @@ void ptc16_vAnalyse_Taco()
 	{
 		Ptc16Tests.testError = true;
 		Ptc16Tests.testFinished = true;
-		setBeep(1, 2000);
+		errorBeep();
 		printTestResult = ptc16print_TacoError;
 		ptc16_enableToogleTaco(false);
 	}
@@ -568,7 +568,7 @@ void ptc16_vAnalyse_Odo()
 	{
 		Ptc16Tests.testError = true;
 		Ptc16Tests.testFinished = true;
-		setBeep(1, 2000);
+		errorBeep();
 		printTestResult = ptc16print_OdoError;
 		ptc16_enableToogleOdo(false);
 	}
@@ -578,7 +578,7 @@ void ptc16_vAnalyse_Odo()
 void ptc16_vAnalyse_Buzzer()
 {
 	printTestResult = ptc16print_Buzzer;
-	setBeep(3, 100);
+	notErrorBeep();
 	Ptc16Tests.testFinished = true;
 }
 
@@ -602,7 +602,7 @@ void ptc16_vAnalyse_KeysOn()
 		/* All keys was analysed and all was pressed. */
 		if((Ptc16Tests.keysOn[NUM_PTC16_KEYS-1] == 1) && (i == NUM_PTC16_KEYS-1))
 		{
-			setBeep(3, 100);
+			notErrorBeep();
 			printTestResult = ptc16print_AllLedsKeyOn;
 			for (j=0; j<NUM_PTC16_KEYS; j++)
 				Ptc16Tests.keysOn[j] = 0;
@@ -631,7 +631,7 @@ void ptc16_vAnalyse_KeysOff()
 		/* All keys was analysed and all was pressed. */
 		if((Ptc16Tests.keysOff[NUM_PTC16_KEYS-1] == 1) && (i == NUM_PTC16_KEYS-1))
 		{
-			setBeep(3, 100);
+			notErrorBeep();
 			printTestResult = ptc16print_AllLedsKeyOff;
 			for (j=0; j<NUM_PTC16_KEYS; j++)
 				Ptc16Tests.keysOff[j] = 0;
@@ -648,7 +648,7 @@ void ptc16_vAnalyse_WarningLeds()
 	else if (Ptc16Tests.currentTest == PTC16_TEST_WARNINGLEDS_OFF)
 		printTestResult = ptc16print_AllWarningLedsOff;
 
-	setBeep(3, 100);
+	notErrorBeep();
 	Ptc16Tests.testFinished = true;
 }
 
@@ -659,7 +659,7 @@ void ptc16_vAnalyse_Pendrive()
 	switch (ptc16.pendriveTestLog)
 	{
 		case LCD_USB_MSG_FINISHED:
-			setBeep(3, 100);
+			notErrorBeep();
 			Ptc16Tests.testFinished = true;
 			ptc16.pendriveTestStarted = false;
 			break;
@@ -674,7 +674,7 @@ void ptc16_vAnalyse_Pendrive()
 		case LCD_USB_MSG_ERROR_CANT_OPEN_FILE:
 			Ptc16Tests.testError = true;
 			Ptc16Tests.testFinished = true;
-			setBeep(1, 2000);
+			errorBeep();
 			ptc16.pendriveTestStarted = false;
 			break;
 
@@ -690,7 +690,7 @@ void ptc16_vAnalyse_Pendrive()
 void ptc16_vAnalyse_EndTest()
 {
 	printTestResult = ptc16print_EndTestOk;
-	setBeep(3, 100);
+	notErrorBeep();
 	Ptc16Tests.testFinished = true;
 }
 
@@ -706,22 +706,52 @@ void ptc16print_ClearMessages(void)
 
 void ptc16print_WaitMessage(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "    Aguarde!    ");
-	sprintf(message, "  Executando");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "    Aguarde!    ");
+		sprintf(message, "  Executando");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "     Espere!    ");
+		sprintf(message, "  Ejecutando");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 3);
 }
 
 void ptc16print_CAN1Error(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "CAN1 Erro: Veri-");
-	sprintf(message, "ficarCN1.5,12,13");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "CAN1 Erro: Veri-");
+		sprintf(message, "ficarCN1.5 12 13");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "CAN1 Error: Veri");
+		sprintf(message, "ficarCN1.5 12 13");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void ptc16print_CAN2Error(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "CAN2 Erro: Veri-");
-	sprintf(message, "ficarCN1.7,14,15");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "CAN2 Erro: Veri-");
+		sprintf(message, "ficarCN1.7 14 15");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "CAN2 Error: Veri");
+		sprintf(message, "ficarCN1.7 14 15");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 

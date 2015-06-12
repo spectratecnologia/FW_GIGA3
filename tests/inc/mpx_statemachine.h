@@ -12,7 +12,7 @@
 #define DELAY_TO_RECEIVE_NEW_MEMORY_ACK 100
 #define DELAY_TO_CAN_SEND_DATA 100
 #define DELAY_TO_ANALISE_FLASH_TEST 5000
-#define DELAY_TO_ANALISE_SLOW_TEST 1000
+#define DELAY_TO_ANALISE_SLOW_TEST 1500
 #define DELAY_TO_ANALISE_FAST_TEST 65
 /* Exported macro ------------------------------------------------------------*/
 

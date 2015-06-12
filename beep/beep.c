@@ -75,3 +75,13 @@ void setBeepOutput(bool beepOn)
 	GPIO_WriteBit(IO_BEEP_PORT,IO_BEEP_PIN,beepOn);
 }
 
+void errorBeep(void)
+{
+	setBeep(1,1000);
+}
+
+void notErrorBeep(void)
+{
+	setBeep(3,100);
+}
+

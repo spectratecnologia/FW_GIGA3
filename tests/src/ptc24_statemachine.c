@@ -413,7 +413,7 @@ void ptc24_vAnalyse_CAN1()
 	{
 		Ptc24Tests.testError = true;
 		Ptc24Tests.testFinished = true;
-		setBeep(1, 2000);
+		errorBeep();
 		printTestResult = ptc24print_CAN1Error;
 	}
 }
@@ -430,7 +430,7 @@ void ptc24_vAnalyse_Ign()
 	{
 		Ptc24Tests.testError = true;
 		Ptc24Tests.testFinished = true;
-		setBeep(1, 2000);
+		errorBeep();
 		printTestResult = ptc24print_IgnError;
 	}
 
@@ -444,7 +444,7 @@ void ptc24_vAnalyse_Flash()
 	if (ptc24.memory[MEMORY_INDEX_FLASH] != 0xFF)
 	{
 		Ptc24Tests.testError = true;
-		setBeep(1, 2000);
+		errorBeep();
 		printTestResult = ptc24print_FlashError;
 	}
 
@@ -480,7 +480,7 @@ void ptc24_vAnalyse_Taco()
 	{
 		Ptc24Tests.testError = true;
 		Ptc24Tests.testFinished = true;
-		setBeep(1, 2000);
+		errorBeep();
 		printTestResult = ptc24print_TacoError;
 		ptc24_enableToogleTaco(false);
 	}
@@ -517,7 +517,7 @@ void ptc24_vAnalyse_Odo()
 	{
 		Ptc24Tests.testError = true;
 		Ptc24Tests.testFinished = true;
-		setBeep(1, 2000);
+		errorBeep();
 		printTestResult = ptc24print_OdoError;
 		ptc24_enableToogleOdo(false);
 	}
@@ -527,7 +527,7 @@ void ptc24_vAnalyse_Odo()
 void ptc24_vAnalyse_Buzzer()
 {
 	printTestResult = ptc24print_Buzzer;
-	setBeep(3, 100);
+	notErrorBeep();
 	Ptc24Tests.testFinished = true;
 }
 
@@ -551,7 +551,7 @@ void ptc24_vAnalyse_KeysOn()
 		/* All keys was analysed and all was pressed. */
 		if((Ptc24Tests.keysOn[23] == 1) && (i == NUM_PTC24_KEYS-1))
 		{
-			setBeep(3, 100);
+			notErrorBeep();
 			printTestResult = ptc24print_AllLedsKeyOn;
 			Ptc24Tests.testFinished = true;
 		}
@@ -578,7 +578,7 @@ void ptc24_vAnalyse_KeysOff()
 		/* All keys was analysed and all was pressed. */
 		if((Ptc24Tests.keysOff[23] == 1) && (i == NUM_PTC24_KEYS-1))
 		{
-			setBeep(3, 100);
+			notErrorBeep();
 			printTestResult = ptc24print_AllLedsKeyOff;
 			Ptc24Tests.testFinished = true;
 		}
@@ -593,14 +593,14 @@ void ptc24_vAnalyse_WarningLeds()
 	else if (Ptc24Tests.currentTest == PTC24_TEST_WARNINGLEDS_OFF)
 		printTestResult = ptc24print_AllWarningLedsOff;
 
-	setBeep(3, 100);
+	notErrorBeep();
 	Ptc24Tests.testFinished = true;
 }
 
 void ptc24_vAnalyse_EndTest()
 {
 	printTestResult = ptc24print_EndTestOk;
-	setBeep(3, 100);
+	notErrorBeep();
 	Ptc24Tests.testFinished = true;
 }
 

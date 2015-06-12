@@ -44,6 +44,7 @@ typedef enum {
 	ST_ANY   = -1,
 	ST_MENU_DEBUG,
 	ST_ADJUST_TIME,
+	ST_LANGUAGE,
 
 	ST_TEST_MPX,
 	ST_TEST_MPX_AUTO,
@@ -123,6 +124,11 @@ typedef enum {
 	USB_SAVE_ALL = 2
 };
 
+typedef enum{
+	PORTUGUESE,
+	SPANISH
+} languages;
+
 
 
 /* Exported functions ------------------------------------------------------- */
@@ -138,6 +144,8 @@ void LCD_vSetNextEvent(StEvents event);
 void LCD_vJumpToState(StStates state);
 
 void LCD_printLine(uint8_t line, const char *string);
+
+languages LCD_languageChosen(void);
 
 bool hasErrorToDisplay();
 void displayErrorMessage(char *firstLine, char *secondLine, uint32_t displayTime, uint8_t priority);

@@ -26,5 +26,8 @@ void setBeep (uint8_t num, uint32_t periodInMs);
 void cancelBeep ();
 void processBeeps();
 void setBeepOutput(bool);
+void errorBeep(void);
+void notErrorBeep(void);
+
 
 #endif
