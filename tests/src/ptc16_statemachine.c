@@ -757,29 +757,68 @@ void ptc16print_CAN2Error(void)
 
 void ptc16print_IgnError(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "IGN Erro: Veri- ");
-	sprintf(message, "ficar CN1.9");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "IGN Erro: Veri- ");
+		sprintf(message, "ficar CN1.9");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "IGN Error: Veri- ");
+		sprintf(message, "ficar CN1.9");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void ptc16print_OdoError(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "ODO Erro: Veri- ");
-	sprintf(message, "ficar CN1.4");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "ODO Erro: Veri- ");
+		sprintf(message, "ficar CN1.4");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "ODO Error: Veri- ");
+		sprintf(message, "ficar CN1.4");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void ptc16print_TacoError(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "TACO Erro: Veri-");
-	sprintf(message, "ficar CN1.6");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "TACO Erro: Veri- ");
+		sprintf(message, "ficar CN1.6");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "TACO Error: Veri- ");
+		sprintf(message, "ficar CN1.6");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void ptc16print_Buzzer(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Buzzer ok?       ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "(Primeira tecla) ");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Buzzer ok?      ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "(Primeira tecla)");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Buzzer ok?      ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "(Primera tecla) ");
+	}
 }
 
 void ptc16print_PressKeyOn(void)
@@ -791,7 +830,18 @@ void ptc16print_PressKeyOn(void)
 
 	sprintf(message, "Press. tecla %d", i+1);
 
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Ligar LEDS      ");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		sprintf(message, "Press. tecla %d", i+1);
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Ligar LEDS      ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		sprintf(message, "Pres. tecla %d", i+1);
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Enciende LEDS   ");
+	}
+
 	snprintf(TestMessages.lines[1], LINE_SIZE, "%s              ", message);
 }
 
@@ -802,33 +852,79 @@ void ptc16print_PressKeyOff(void)
 		if(Ptc16Tests.keysOff[i] == 0)
 			break;
 
-	sprintf(message, "Press. tecla %d", i+1);
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Desligar LEDS    ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "%s               ", message);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		sprintf(message, "Press. tecla %d", i+1);
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Desligar LEDS   ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		sprintf(message, "Pres. tecla %d", i+1);
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Apagar LEDS      ");
+	}
+
+	snprintf(TestMessages.lines[1], LINE_SIZE, "%s              ", message);
 }
 
 void ptc16print_AllLedsKeyOn(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas  ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas  ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de teclas   ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos iluminados?");
+	}
 }
 
 void ptc16print_AllLedsKeyOff(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas  ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado? ");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado?");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de teclas  ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos apagados? ");
+	}
 }
 
 void ptc16print_AllWarningLedsOn(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds advertencia");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos iluminados?");
+	}
 }
 
 void ptc16print_AllWarningLedsOff(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado? ");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado? ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds advertencia");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos apagados? ");
+	}
 }
 
 void ptc16print_USBTestMessage()
@@ -838,105 +934,215 @@ void ptc16print_USBTestMessage()
 	//if (Ptc16Tests.testFinished)
 		//return;
 
-	switch (ptc16.pendriveTestLog)
+	if (LCD_languageChosen() == PORTUGUESE)
 	{
-		case 0xFF:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Teste: Pendrive ");
-			sprintf(message, "Insira pendrive");
-			printTestMessage(TestMessages.lines[1], message, 3);
-			break;
+		switch (ptc16.pendriveTestLog)
+		{
+			case 0xFF:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Teste: Pendrive ");
+				sprintf(message, "Insira pendrive");
+				printTestMessage(TestMessages.lines[1], message, 3);
+				break;
 
-		case LCD_USB_WAIT_MESSAGE:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Teste: Pendrive ");
-			sprintf(message, "Executando");
-			printTestMessage(TestMessages.lines[1], message, 3);
-			break;
+			case LCD_USB_WAIT_MESSAGE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Teste: Pendrive ");
+				sprintf(message, "Executando");
+				printTestMessage(TestMessages.lines[1], message, 3);
+				break;
 
-		case LCD_USB_MSG_NEW_LOGS:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Testar Escrita/ ");
-			snprintf(TestMessages.lines[1], LINE_SIZE, "Leitura Pendrive");
-			break;
+			case LCD_USB_MSG_NEW_LOGS:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Testar Escrita/ ");
+				snprintf(TestMessages.lines[1], LINE_SIZE, "Leitura Pendrive");
+				break;
 
-		case LCD_USB_MSG_ALL_LOGS:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Testar Escrita/ ");
-			snprintf(TestMessages.lines[1], LINE_SIZE, "Leitura Pendrive");
-			break;
+			case LCD_USB_MSG_ALL_LOGS:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Testar Escrita/ ");
+				snprintf(TestMessages.lines[1], LINE_SIZE, "Leitura Pendrive");
+				break;
 
-		case LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Nao desconecte  ");
-			sprintf(message, "o pendrive");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Nao desconecte  ");
+				sprintf(message, "o pendrive");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		case LCD_USB_MSG_SAVING:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Testando        ");
-			sprintf(message, "Aguarde");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_SAVING:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Testando        ");
+				sprintf(message, "Aguarde");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		case LCD_USB_MSG_FINISHED:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Teste realizado ");
-			sprintf(message, "com sucesso");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_FINISHED:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Teste realizado ");
+				sprintf(message, "com sucesso");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		case LCD_USB_MSG_SAVE_TIMEOUT_ERROR:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro: USB time- ");
-			sprintf(message, "out");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_SAVE_TIMEOUT_ERROR:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Erro: USB time- ");
+				sprintf(message, "out");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		case LCD_USB_MSG_SAVE_ERROR:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao salvar ");
-			sprintf(message, "USB");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_SAVE_ERROR:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao salvar ");
+				sprintf(message, "USB");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		case LCD_USB_MSG_ERROR_CANT_CLOSE:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao fechar ");
-			sprintf(message, "arquivo");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_ERROR_CANT_CLOSE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao fechar ");
+				sprintf(message, "arquivo");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		case LCD_USB_MSG_ERROR_CANT_MOUNT:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao montar ");
-			sprintf(message, "FAT-FS");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_ERROR_CANT_MOUNT:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao montar ");
+				sprintf(message, "FAT-FS");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		case LCD_USB_MSG_ERROR_CANT_CREATE_FILE:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
-			sprintf(message, "criar arquivo");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_ERROR_CANT_CREATE_FILE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
+				sprintf(message, "criar arquivo");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		case LCD_USB_MSG_ERROR_CANT_WRITE:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
-			sprintf(message, "escrever arquivo");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_ERROR_CANT_WRITE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
+				sprintf(message, "escrever arquivo");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		case LCD_USB_MSG_RM_ERROR:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
-			sprintf(message, "remover arquivo");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_RM_ERROR:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
+				sprintf(message, "remover arquivo");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		case LCD_USB_MSG_ERROR_CANT_OPEN_FILE:
-			snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
-			sprintf(message, "abrir arquivo");
-			printTestMessage(TestMessages.lines[1], message, 1);
-			break;
+			case LCD_USB_MSG_ERROR_CANT_OPEN_FILE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao tentar ");
+				sprintf(message, "abrir arquivo");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
 
-		default:
-			break;
+			default:
+				break;
+		}
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		switch (ptc16.pendriveTestLog)
+		{
+			case 0xFF:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Prueba: Pendrive ");
+				sprintf(message, "Inserte pendrive");
+				printTestMessage(TestMessages.lines[1], message, 3);
+				break;
+
+			case LCD_USB_WAIT_MESSAGE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Prueba: Pendrive ");
+				sprintf(message, "Ejecutando");
+				printTestMessage(TestMessages.lines[1], message, 3);
+				break;
+
+			case LCD_USB_MSG_NEW_LOGS:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Prueba Escritura/" );
+				snprintf(TestMessages.lines[1], LINE_SIZE, "Lectura Pendrive");
+				break;
+
+			case LCD_USB_MSG_ALL_LOGS:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Prueba Escritura/" );
+				snprintf(TestMessages.lines[1], LINE_SIZE, "Lectura Pendrive");
+				break;
+
+			case LCD_USB_MSG_DONT_DISCONNECT_THE_PENDRIVE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "No desconecte    ");
+				sprintf(message, "lo pendrive");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			case LCD_USB_MSG_SAVING:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Probando         ");
+				sprintf(message, "Espere");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			case LCD_USB_MSG_FINISHED:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Prueba retenida ");
+				sprintf(message, "con exito");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			case LCD_USB_MSG_SAVE_TIMEOUT_ERROR:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Error: USB time- ");
+				sprintf(message, "out");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			case LCD_USB_MSG_SAVE_ERROR:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Error al gravar ");
+				sprintf(message, "USB");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			case LCD_USB_MSG_ERROR_CANT_CLOSE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Error al fechar ");
+				sprintf(message, "ficheiro");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			case LCD_USB_MSG_ERROR_CANT_MOUNT:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Error al montar ");
+				sprintf(message, "FAT-FS");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			case LCD_USB_MSG_ERROR_CANT_CREATE_FILE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Error al intentar");
+				sprintf(message, "crear ficheiro");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			case LCD_USB_MSG_ERROR_CANT_WRITE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Error al intentar ");
+				sprintf(message, "escribir ficheiro");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			case LCD_USB_MSG_RM_ERROR:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao intentar ");
+				sprintf(message, "borrar ficheiro");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			case LCD_USB_MSG_ERROR_CANT_OPEN_FILE:
+				snprintf(TestMessages.lines[0], LINE_SIZE, "Erro ao intentar ");
+				sprintf(message, "abrir ficheiro");
+				printTestMessage(TestMessages.lines[1], message, 1);
+				break;
+
+			default:
+				break;
+		}
 	}
 }
 
 void ptc16print_EndTestOk(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste PTC16: OK ");
-	sprintf(message, "Pressione Enter", 1);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste PTC16: OK ");
+		sprintf(message, "Pressione Enter", 1);
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"PRUEBA PTC16: OK ");
+		sprintf(message, "Presione Enter", 1);
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 

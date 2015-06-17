@@ -610,8 +610,18 @@ void ptc24_vAnalyse_EndTest()
 
 void ptc24print_WaitMessage(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "    Aguarde!    ");
-	sprintf(message, "  Executando");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "    Aguarde!    ");
+		sprintf(message, "  Executando");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "     Espere!    ");
+		sprintf(message, "  Ejecutando");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 3);
 }
 
@@ -623,43 +633,101 @@ void ptc24print_ClearMessages(void)
 
 void ptc24print_CAN1Error(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "CAN1 Erro: Veri-");
-	sprintf(message, "ficarCN1.5,12,13");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "CAN1 Erro: Veri-");
+		sprintf(message, "ficarCN1.5,12,13");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "CAN1 Error: Veri");
+		sprintf(message, "ficarCN1.5,12,13");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void ptc24print_IgnError(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "IGN Erro: Veri- ");
-	sprintf(message, "ficar CN1.9");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "IGN Erro: Veri- ");
+		sprintf(message, "ficar CN1.9");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "IGN Error: Veri- ");
+		sprintf(message, "ficar CN1.9");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void ptc24print_FlashError(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Flash Erro: Veri");
-	sprintf(message, "ficar comp. U8");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Flash Erro: Veri");
+		sprintf(message, "ficar comp. U8");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Flash Error:Veri");
+		sprintf(message, "ficar comp. U8");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void ptc24print_OdoError(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "ODO Erro: Veri- ");
-	sprintf(message, "ficar CN1.4");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "ODO Erro: Veri- ");
+		sprintf(message, "ficar CN1.4");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "ODO Error: Veri- ");
+		sprintf(message, "ficar CN1.4");
+	}
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void ptc24print_TacoError(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "TACO Erro: Veri-");
-	sprintf(message, "ficar CN1.6");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "TACO Erro: Veri-");
+		sprintf(message, "ficar CN1.6");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "TACO Error: Veri");
+		sprintf(message, "ficar CN1.6");
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
 void ptc24print_Buzzer(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Buzzer ok?      ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "(Primeira tecla)");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Buzzer ok?      ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "(Primeira tecla)");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Buzzer ok?      ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "(Primera tecla) ");
+	}
 }
 
 void ptc24print_PressKeyOn(void)
@@ -669,9 +737,18 @@ void ptc24print_PressKeyOn(void)
 		if(Ptc24Tests.keysOn[i] == 0)
 			break;
 
-	sprintf(message, "Press. tecla %d", i+1);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		sprintf(message, "Press. tecla %d", i+1);
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Ligar LEDS      ");
+	}
 
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Ligar LEDS      ");
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		sprintf(message, "Pres. tecla %d", i+1);
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Enciende LEDS   ");
+	}
+
 	snprintf(TestMessages.lines[1], LINE_SIZE, "%s              ", message);
 }
 
@@ -682,39 +759,95 @@ void ptc24print_PressKeyOff(void)
 		if(Ptc24Tests.keysOff[i] == 0)
 			break;
 
-	sprintf(message, "Press. tecla %d", i+1);
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Desligar LEDS   ");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		sprintf(message, "Press. tecla %d", i+1);
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Desligar LEDS   ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		sprintf(message, "Pres. tecla %d", i+1);
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Apagar LEDS      ");
+	}
+
 	snprintf(TestMessages.lines[1], LINE_SIZE, "%s              ", message);
 }
 
 void ptc24print_AllLedsKeyOn(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas  ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas  ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de teclas   ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos iluminados?");
+	}
 }
 
 void ptc24print_AllLedsKeyOff(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado?");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds das teclas ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado?");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de teclas  ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos apagados? ");
+	}
 }
 
 void ptc24print_AllWarningLedsOn(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos ligados?   ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds advertencia");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos iluminados?");
+	}
 }
 
 void ptc24print_AllWarningLedsOff(void)
 {
-	snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
-	snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado? ");
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds de avisos   ");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos desligado? ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0], LINE_SIZE, "Leds advertencia");
+		snprintf(TestMessages.lines[1], LINE_SIZE, "todos apagados? ");
+	}
 }
 
 void ptc24print_EndTestOk(void)
 {
-	snprintf(TestMessages.lines[0],LINE_SIZE,"Teste PTC24: OK ");
-	sprintf(message, "Pressione Enter", 1);
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste PTC24: OK ");
+		sprintf(message, "Pressione Enter", 1);
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"PRUEBA PTC24: OK ");
+		sprintf(message, "Presione Enter", 1);
+	}
+
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 

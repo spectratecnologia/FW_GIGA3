@@ -104,10 +104,11 @@ typedef enum {
 };
 
 #define LINE_SIZE 17
+#define NUM_LCD_LINES 2
 
 typedef struct
 {
-	char lines[2][LINE_SIZE];
+	char lines[NUM_LCD_LINES][LINE_SIZE];
 } TestMessagesStruct;
 
 /* Menu Keys */
@@ -125,8 +126,9 @@ typedef enum {
 };
 
 typedef enum{
-	PORTUGUESE,
-	SPANISH
+	PORTUGUESE=0,
+	SPANISH,
+	ENGLISH
 } languages;
 
 
