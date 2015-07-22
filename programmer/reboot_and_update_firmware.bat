@@ -1,7 +1,7 @@
 D:
-cd D:\Work\PROJETOS\MULTIPLEX3\GIGA3\SW.C\Firmware\programmer
+cd D:\GIGA3\programmer
 echo "Rebooting.."
-SerialSend COM5 ##BOOTLOADER_GIGA3##
+SerialSend COM3 ##BOOTLOADER_GIGA3##
 echo "Waiting 2s for device reboot.."
 ping 1.1.1.1 -n 1 -w 2000 > nul
 echo "Updating firmware.."

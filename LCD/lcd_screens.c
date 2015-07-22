@@ -956,9 +956,9 @@ void LCD_vTestMPXLoop(void)
 		snprintf(lines_spanish[1],LINE_SIZE,"Iniciar la Prueba%c",finalpoint);
 		LCD_printLine(0, lines_spanish[0]);
 		LCD_printLine(1, lines_spanish[1]);
+	}
 
-
-	LCD_vSetNextEvent(EV_REFRESH);	}
+	LCD_vSetNextEvent(EV_REFRESH);
 	/* This if sequence determines the return to main screen if device connected
 	 * does not belong to this test screen.
 	 */
@@ -1052,9 +1052,9 @@ void LCD_vTestMPXManual(void)
 	{
 		LCD_printLine(0, lines_spanish[0]);
 		LCD_printLine(1, lines_spanish[lcd.sbLine]);
+	}
 
-
-	LCD_vSetNextEvent(EV_REFRESH);	}
+	LCD_vSetNextEvent(EV_REFRESH);
 	/* This if sequence determines the return to main screen if device connected
 	 * does not belong to this test screen.
 	 */
@@ -1071,7 +1071,7 @@ void LCD_vTestMPXManual(void)
 	else if(sysTickTimer-ptc16.lastTimeSeen<100)
 	{
 		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
-	};
+	}
 }
 
 void LCD_vTestMPXManualStart(void)
@@ -1115,9 +1115,9 @@ void LCD_vTestPTC24(void)
 		snprintf(lines_spanish[1],LINE_SIZE,"Iniciar Prueba%c ",finalpoint);
 		LCD_printLine(0, lines_spanish[0]);
 		LCD_printLine(1, lines_spanish[1]);
+	}
 
-
-	LCD_vSetNextEvent(EV_REFRESH);	}
+	LCD_vSetNextEvent(EV_REFRESH);
 	/* This if sequence determines the return to main screen if device connected
 	 * does not belong to this test screen.
 	 */
@@ -1134,7 +1134,7 @@ void LCD_vTestPTC24(void)
 	else if(sysTickTimer-ptc16.lastTimeSeen<100)
 	{
 		LCD_vSetNextEvent(EV_BACK_TO_MAIN);
-	};
+	}
 }
 
 void LCD_vTestPTC24Start(void)
@@ -1180,9 +1180,9 @@ void LCD_vTestPTC16(void)
 		snprintf(lines_spanish[1],LINE_SIZE,"Iniciar Prueba%c ",finalpoint);
 		LCD_printLine(0, lines_spanish[0]);
 		LCD_printLine(1, lines_spanish[1]);
+	}
 
-
-	LCD_vSetNextEvent(EV_REFRESH);	}
+	LCD_vSetNextEvent(EV_REFRESH);
 	/* This if sequence determines the return to main screen if device connected
 	 * does not belong to this test screen.
 	 */
@@ -1199,7 +1199,7 @@ void LCD_vTestPTC16(void)
 	else if(sysTickTimer-ptc16.lastTimeSeen<100)
 	{
 		LCD_vSetNextEvent(EV_REFRESH);
-	};
+	}
 }
 
 void LCD_vTestPTC16Start(void)
