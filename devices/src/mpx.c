@@ -217,6 +217,7 @@ inline void activeBIDIports(uint8_t portx, FunctionalState_MPXports state)
     	mpx.outputChanged[portx] = true;
     }
 
+
     else
     	return;
 }

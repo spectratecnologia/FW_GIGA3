@@ -25,7 +25,7 @@ typedef enum
 } MPX_ID;
 
 /* Relative to the active ports code */
-typedef enum {PORT_LOW = 0, PORT_HIGH = 1, PORT_OFF = 2} FunctionalState_MPXports;
+typedef enum {PORT_LOW = 0, PORT_HIGH = 1, PORT_OFF = 2, PORT_OFF_GIGA_ON = 3} FunctionalState_MPXports;
 
 /* Exported macro ------------------------------------------------------------*/
 /* Ignition Pin */

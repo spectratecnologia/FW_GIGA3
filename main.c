@@ -17,7 +17,7 @@
 
 void teste()
 {
-	setBeep(10, 1000);
+
 }
 
 int main(void)
@@ -46,6 +46,9 @@ int main(void)
     	executeEveryInterval(2, 50, &processKeysAndDeadTime);
 
     	executeEveryInterval(3, 100, &LCD_vStateMachineLoop);
+
+    	executeEveryInterval(15, 50, &teste);
+
 
     	if (mpx.MpxAlreadyInit)
     	{
@@ -81,5 +84,6 @@ int main(void)
 
     		//executeEveryInterval(15, 10000, &teste);
     	}
+
     }
 }

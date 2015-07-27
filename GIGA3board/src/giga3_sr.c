@@ -85,7 +85,7 @@ uint32_t readDataFromSR(void)
 	while(SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET);
 
 	while(SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET);
-	data +=  (uint32_t)(SPI_I2S_ReceiveData(SPI2)<<16);
+	data |=  (uint32_t)(SPI_I2S_ReceiveData(SPI2)<<16);
 
 	return data;
 }

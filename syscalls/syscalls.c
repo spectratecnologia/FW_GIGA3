@@ -90,14 +90,11 @@ int _write(int file, char *ptr, int len)
 
 #else
 
-  	if (isUSARTAvailableToWrite()){
-  	    return writeBytesToUSART(ptr,len);
-  	  }
-  	  else{
-  	   return 0;
-  	  }
 
-#endif
+  	VCP_DataTx(ptr,len);
+  	return len;
+
+  	#endif
 
 }
 

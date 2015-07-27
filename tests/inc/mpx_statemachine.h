@@ -71,6 +71,7 @@ typedef struct
 {
 	int16_t currentTest;
 	uint8_t switchPort;
+	uint8_t shortCircuitPort;
 	uint64_t statedTestTime;
 	uint64_t startedMemoryAnalyseTime;
 	bool boolIsAutoTest;

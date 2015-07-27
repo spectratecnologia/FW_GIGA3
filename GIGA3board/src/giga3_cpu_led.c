@@ -39,5 +39,6 @@ void toggleStatusLed()
 void toggleCPULED()
 {
 	toggleStatusLed();
+
 }
 

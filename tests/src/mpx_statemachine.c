@@ -47,12 +47,15 @@ void print_IDTest_error(void);
 void print_PortTest_OK(void);
 void print_PortTest_error(void);
 void print_PortTest_PortOpenError(void);
-void print_PortTest_PortShortError(void);
+void print_PortTest_TransistorBitShortError(void);
 void print_PortTest_FetError(void);
 void print_NTCTest_OK(void);
 void print_NTCTest_error(void);
+void print_PortTest_CableShortError(void);
 
 void print_OnGoing(void);
+
+bool lookForInputShortCircuit(uint8_t port, uint8_t *portError);
 
 char CN[NUM_PORTS+4][5] = {"1.1L", "1.3L", "2.1L", "2.3L"
 						  ,"1.1H", "1.3H", "2.1H", "2.3H"
@@ -85,8 +88,8 @@ char FET[NUM_PORTS][6] =  {"FTL1",  "FTL2",   "FTL3",  "FTL4"
 						  ,"FTQH5", "FTQH5",  "FTQH5", "FTQH5"};
 
 /* Local Variables -----------------------------------------------------------*/
-StateMachine MpxStateMachine;
 Test MpxTests;
+StateMachine MpxStateMachine;
 char message[LINE_SIZE];
 static volatile int8_t nextEvent;
 static volatile int NUM_NTC_TRIES;
@@ -756,14 +759,26 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 	uint8_t status;
 
 	/* Verify if some port is switched with LODIN ports. */
-	if ((MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P35))
-		for (i=28; i<36; i++)
+	if ((MpxTests.currentTest >= TEST_P28) && (MpxTests.currentTest <= TEST_P35)) {
+		for (i=0; i<NUM_PORTS; i++)
 		{
 			if (i == (MpxTests.currentTest - TEST_P0_H))
 				continue;
 
-			if (mpx.portInput[i] == 0x02)
+			if (mpx.portInput[i] != 0x00 && mpx.portInput[MpxTests.currentTest - TEST_P0_H] == 0x02)
 			{
+				printf("Erro 3: port = %d i = %d\n", MpxTests.currentTest - TEST_P0_H, i);
+
+				MpxTests.shortCircuitPort = i;
+				MpxTests.testError = true;
+				errorBeep();
+				printTestResult = print_PortTest_CableShortError;
+				return;
+			}
+			else if (mpx.portInput[i] != 0x00 && mpx.portInput[MpxTests.currentTest - TEST_P0_H] != 0x02)
+			{
+				printf("Erro 4: port = %d i = %d\n", MpxTests.currentTest - TEST_P0_H, i);
+
 				MpxTests.switchPort = i;
 				MpxTests.testError = true;
 				errorBeep();
@@ -771,14 +786,15 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 				return;
 			}
 		}
+	}
 
-	if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L))
-		for (i=0; i<28; i++)
+	if ((MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L)) {
+		for (i=0; i<NUM_PORTS; i++)
 		{
 			if (i == (MpxTests.currentTest - TEST_P0_L))
 				continue;
 
-			if (mpx.portInput[i] == 0x01)
+			if (mpx.portInput[i] != 0x00)
 			{
 				MpxTests.switchPort = i;
 				MpxTests.testError = true;
@@ -787,22 +803,39 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 				return;
 			}
 		}
+	}
 
-	else if ((MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P27))
-		for (i=0; i<28; i++)
+	else if ((MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P27)){
+
+		for (i=4; i<28; i++)
 		{
+			uint8_t myInput = getPortStatus(MpxTests.currentTest - TEST_P0_H);
+
 			if (i == (MpxTests.currentTest - TEST_P0_H))
 				continue;
 
-			if (getPortStatus(i))
+			uint8_t value = getPortStatus(i);
+
+			printf("port = %d i = %d - (%u , %u)\n", MpxTests.currentTest - TEST_P0_H, i, myInput, value);
+
+			if (value && myInput)
 			{
-				MpxTests.switchPort = i;
+				MpxTests.shortCircuitPort = i;
+				MpxTests.testError = true;
+				errorBeep();
+				printTestResult = print_PortTest_CableShortError;
+				return;
+			}
+			else if (value && !myInput)
+			{
+								MpxTests.switchPort = i;
 				MpxTests.testError = true;
 				errorBeep();
 				printTestResult = print_SwitchedPortTest_error;
 				return;
 			}
 		}
+	}
 }
 
 void mpxTest_vAnalyse_ID(void)
@@ -906,7 +939,7 @@ void mpxTest_vAnalyse_PP10A(void)
 
 			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] && 0x10)
 			{
-				printTestResult = print_PortTest_PortShortError;
+				printTestResult = print_PortTest_TransistorBitShortError;
 				MpxTests.seriousError = true;
 			}
 		}
@@ -915,9 +948,11 @@ void mpxTest_vAnalyse_PP10A(void)
 
 void mpxTest_vAnalyse_BIDI(void)
 {
+
 	/* If mpx.portInput[X] is not "0x01", then there is some problem with the port X. */
 	if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x01)
 	{
+
 		MpxTests.testError = false;
 		if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
 			notErrorBeep();
@@ -937,7 +972,7 @@ void mpxTest_vAnalyse_BIDI(void)
 
 		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] && 0x10)
 		{
-			printTestResult = print_PortTest_PortShortError;
+			printTestResult = print_PortTest_TransistorBitShortError;
 			MpxTests.seriousError = true;
 		}
 	}
@@ -945,8 +980,11 @@ void mpxTest_vAnalyse_BIDI(void)
 
 void mpxTest_vAnalyse_LODIN(void)
 {
+	uint8_t shortPort;
+
 	if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x02)
 	{
+
 		MpxTests.testError = false;
 		if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
 			notErrorBeep();
@@ -1283,17 +1321,34 @@ void print_PortTest_PortOpenError(void)
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
-void print_PortTest_PortShortError(void)
+void print_PortTest_TransistorBitShortError(void)
 {
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
-		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "Canal em curto");
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s     bit", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "curto-circuito ");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
-		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s     bit", CN[MpxTests.currentTest - TEST_P0_L]);
+		sprintf(message, "Cortocircuito");
+	}
+
+	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
+void print_PortTest_CableShortError(void)
+{
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Err CN%s CN%s   ", CN[MpxTests.currentTest - TEST_P0_L], CN2[MpxTests.shortCircuitPort]);
+		sprintf(message, "curto-circuito ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Err CN%s CN%s   ", CN[MpxTests.currentTest - TEST_P0_L], CN2[MpxTests.shortCircuitPort]);
 		sprintf(message, "Cortocircuito");
 	}
 
@@ -1387,4 +1442,30 @@ void printTestMessage(char *line, char *sentence, uint8_t dots)
 
 	else
 		snprintf(line, LINE_SIZE, "%s", sentence);
+}
+
+/* Verify if there is any short circuit between port and other mpx's port.
+ * Short Circuit = If any other port is activated (LOW or HIGH) other then
+ * "port", they are in short-circuit between them.
+ *
+ * return: true if there is short circuit, false otherwise. portError will
+ * have the port number that caused the function to return, if there is
+ * no short circuit NUM_PORTS is returned.
+ *
+ */
+bool lookForInputShortCircuit(uint8_t port, uint8_t *portError) {
+	const uint8_t ACTIVE_MASK = 0x03;
+	uint8_t i;
+	if(port >=0 && port <NUM_PORTS) {
+		for(i=0; i<NUM_PORTS; i++) {
+			if((port != i) && (mpx.portInput[i]&ACTIVE_MASK) != 0x00) {
+				*portError = i;
+				return true;
+			}
+		}
+		*portError = NUM_PORTS;
+		return false;
+	}
+	*portError = NUM_PORTS;
+	return false;
 }
