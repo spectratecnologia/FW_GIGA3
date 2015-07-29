@@ -52,7 +52,8 @@ void print_PortTest_PortOpenError(void);
 void print_PortTest_TransistorBitShortError(void);
 void print_PortTest_FetError(void);
 void print_NTCTest_OK(void);
-void print_NTCTest_error(void);
+void print_NTC_TEMP_Test_error(void);
+void print_NTC_GNDTest_error(void);
 void print_PortTest_CableShortError(void);
 void print_PortTest_CableShortErrorLODIN(void);
 
@@ -1064,8 +1065,18 @@ void mpxTest_vAnalyse_NTC(void)
 {
 	int max_tries=10;
 
-	if ((mpx.ntcTemperature >= 0x17) && (mpx.ntcTemperature <= 0x23))
+	if(GPIO_ReadInputDataBit(GND_NTC_PORT, GND_NTC)) {
+		printf("Error GND NTC\n");
+		MpxTests.testError = true;
+		printTestResult = print_NTC_GNDTest_error;
+		errorBeep();
+		NUM_NTC_TRIES = 0;
+		return;
+	}
+
+	if ((mpx.ntcTemperature >= 0x18) && (mpx.ntcTemperature <= 0x25))
 	{
+		printf("NTC - OK\n");
 		MpxTests.testError = false;
 		if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
 			notErrorBeep();
@@ -1076,23 +1087,14 @@ void mpxTest_vAnalyse_NTC(void)
 
 	else
 	{
-		printTestResult = print_NTCTest_error;
-		errorBeep();
-	}
-
-	NUM_NTC_TRIES++;
-
-	/* Stop Analyse loop if number of tries reaches a max value. */
-	if (NUM_NTC_TRIES == max_tries*4)
-	{
+		printf("Eror NTC Temp\n");
 		MpxTests.testError = true;
-		mpxTest_vSetNextEvent(MPX_EV_FINALIZE);
+		printTestResult = print_NTC_TEMP_Test_error;
+		errorBeep();
 		NUM_NTC_TRIES = 0;
+		return;
 	}
 
-	else
-		/* Keep the program in Analyse state until it reaches max_tries. */
-		mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 }
 
 /* ---------------------------------------------------------------------------*/
@@ -1468,18 +1470,35 @@ void print_NTCTest_OK(void)
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
-void print_NTCTest_error(void)
+void print_NTC_TEMP_Test_error(void)
 {
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste NTC: erro    ");
-		sprintf(message, "Verificar CN5");
+		sprintf(message, "Verificar CN5.1");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba NTC: error    ");
-		sprintf(message, "Comprobar CN5");
+		sprintf(message, "Comprobar CN5.1");
+	}
+
+	printTestMessage(TestMessages.lines[1], message, 3);
+}
+
+void print_NTC_GNDTest_error(void)
+{
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste NTC: erro    ");
+		sprintf(message, "Verificar CN5.2");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba NTC: error    ");
+		sprintf(message, "Comprobar CN5.2");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 3);

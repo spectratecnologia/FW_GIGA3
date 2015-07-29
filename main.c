@@ -15,13 +15,11 @@
 #include "ptc24_statemachine.h"
 #include "ptc16_statemachine.h"
 
-void teste()
-{
-
+void teste() {
+	//printf("Temp: %X\n", mpx.ntcTemperature);
 }
 
-int main(void)
-{
+int main(void) {
 	/* Functions already working - Pedro */
 	initUSART();
 	initUSBVCP();
@@ -37,53 +35,48 @@ int main(void)
 	ptc24Test_vStateMachineInit();
 	ptc16Test_vStateMachineInit();
 
-    while(1)
-    {
-    	executeEveryInterval(0, 1000, &toggleCPULED);
+	while (1) {
+		executeEveryInterval(0, 1000, &toggleCPULED);
 
-    	executeEveryInterval(1, 10, &processBeeps);
+		executeEveryInterval(1, 10, &processBeeps);
 
-    	executeEveryInterval(2, 50, &processKeysAndDeadTime);
+		executeEveryInterval(2, 50, &processKeysAndDeadTime);
 
-    	executeEveryInterval(3, 100, &LCD_vStateMachineLoop);
+		executeEveryInterval(3, 100, &LCD_vStateMachineLoop);
 
-    	executeEveryInterval(15, 50, &teste);
+		executeEveryInterval(15, 50, &teste);
 
+		if (mpx.MpxAlreadyInit) {
+			executeEveryInterval(4, 10, &mpxTest_vStateMachineLoop);
 
-    	if (mpx.MpxAlreadyInit)
-    	{
-    		executeEveryInterval(4, 10, &mpxTest_vStateMachineLoop);
+			executeEveryInterval(5, 80, &turningOffMpxEmergencyMode);
 
-    		executeEveryInterval(5, 80, &turningOffMpxEmergencyMode);
+			executeEveryInterval(6, 5, &sendChangedOutputsToMPXs);
 
-    		executeEveryInterval(6, 5, &sendChangedOutputsToMPXs);
+			executeEveryInterval(7, 1, &toogleMPXNTC);
+		}
 
-    		executeEveryInterval(7, 1, &toogleMPXNTC);
-    	}
+		else if (ptc24.PtcAlreadyInit) {
+			executeEveryInterval(8, 40, &emulateMpx);
 
-    	else if (ptc24.PtcAlreadyInit)
-    	{
-    		executeEveryInterval(8, 40, &emulateMpx);
+			executeEveryInterval(9, 10, &ptc24Test_vStateMachineLoop);
 
-    		executeEveryInterval(9, 10, &ptc24Test_vStateMachineLoop);
+			executeEveryInterval(10, 10, &ptc24_toggleOdo);
 
-    		executeEveryInterval(10, 10, &ptc24_toggleOdo);
+			executeEveryInterval(11, 8, &ptc24_toggleTaco);
+		}
 
-    		executeEveryInterval(11, 8, &ptc24_toggleTaco);
-    	}
+		else if (ptc16.PtcAlreadyInit) {
+			executeEveryInterval(8, 40, &emulateMpx);
 
-    	else if (ptc16.PtcAlreadyInit)
-    	{
-    		executeEveryInterval(8, 40, &emulateMpx);
+			executeEveryInterval(12, 10, &ptc16Test_vStateMachineLoop);
 
-    		executeEveryInterval(12, 10, &ptc16Test_vStateMachineLoop);
+			executeEveryInterval(13, 10, &ptc16_toggleOdo);
 
-    		executeEveryInterval(13, 10, &ptc16_toggleOdo);
+			executeEveryInterval(14, 8, &ptc16_toggleTaco);
 
-    		executeEveryInterval(14, 8, &ptc16_toggleTaco);
+			//executeEveryInterval(15, 10000, &teste);
+		}
 
-    		//executeEveryInterval(15, 10000, &teste);
-    	}
-
-    }
+	}
 }

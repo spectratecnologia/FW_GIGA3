@@ -102,14 +102,20 @@ void initMPXTempPin()
 
 	/* Enable clock GPIOC's peripheric  */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
 
 	/* 	Initializes the High and Low side Push Pull 10A transistors' pins */
 	gpio_InitTypeDef.GPIO_Pin	= PWM_NTC;
 	gpio_InitTypeDef.GPIO_Mode	= GPIO_Mode_Out_PP;
 	gpio_InitTypeDef.GPIO_Speed	= GPIO_Speed_50MHz;
 	GPIO_Init(PWM_NTC_PORT, &gpio_InitTypeDef);
-
 	GPIO_ResetBits(PWM_NTC_PORT, PWM_NTC);
+
+	gpio_InitTypeDef.GPIO_Pin	= GND_NTC;
+	gpio_InitTypeDef.GPIO_Mode	= GPIO_Mode_IPU;
+	gpio_InitTypeDef.GPIO_Speed	= GPIO_Speed_50MHz;
+	GPIO_Init(GND_NTC_PORT, &gpio_InitTypeDef);
+
 }
 
 /* ---------------------------------------------------------------------------*/

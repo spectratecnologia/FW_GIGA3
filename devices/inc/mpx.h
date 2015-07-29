@@ -36,6 +36,10 @@ typedef enum {PORT_LOW = 0, PORT_HIGH = 1, PORT_OFF = 2, PORT_OFF_GIGA_ON = 3} F
 #define PWM_NTC GPIO_Pin_8
 #define PWM_NTC_PORT GPIOC
 
+/* NTC GND wire */
+#define GND_NTC GPIO_Pin_2
+#define GND_NTC_PORT GPIOA
+
 /* ID ports code */
 #define CMDFLID0 GPIO_Pin_9
 #define CMDFLID1 GPIO_Pin_10
