@@ -19,6 +19,7 @@ void mpxTest_vExecute_ID(void);
 void mpxTest_vExecute_PP10A(void);
 void mpxTest_vExecute_BIDI(void);
 void mpxTest_vExecute_LODIN(void);
+void mpxTest_vExecute_LODIN_2(void);
 void mpxTest_vAnalyse_CAN(void);
 void mpxTest_vAnalyse_Flash(void);
 void EraseFlash(void);
@@ -28,6 +29,7 @@ void mpxTest_vAnalyse_ID(void);
 void mpxTest_vAnalyse_PP10A(void);
 void mpxTest_vAnalyse_BIDI(void);
 void mpxTest_vAnalyse_LODIN(void);
+void mpxTest_vAnalyse_LODIN_2(void);
 void mpxTest_vAnalyse_NTC(void);
 
 /* Local functions declaration #3 --------------------------------------------*/
@@ -52,6 +54,7 @@ void print_PortTest_FetError(void);
 void print_NTCTest_OK(void);
 void print_NTCTest_error(void);
 void print_PortTest_CableShortError(void);
+void print_PortTest_CableShortErrorLODIN(void);
 
 void print_OnGoing(void);
 
@@ -322,6 +325,9 @@ void mpxTest_vExecute(void)
 	else if ((MpxTests.currentTest >= TEST_P28) && (MpxTests.currentTest <= TEST_P35 ))
 		mpxTest_vExecute_LODIN();
 
+	else if ((MpxTests.currentTest >= TEST_P0_H_LDIN) && (MpxTests.currentTest <= TEST_P27_LDIN ))
+		mpxTest_vExecute_LODIN_2();
+
 	/* This state is only reached by automatic test when all tests is working fine. */
 	else if (MpxTests.currentTest == TEST_END)
 	{
@@ -405,6 +411,9 @@ void mpxTest_vAnalyse(void)
 	/* LODIN test */
 	else if ((MpxTests.currentTest >= TEST_P28) && (MpxTests.currentTest <= TEST_P35 ) && !MpxTests.testError)
 		mpxTest_vAnalyse_LODIN();
+
+	else if ((MpxTests.currentTest >= TEST_P0_H_LDIN) && (MpxTests.currentTest <= TEST_P27_LDIN ) && !MpxTests.testError)
+		mpxTest_vAnalyse_LODIN_2();
 
 	else if ((MpxTests.currentTest == TEST_NTC) && !MpxTests.testError)
 		mpxTest_vAnalyse_NTC();
@@ -614,6 +623,16 @@ void mpxTest_vExecute_LODIN(void)
 		activeMPXports((MpxTests.currentTest - TEST_P0_H), PORT_LOW);
 }
 
+/* Test if LDIN port is in short circuit with any Push-pull or BIDI port.
+ * This function forces B2, B10, P2, P10 to low and verify if it affects the
+ * digital port.
+ */
+void mpxTest_vExecute_LODIN_2(void)
+{
+	if ((MpxTests.currentTest >= TEST_P0_H_LDIN) && (MpxTests.currentTest <= TEST_P27_LDIN))
+		activeMPXports((MpxTests.currentTest - TEST_P0_H_LDIN), PORT_OFF_GIGA_ON);
+}
+
 /* Analysis ------------------------------------------------------------------*/
 void mpxTest_vAnalyse_CAN(void)
 {
@@ -767,8 +786,6 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 
 			if (mpx.portInput[i] != 0x00 && mpx.portInput[MpxTests.currentTest - TEST_P0_H] == 0x02)
 			{
-				printf("Erro 3: port = %d i = %d\n", MpxTests.currentTest - TEST_P0_H, i);
-
 				MpxTests.shortCircuitPort = i;
 				MpxTests.testError = true;
 				errorBeep();
@@ -777,8 +794,6 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 			}
 			else if (mpx.portInput[i] != 0x00 && mpx.portInput[MpxTests.currentTest - TEST_P0_H] != 0x02)
 			{
-				printf("Erro 4: port = %d i = %d\n", MpxTests.currentTest - TEST_P0_H, i);
-
 				MpxTests.switchPort = i;
 				MpxTests.testError = true;
 				errorBeep();
@@ -794,20 +809,33 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 			if (i == (MpxTests.currentTest - TEST_P0_L))
 				continue;
 
-			if (mpx.portInput[i] != 0x00)
-			{
-				MpxTests.switchPort = i;
-				MpxTests.testError = true;
-				errorBeep();
-				printTestResult = print_SwitchedPortTest_error;
-				return;
+			if(i >= 28) {
+				uint8_t isGiga3HighSideMosfetDrivingCurrent = getSRBitStatus(TEST_P0_L+27-MpxTests.currentTest);
+				if(mpx.portInput[i] == 0x02 && !getPortStatus(MpxTests.currentTest - TEST_P0_L) &&
+						isGiga3HighSideMosfetDrivingCurrent) {
+					MpxTests.shortCircuitPort = i;
+					MpxTests.testError = true;
+					errorBeep();
+					printTestResult = print_PortTest_CableShortError;
+					return;
+				}
+			}
+			else {
+				if (mpx.portInput[i] != 0x00)
+				{
+					MpxTests.switchPort = i;
+					MpxTests.testError = true;
+					errorBeep();
+					printTestResult = print_SwitchedPortTest_error;
+					return;
+				}
 			}
 		}
 	}
 
 	else if ((MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P27)){
 
-		for (i=4; i<28; i++)
+		for (i=0; i<28; i++)
 		{
 			uint8_t myInput = getPortStatus(MpxTests.currentTest - TEST_P0_H);
 
@@ -816,8 +844,7 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 
 			uint8_t value = getPortStatus(i);
 
-			printf("port = %d i = %d - (%u , %u)\n", MpxTests.currentTest - TEST_P0_H, i, myInput, value);
-
+			//printf("port = %d i = %d - (%u , %u)\n", MpxTests.currentTest - TEST_P0_H, i, myInput, value);
 			if (value && myInput)
 			{
 				MpxTests.shortCircuitPort = i;
@@ -870,6 +897,7 @@ void mpxTest_vAnalyse_PP10A(void)
 		isMpxPortLow = !getPortStatus(MpxTests.currentTest-TEST_P0_L);
 		/* If this bool is true, then giga3 mosfet is driving current. */
 		isGiga3HighSideMosfetDrivingCurrent = getSRBitStatus(TEST_P0_L+27-MpxTests.currentTest);
+
 	}
 
 	else
@@ -892,6 +920,18 @@ void mpxTest_vAnalyse_PP10A(void)
 				if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
 					notErrorBeep();
 				printTestResult = print_PortTest_OK;
+			}
+
+
+			uint8_t i;
+			for(i=28; i<36; i++) {
+				if(mpx.portInput[i] == 0x02 && isMpxPortLow && isGiga3HighSideMosfetDrivingCurrent) {
+					MpxTests.shortCircuitPort = i;
+					MpxTests.testError = true;
+					errorBeep();
+					printTestResult = print_PortTest_CableShortError;
+					return;
+				}
 			}
 		}
 
@@ -997,6 +1037,28 @@ void mpxTest_vAnalyse_LODIN(void)
 		errorBeep();
 		printTestResult = print_PortTest_error;
 	}
+}
+
+void mpxTest_vAnalyse_LODIN_2(void)
+{
+	uint8_t shortPort;
+	uint8_t i;
+
+	for(i=28; i<36; i++) {
+		if(mpx.portInput[i] == 0x02) {
+			MpxTests.shortCircuitPort = i;
+			MpxTests.testError = true;
+			errorBeep();
+			printTestResult = print_PortTest_CableShortErrorLODIN;
+			return;
+		}
+	}
+
+	MpxTests.testError = false;
+	if (!MpxTests.boolIsAutoTest && !MpxTests.boolIsLoopTest)
+		notErrorBeep();
+	printTestResult = print_PortTest_OK;
+
 }
 
 void mpxTest_vAnalyse_NTC(void)
@@ -1349,6 +1411,23 @@ void print_PortTest_CableShortError(void)
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Err CN%s CN%s   ", CN[MpxTests.currentTest - TEST_P0_L], CN2[MpxTests.shortCircuitPort]);
+		sprintf(message, "Cortocircuito");
+	}
+
+	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
+void print_PortTest_CableShortErrorLODIN(void)
+{
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Err CN%s CN%s   ", CN2[MpxTests.currentTest - TEST_P0_H_LDIN], CN2[MpxTests.shortCircuitPort]);
+		sprintf(message, "curto-circuito ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Err CN%s CN%s   ", CN2[MpxTests.currentTest - TEST_P0_H_LDIN], CN2[MpxTests.shortCircuitPort]);
 		sprintf(message, "Cortocircuito");
 	}
 

@@ -187,6 +187,16 @@ inline void activePP10AportX(uint8_t pinH, uint8_t pinL, uint8_t portx, Function
 		GPIO_ResetBits(CMDFHL_PORT, pinH);
 		memcpy(&mpx.portOutput[portx], offMPXdeviceport, 8);
 	}
+	else if (state == PORT_OFF_GIGA_ON)
+	{
+		GPIO_SetBits(CMDFHL_PORT, pinL);
+		GPIO_ResetBits(CMDFHL_PORT, pinH);
+		memcpy(&mpx.portOutput[portx], offMPXdeviceport, 8);
+	}
+	else
+	{
+		return;
+	}
 
 	mpx.outputChanged[portx] = true;
 }
@@ -216,7 +226,15 @@ inline void activeBIDIports(uint8_t portx, FunctionalState_MPXports state)
     	memcpy(&mpx.portOutput[portx], highMPXdeviceport, 8);
     	mpx.outputChanged[portx] = true;
     }
-
+    else if (state == PORT_OFF_GIGA_ON)
+	{
+		/* Return int32 position which specify data to turn on port X */
+		position<<=8*((portx-4)/8)+(7-(portx-4)%8);
+		/* Send int32 position to update output shift registers pins */
+		sendDataToSR(position);
+		memcpy(&mpx.portOutput[portx], offMPXdeviceport, 8);
+		mpx.outputChanged[portx] = true;
+	}
 
     else
     	return;
