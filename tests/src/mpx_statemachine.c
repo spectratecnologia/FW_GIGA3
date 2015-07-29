@@ -844,7 +844,6 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 
 			uint8_t value = getPortStatus(i);
 
-			//printf("port = %d i = %d - (%u , %u)\n", MpxTests.currentTest - TEST_P0_H, i, myInput, value);
 			if (value && myInput)
 			{
 				MpxTests.shortCircuitPort = i;
