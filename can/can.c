@@ -511,3 +511,7 @@ void sendCanRTC(void)
 
 	sendCanPacket(CAN1, CAN_COMMAND_BROADCAST, CAN_BROADCAST_RTC, MY_ID, BROADCAST_DEST_ADDR, broadcastRTC, 8);
 }
+
+uint32_t getMpxTimeSinceLastMessage() {
+	return (sysTickTimer - mpx.lastTimeSeen);
+}

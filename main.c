@@ -15,8 +15,11 @@
 #include "ptc24_statemachine.h"
 #include "ptc16_statemachine.h"
 
-void teste() {
-	//printf("Temp: %X\n", mpx.ntcTemperature);
+void verifyMpxTimout() {
+	if(getMpxTimeSinceLastMessage() > MPX_TIMOUT) {
+		printf("Emergency Mode call \n");
+		//callEmergencyMode();
+	}
 }
 
 int main(void) {
@@ -44,8 +47,6 @@ int main(void) {
 
 		executeEveryInterval(3, 100, &LCD_vStateMachineLoop);
 
-		executeEveryInterval(15, 50, &teste);
-
 		if (mpx.MpxAlreadyInit) {
 			executeEveryInterval(4, 10, &mpxTest_vStateMachineLoop);
 
@@ -54,6 +55,8 @@ int main(void) {
 			executeEveryInterval(6, 5, &sendChangedOutputsToMPXs);
 
 			executeEveryInterval(7, 1, &toogleMPXNTC);
+
+			//executeEveryInterval(15, 5, &verifyMpxTimout);
 		}
 
 		else if (ptc24.PtcAlreadyInit) {

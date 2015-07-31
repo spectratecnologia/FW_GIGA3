@@ -10,6 +10,7 @@ void mpxTest_vWait(void);
 void mpxTest_vAnalyse(void);
 void mpxTest_vFinalize(void);
 void mpxTest_vPrint(void);
+void mpxTest_vErrCOM(void);
 void mpxTest_vFinish(void);
 
 /* Local functions declaration #2 --------------------------------------------*/
@@ -56,6 +57,7 @@ void print_NTC_TEMP_Test_error(void);
 void print_NTC_GNDTest_error(void);
 void print_PortTest_CableShortError(void);
 void print_PortTest_CableShortErrorLODIN(void);
+void printErrorCommunication (void);
 
 void print_OnGoing(void);
 
@@ -109,16 +111,19 @@ const Transition MpxSMTrans[] =  		//TABELA DE ESTADOS
 {MPX_ST_EXECUTE		,MPX_EV_PRINT    	,MPX_ST_PRINT    	,&mpxTest_vPrint 	},
 {MPX_ST_EXECUTE		,MPX_EV_WAIT    	,MPX_ST_WAIT       	,&mpxTest_vWait 	},
 {MPX_ST_EXECUTE		,MPX_EV_FINALIZE   	,MPX_ST_FINALIZE  	,&mpxTest_vFinalize	},
+{MPX_ST_EXECUTE		,MPX_EV_ERROR_COM   ,MPX_ST_ERR_COM 	,&mpxTest_vErrCOM	},
 {MPX_ST_EXECUTE		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_WAIT		,MPX_EV_REFRESH   	,MPX_ST_WAIT       	,&mpxTest_vWait		},
 {MPX_ST_WAIT		,MPX_EV_PRINT	 	,MPX_ST_PRINT_WAIT  ,&mpxTest_vPrint	},
 {MPX_ST_WAIT		,MPX_EV_ANALYSE    	,MPX_ST_ANALYSE    	,&mpxTest_vAnalyse 	},
+{MPX_ST_WAIT		,MPX_EV_ERROR_COM   ,MPX_ST_ERR_COM 	,&mpxTest_vErrCOM	},
 {MPX_ST_WAIT		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_ANALYSE		,MPX_EV_REFRESH   	,MPX_ST_ANALYSE    	,&mpxTest_vAnalyse	},
 {MPX_ST_ANALYSE		,MPX_EV_EXECUTE   	,MPX_ST_EXECUTE    	,&mpxTest_vExecute	},
 {MPX_ST_ANALYSE		,MPX_EV_FINALIZE   	,MPX_ST_FINALIZE   	,&mpxTest_vFinalize	},
+{MPX_ST_ANALYSE		,MPX_EV_ERROR_COM   ,MPX_ST_ERR_COM 	,&mpxTest_vErrCOM	},
 {MPX_ST_ANALYSE		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_FINALIZE	,MPX_EV_REFRESH   	,MPX_ST_FINALIZE   	,&mpxTest_vFinalize	},
@@ -128,14 +133,20 @@ const Transition MpxSMTrans[] =  		//TABELA DE ESTADOS
 
 {MPX_ST_PRINT_WAIT	,MPX_EV_REFRESH   	,MPX_ST_PRINT_WAIT 	,&mpxTest_vPrint    },
 {MPX_ST_PRINT_WAIT	,MPX_EV_WAIT	   	,MPX_ST_WAIT     	,&mpxTest_vWait 	},
+{MPX_ST_PRINT_WAIT	,MPX_EV_ERROR_COM   ,MPX_ST_ERR_COM 	,&mpxTest_vErrCOM	},
 {MPX_ST_PRINT_WAIT	,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
 
 {MPX_ST_PRINT		,MPX_EV_REFRESH   	,MPX_ST_PRINT      	,&mpxTest_vPrint	},
 {MPX_ST_PRINT		,MPX_EV_IDLE	   	,MPX_ST_IDLE      	,&mpxTest_vIdle		},
+{MPX_ST_PRINT		,MPX_EV_ERROR_COM   ,MPX_ST_ERR_COM 	,&mpxTest_vErrCOM	},
 {MPX_ST_PRINT		,MPX_EV_FINISH    	,MPX_ST_FINISH    	,&mpxTest_vFinish	},
+
+{MPX_EV_ERROR_COM	,MPX_EV_FINALIZE   	,MPX_ST_FINALIZE 	,&mpxTest_vFinalize	},
 
 {MPX_ST_FINISH		,MPX_EV_REFRESH   	,MPX_ST_FINISH     	,&mpxTest_vFinish	},
 {MPX_ST_FINISH		,MPX_EV_IDLE 	  	,MPX_ST_IDLE     	,&mpxTest_vIdle		},
+
+
 };
 
 #define TRANS_COUNT (sizeof(MpxSMTrans)/sizeof(*MpxSMTrans))
@@ -223,6 +234,7 @@ void mpxTest_vResetTests(void)
 	MpxTests.seriousError = false;
 	MpxTests.numberTestDone = 0;
 	MpxTests.boolEraseFlash = false;
+	MpxTests.errorComTimout = false;
 	setBeep(1,0);
 	turnOffMpxPorts();
 	activeMPXIgnition(PORT_LOW);
@@ -470,6 +482,18 @@ void mpxTest_vPrint(void)
 
 	if (MpxStateMachine.state == MPX_ST_PRINT_WAIT)
 		mpxTest_vSetNextEvent(MPX_EV_WAIT);
+}
+
+void mpxTest_vErrCOM(void) {
+
+	turnOffMpxPorts();
+
+	MpxTests.testError= true;
+	MpxTests.testError= true;
+	errorBeep();
+
+	printTestResult = printErrorCommunication;
+	mpxTest_vSetNextEvent(MPX_EV_FINALIZE);
 }
 
 /* Finish test----------------------------------------------------------------*/
@@ -1541,6 +1565,24 @@ void printTestMessage(char *line, char *sentence, uint8_t dots)
 		snprintf(line, LINE_SIZE, "%s", sentence);
 }
 
+
+void printErrorCommunication (void) {
+
+	if (LCD_languageChosen() == PORTUGUESE)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro              ");
+		sprintf(message, "Comunicacao      ");
+	}
+
+	else if (LCD_languageChosen() == SPANISH)
+	{
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Error           ");
+		sprintf(message, "Comunicacion         ");
+	}
+
+	printTestMessage(TestMessages.lines[1], message, 1);
+}
+
 /* Verify if there is any short circuit between port and other mpx's port.
  * Short Circuit = If any other port is activated (LOW or HIGH) other then
  * "port", they are in short-circuit between them.
@@ -1565,4 +1607,13 @@ bool lookForInputShortCircuit(uint8_t port, uint8_t *portError) {
 	}
 	*portError = NUM_PORTS;
 	return false;
+}
+
+void callEmergencyMode(void) {
+	if(MpxTests.errorComTimout = false) {
+		mpxTest_vSetNextEvent(MPX_EV_ERROR_COM);
+	}
+	else {
+		/*Already processing mpx timout, probably waiting print message state */
+	}
 }

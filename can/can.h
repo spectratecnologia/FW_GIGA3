@@ -19,6 +19,8 @@
 #define MXP_DEVICE_ID1 0x81
 #define MXP_DEVICE_ID2 0x82
 
+#define MPX_TIMOUT 200
+
 typedef enum
 {
 	CAN_COMMAND_BROADCAST=0x19,
@@ -87,5 +89,7 @@ uint32_t transmitErrorsCount();
 void sendCanPacket(CAN_TypeDef*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t*, uint8_t);
 void CAN_writePort(CAN_TypeDef*, uint8_t, uint8_t, PortParameter*);
 void sendCanRTC(void);
+
+uint32_t getMpxTimeSinceLastMessage();
 
 #endif /* __CAN_H */

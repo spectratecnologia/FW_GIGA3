@@ -27,6 +27,7 @@ typedef enum {
 	MPX_ST_ANALYSE,
 	MPX_ST_FINALIZE,
 	MPX_ST_PRINT,
+	MPX_ST_ERR_COM,
 	MPX_ST_FINISH
 } TestStStates;
 
@@ -41,6 +42,7 @@ typedef enum
 	MPX_EV_ANALYSE,
 	MPX_EV_FINALIZE,
 	MPX_EV_PRINT,
+	MPX_EV_ERROR_COM,
 	MPX_EV_FINISH
 } TestStEvents;
 
@@ -90,6 +92,7 @@ typedef struct
 	/* This boolean shows if finished test beep occurred (true) or not (false). */
 	bool finishedTestBeep;
 	bool testError;
+	bool errorComTimout;
 	bool seriousError;
 	bool boolEraseFlash;
 	uint16_t numberTestDone;
@@ -106,5 +109,6 @@ void mpxTest_vSetTest(TestList);
 void mpxTest_vContinueTest(void);
 void mpxTest_vFinishTest(void);
 int mpxTest_vGetTest(void);
+void callEmergencyMode(void);
 
 #endif /* __SMTEST_H */
