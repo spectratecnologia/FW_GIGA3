@@ -94,7 +94,7 @@ int _write(int file, char *ptr, int len)
   	VCP_DataTx(ptr,len);
   	return len;
 
-  	#endif
+#endif
 
 }
 

@@ -288,6 +288,10 @@ void mpxTest_vIdle(void)
 
 	else
 		mpxTest_vSetNextEvent(MPX_EV_REFRESH);
+
+	if(mpxTest.backToMainInIdle) {
+		mpx.MpxAlreadyInit = false;
+	}
 }
 
 /* Execute -------------------------------------------------------------------*/
@@ -470,6 +474,8 @@ void mpxTest_vPrint(void)
 
 	if (MpxStateMachine.state == MPX_ST_PRINT_WAIT)
 		mpxTest_vSetNextEvent(MPX_EV_WAIT);
+
+
 }
 
 /* Finish test----------------------------------------------------------------*/
@@ -1566,3 +1572,4 @@ bool lookForInputShortCircuit(uint8_t port, uint8_t *portError) {
 	*portError = NUM_PORTS;
 	return false;
 }
+

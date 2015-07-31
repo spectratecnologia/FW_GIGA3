@@ -35,8 +35,8 @@ typedef enum
 	MPX_EV_ANY   = -1,
 	MPX_EV_REFRESH =  0,
 
-	MPX_EV_IDLE,
 	MPX_EV_EXECUTE,
+	MPX_EV_IDLE,
 	MPX_EV_WAIT,
 	MPX_EV_ANALYSE,
 	MPX_EV_FINALIZE,
@@ -87,6 +87,8 @@ typedef struct
 	bool boolIsAutoTest;
 	bool boolIsLoopTest;
 	bool testFinished;
+
+	bool backToMainInIdle;
 	/* This boolean shows if finished test beep occurred (true) or not (false). */
 	bool finishedTestBeep;
 	bool testError;
