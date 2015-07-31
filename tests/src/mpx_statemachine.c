@@ -289,9 +289,6 @@ void mpxTest_vIdle(void)
 	else
 		mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 
-	if(mpxTest.backToMainInIdle) {
-		mpx.MpxAlreadyInit = false;
-	}
 }
 
 /* Execute -------------------------------------------------------------------*/
@@ -305,6 +302,7 @@ void mpxTest_vExecute(void)
 	/* If occur CAN error, this program does not continue with the tests. */
 	if (MpxTests.testError)
 	{
+		printf("ERROR COM\n");
 		mpxTest_vSetNextEvent(MPX_EV_PRINT);
 		return;
 	}

@@ -87,8 +87,6 @@ typedef struct
 	bool boolIsAutoTest;
 	bool boolIsLoopTest;
 	bool testFinished;
-
-	bool backToMainInIdle;
 	/* This boolean shows if finished test beep occurred (true) or not (false). */
 	bool finishedTestBeep;
 	bool testError;

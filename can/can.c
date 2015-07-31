@@ -8,6 +8,9 @@ void initCAN2();
 static uint32_t receivedPackets=0;
 static uint32_t transmitErrors=0;
 
+bool errorCAN1 = false;
+bool errorCAN2 = false;
+
 void initCANs(){
 	printf("[CANs]Starting Setup\n");
 
@@ -22,6 +25,8 @@ void initCAN1(){
 	CAN_InitTypeDef        	CAN_InitStructure;
 	CAN_FilterInitTypeDef  	CAN_FilterInitStructure;
 	NVIC_InitTypeDef  		NVIC_InitStructure;
+
+	errorCAN1 = false;
 
 	/* Enable CAN1 clocks  */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
@@ -98,6 +103,8 @@ void initCAN2(){
 	CAN_InitTypeDef        CAN_InitStructure;
 	CAN_FilterInitTypeDef  CAN_FilterInitStructure;
 	NVIC_InitTypeDef  NVIC_InitStructure;
+
+	errorCAN2 = false;
 
 	/* Enable CAN2 clocks  */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
@@ -430,17 +437,17 @@ static inline void onCAN2ReceiveInterrupt() {
 
 inline void onCAN1StatusChangeError(){
     if(CAN_GetFlagStatus(CAN1,CAN_FLAG_BOF) == SET){
-		displayErrorMessage("Falha de","comunicacao(bof)",5000, PRIORITY_3);
-		initCAN1();
+		//displayErrorMessage("Falha de","comunicacao(bof)",5000, PRIORITY_3);
 		CAN_ClearITPendingBit(CAN1,CAN_IT_BOF);
+		errorCAN1 = true;
     }
 }
 
 inline void onCAN2StatusChangeError(){
     if(CAN_GetFlagStatus(CAN2,CAN_FLAG_BOF) == SET){
-		displayErrorMessage("Falha de","comunicacao(bof)",5000, PRIORITY_3);
-		initCAN2();
+		//displayErrorMessage("Falha de","comunicacao(bof)",5000, PRIORITY_3);
 		CAN_ClearITPendingBit(CAN2,CAN_IT_BOF);
+		errorCAN2 = true;
     }
 }
 
@@ -515,4 +522,11 @@ void sendCanRTC(void)
 uint32_t getMpxTimeSinceLastMessage() {
 	uint64_t sysTickTimerAux = sysTickTimer;
 	return (sysTickTimerAux - mpx.lastTimeSeen);
+}
+
+void bingUpCANs() {
+	if(errorCAN1)
+		initCAN1();
+	if(errorCAN2)
+		initCAN2();
 }

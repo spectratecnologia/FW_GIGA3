@@ -15,12 +15,8 @@
 #include "ptc24_statemachine.h"
 #include "ptc16_statemachine.h"
 
-void verifyMpxTimout() {
-	printf("LastTime Mode call %u\n", getMpxTimeSinceLastMessage());
-	if(getMpxTimeSinceLastMessage() > MPX_TIMOUT) {
-		printf("Emergency Mode call \n");
-		//callEmergencyMode();
-	}
+void forceShutDownMpxPorts() {
+	turnOffMpxPorts();
 }
 
 int main(void) {
@@ -48,6 +44,10 @@ int main(void) {
 
 		executeEveryInterval(3, 100, &LCD_vStateMachineLoop);
 
+		if (!mpx.MpxAlreadyInit) {
+			executeEveryInterval(15, 50, &forceShutDownMpxPorts);
+		}
+
 		if (mpx.MpxAlreadyInit) {
 			executeEveryInterval(4, 10, &mpxTest_vStateMachineLoop);
 
@@ -57,7 +57,7 @@ int main(void) {
 
 			executeEveryInterval(7, 1, &toogleMPXNTC);
 
-			executeEveryInterval(15, 50, &verifyMpxTimout);
+			//executeEveryInterval(15, 50, &verifyMpxTimout);
 		}
 
 		else if (ptc24.PtcAlreadyInit) {
@@ -82,5 +82,6 @@ int main(void) {
 			//executeEveryInterval(15, 10000, &teste);
 		}
 
+		executeEveryInterval(16, 10, &bingUpCANs);
 	}
 }

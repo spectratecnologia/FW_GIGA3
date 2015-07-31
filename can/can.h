@@ -89,5 +89,6 @@ void sendCanPacket(CAN_TypeDef*, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t*, u
 void CAN_writePort(CAN_TypeDef*, uint8_t, uint8_t, PortParameter*);
 void sendCanRTC(void);
 uint32_t getMpxTimeSinceLastMessage();
+void bingUpCANs();
 
 #endif /* __CAN_H */
