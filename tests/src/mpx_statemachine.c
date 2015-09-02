@@ -926,7 +926,6 @@ void mpxTest_vAnalyse_PP10A(void)
 				printTestResult = print_PortTest_OK;
 			}
 
-
 			uint8_t i;
 			for(i=28; i<36; i++) {
 				if(mpx.portInput[i] == 0x02 && isMpxPortLow && isGiga3HighSideMosfetDrivingCurrent) {
@@ -937,6 +936,7 @@ void mpxTest_vAnalyse_PP10A(void)
 					return;
 				}
 			}
+
 		}
 
 		/* is MPX port high? */
@@ -978,6 +978,9 @@ void mpxTest_vAnalyse_PP10A(void)
 			if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x0D)
 				printTestResult = print_PortTest_PortOpenError;
 
+			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x09)
+							printTestResult = print_PortTest_PortOpenError;
+
 			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x00)
 				printTestResult = print_PortTest_FetError;
 
@@ -985,6 +988,9 @@ void mpxTest_vAnalyse_PP10A(void)
 			{
 				printTestResult = print_PortTest_TransistorBitShortError;
 				MpxTests.seriousError = true;
+			}
+			else {
+				printTestResult = print_PortTest_FetError;
 			}
 		}
 	}
@@ -1014,10 +1020,16 @@ void mpxTest_vAnalyse_BIDI(void)
 		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x00)
 			printTestResult = print_PortTest_FetError;
 
+		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x09)
+			printTestResult = print_PortTest_PortOpenError;
+
 		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] && 0x10)
 		{
 			printTestResult = print_PortTest_TransistorBitShortError;
 			MpxTests.seriousError = true;
+		}
+		else {
+			printTestResult = print_PortTest_FetError;
 		}
 	}
 }

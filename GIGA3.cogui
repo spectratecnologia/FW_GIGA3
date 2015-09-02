@@ -19,15 +19,15 @@
 <folder appearance="1" expanded="2">
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
-<part id="1"/>
 <part id="2"/>
+<part id="3"/>
 <part id="4"/>
 <part id="5"/>
 <part id="6"/>
 <part id="7"/>
+<part id="1"/>
 <part id="8"/>
 <part id="9"/>
-<part id="3"/>
 <part id="10"/>
 <part id="11"/>
 <part id="12"/>
@@ -63,22 +63,13 @@
 <part id="42"/>
 <part id="43"/>
 <part id="44"/>
-<part id="45"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" partName="main.c" path="D:/GIGA3/main.c" title="main.c" tooltip="D:/GIGA3/main.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/main.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="652" selectionTopPixel="610"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="can.h" partName="can.h" path="D:/GIGA3/can/can.h" title="can.h" tooltip="D:/GIGA3/can/can.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/can/can.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="15" selectionOffset="608" selectionTopPixel="0"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="can.c" partName="can.c" path="D:/GIGA3/can/can.c" title="can.c" tooltip="D:/GIGA3/can/can.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/can/can.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="18" selectionOffset="7390" selectionTopPixel="3135"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="675" selectionTopPixel="0"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="ptc16_statemachine.c" partName="ptc16_statemachine.c" path="D:/GIGA3/tests/src/ptc16_statemachine.c" title="ptc16_statemachine.c" tooltip="D:/GIGA3/tests/src/ptc16_statemachine.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/tests/src/ptc16_statemachine.c"/>
@@ -90,7 +81,7 @@
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="lcd_screens.c" partName="lcd_screens.c" path="D:/GIGA3/LCD/lcd_screens.c" title="lcd_screens.c" tooltip="D:/GIGA3/LCD/lcd_screens.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/LCD/lcd_screens.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="39961" selectionTopPixel="18934"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="16844" selectionTopPixel="5505"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="ptc16.c" partName="ptc16.c" path="D:/GIGA3/devices/src/ptc16.c" title="ptc16.c" tooltip="D:/GIGA3/devices/src/ptc16.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/devices/src/ptc16.c"/>
@@ -118,15 +109,15 @@
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="beep.c" partName="beep.c" path="D:/GIGA3/beep/beep.c" title="beep.c" tooltip="D:/GIGA3/beep/beep.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/beep/beep.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1791" selectionTopPixel="690"/>
+<editorState selectionHorizontalPixel="0" selectionLength="9" selectionOffset="1758" selectionTopPixel="414"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="mpx.h" partName="mpx.h" path="D:/GIGA3/devices/inc/mpx.h" title="mpx.h" tooltip="D:/GIGA3/devices/inc/mpx.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/devices/inc/mpx.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="7" selectionOffset="1093" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1902" selectionTopPixel="424"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="lcd_screen.h" partName="lcd_screen.h" path="D:/GIGA3/LCD/lcd_screen.h" title="lcd_screen.h" tooltip="D:/GIGA3/LCD/lcd_screen.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/LCD/lcd_screen.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1421" selectionTopPixel="765"/>
+<editorState selectionHorizontalPixel="0" selectionLength="15" selectionOffset="1148" selectionTopPixel="480"/>
 </editor>
 <editor id="org.coocox.builder.ui.editors.repository.RepositoryBrowser" name="Repository" partName="Repository" title="Repository" tooltip="Repository" workbook="DefaultEditorWorkbook">
 <input factoryID="org.coocox.component.ui.editors.repository.RepositoryElementFactory">&#x0A;<subPage horizontalPosition="0" selectedItemId="455" subPageIndex="2" verticalPosition="0"/>
@@ -150,7 +141,7 @@
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="usart.c" partName="usart.c" path="D:/GIGA3/usart/usart.c" title="usart.c" tooltip="D:/GIGA3/usart/usart.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/usart/usart.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4714" selectionTopPixel="2115"/>
+<editorState selectionHorizontalPixel="0" selectionLength="16" selectionOffset="5328" selectionTopPixel="2085"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="usb_conf.h" partName="usb_conf.h" path="D:/GIGA3/usb/user/usb_conf.h" title="usb_conf.h" tooltip="D:/GIGA3/usb/user/usb_conf.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/usb/user/usb_conf.h"/>
@@ -178,27 +169,19 @@
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="mpx.c" partName="mpx.c" path="D:/GIGA3/devices/src/mpx.c" title="mpx.c" tooltip="D:/GIGA3/devices/src/mpx.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/devices/src/mpx.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4286" selectionTopPixel="1740"/>
+<editorState selectionHorizontalPixel="0" selectionLength="18" selectionOffset="1451" selectionTopPixel="390"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="functions.h" partName="functions.h" path="D:/GIGA3/functions/functions.h" title="functions.h" tooltip="D:/GIGA3/functions/functions.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/functions/functions.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="14" selectionOffset="4743" selectionTopPixel="2085"/>
+<editorState selectionHorizontalPixel="0" selectionLength="14" selectionOffset="4328" selectionTopPixel="2145"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="stdio.h" partName="stdio.h" title="stdio.h" tooltip="C:\Program Files (x86)\GNU Tools ARM Embedded\4.7 2013q3\arm-none-eabi\include\stdio.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.cdt.ui.ExternalEditorInputFactory" path="C:\Program Files (x86)\GNU Tools ARM Embedded\4.7 2013q3\arm-none-eabi\include\stdio.h" project="GIGA3"/>
 <editorState selectionHorizontalPixel="0" selectionLength="95" selectionOffset="5159" selectionTopPixel="2445"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="syscalls.c" partName="syscalls.c" path="D:/GIGA3/syscalls/syscalls.c" title="syscalls.c" tooltip="D:/GIGA3/syscalls/syscalls.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/syscalls/syscalls.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1476" selectionTopPixel="0"/>
-</editor>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="mpx_statemachine.c" partName="mpx_statemachine.c" path="D:/GIGA3/tests/src/mpx_statemachine.c" title="mpx_statemachine.c" tooltip="D:/GIGA3/tests/src/mpx_statemachine.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/tests/src/mpx_statemachine.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="32669" selectionTopPixel="16110"/>
-</editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="mpx_statemachine.h" partName="mpx_statemachine.h" path="D:/GIGA3/tests/inc/mpx_statemachine.h" title="mpx_statemachine.h" tooltip="D:/GIGA3/tests/inc/mpx_statemachine.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/tests/inc/mpx_statemachine.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="8" selectionOffset="1324" selectionTopPixel="345"/>
+<editorState selectionHorizontalPixel="0" selectionLength="9" selectionOffset="1404" selectionTopPixel="150"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="giga3_sr.c" partName="giga3_sr.c" path="D:/GIGA3/GIGA3board/src/giga3_sr.c" title="giga3_sr.c" tooltip="D:/GIGA3/GIGA3board/src/giga3_sr.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/GIGA3board/src/giga3_sr.c"/>
@@ -215,10 +198,6 @@
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_spi.h" partName="stm32f10x_spi.h" path="D:/GIGA3/stm_lib/inc/stm32f10x_spi.h" title="stm32f10x_spi.h" tooltip="D:/GIGA3/stm_lib/inc/stm32f10x_spi.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/stm_lib/inc/stm32f10x_spi.h"/>
 <editorState selectionHorizontalPixel="0" selectionLength="17" selectionOffset="14772" selectionTopPixel="5775"/>
-</editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="usbd_cdc_vcp.c" partName="usbd_cdc_vcp.c" path="D:/GIGA3/usb/user/usbd_cdc_vcp.c" title="usbd_cdc_vcp.c" tooltip="D:/GIGA3/usb/user/usbd_cdc_vcp.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/usb/user/usbd_cdc_vcp.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5539" selectionTopPixel="2344"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_usart.c" partName="stm32f10x_usart.c" path="D:/GIGA3/stm_lib/src/stm32f10x_usart.c" title="stm32f10x_usart.c" tooltip="D:/GIGA3/stm_lib/src/stm32f10x_usart.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/stm_lib/src/stm32f10x_usart.c"/>
@@ -244,13 +223,29 @@
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/stm_lib/src/stm32f10x_rcc.c"/>
 <editorState selectionHorizontalPixel="0" selectionLength="22" selectionOffset="37882" selectionTopPixel="16050"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_gpio.c" partName="stm32f10x_gpio.c" path="D:/GIGA3/stm_lib/src/stm32f10x_gpio.c" title="stm32f10x_gpio.c" tooltip="D:/GIGA3/stm_lib/src/stm32f10x_gpio.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/stm_lib/src/stm32f10x_gpio.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="21" selectionOffset="8909" selectionTopPixel="3855"/>
-</editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_gpio.h" partName="stm32f10x_gpio.h" path="D:/GIGA3/stm_lib/inc/stm32f10x_gpio.h" title="stm32f10x_gpio.h" tooltip="D:/GIGA3/stm_lib/inc/stm32f10x_gpio.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/stm_lib/inc/stm32f10x_gpio.h"/>
 <editorState selectionHorizontalPixel="0" selectionLength="7" selectionOffset="3732" selectionTopPixel="1440"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="multitask.c" partName="multitask.c" path="D:/GIGA3/multitask/multitask.c" title="multitask.c" tooltip="D:/GIGA3/multitask/multitask.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/multitask/multitask.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="120" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="can.h" partName="can.h" path="D:/GIGA3/can/can.h" title="can.h" tooltip="D:/GIGA3/can/can.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/can/can.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2534" selectionTopPixel="544"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="can.c" partName="can.c" path="D:/GIGA3/can/can.c" title="can.c" tooltip="D:/GIGA3/can/can.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/can/can.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="9454" selectionTopPixel="4759"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="usbd_cdc_vcp.c" partName="usbd_cdc_vcp.c" path="D:/GIGA3/usb/user/usbd_cdc_vcp.c" title="usbd_cdc_vcp.c" tooltip="D:/GIGA3/usb/user/usbd_cdc_vcp.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/usb/user/usbd_cdc_vcp.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="7067" selectionTopPixel="2634"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="mpx_statemachine.c" partName="mpx_statemachine.c" path="D:/GIGA3/tests/src/mpx_statemachine.c" title="mpx_statemachine.c" tooltip="D:/GIGA3/tests/src/mpx_statemachine.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/GIGA3/tests/src/mpx_statemachine.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="1320"/>
 </editor>
 </editors>
 <views>
@@ -258,26 +253,18 @@
 <viewState/>
 </view>
 <view id="org.coocox.builder.ui.views.ProjectView" partName="Project">
-<viewState CommonNavigator.LINKING_ENABLED="0" horizontalPosition="0" org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets="0" verticalPosition="11">
+<viewState CommonNavigator.LINKING_ENABLED="0" horizontalPosition="0" org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets="0" verticalPosition="0">
 <expanded>
 <element path="/GIGA3"/>
-<element path="/GIGA3/beep"/>
 <element path="/GIGA3/devices"/>
 <element path="/GIGA3/devices/src"/>
-<element path="/GIGA3/functions"/>
-<element path="/GIGA3/GIGA3board"/>
-<element path="/GIGA3/GIGA3board/inc"/>
-<element path="/GIGA3/GIGA3board/src"/>
 <element path="/GIGA3/LCD"/>
-<element path="/GIGA3/syscalls"/>
 <element path="/GIGA3/tests"/>
+<element path="/GIGA3/tests/inc"/>
 <element path="/GIGA3/tests/src"/>
-<element path="/GIGA3/usb"/>
-<element path="/GIGA3/usb/user"/>
-<element path="/GIGA3/user_tactkeys"/>
 </expanded>
 <selection>
-<element path="/GIGA3/main.c"/>
+<element path="/GIGA3/tests/src/mpx_statemachine.c"/>
 </selection>
 </viewState>
 </view>
@@ -287,8 +274,6 @@
 <view id="org.eclipse.search.ui.views.SearchView" partName="Search">
 <viewState isPinned="false">
 <view IMemento.internal.id="" org.eclipse.search.lastActivation="0"/>
-<view IMemento.internal.id="org.eclipse.search.text.FileSearchResultPage" org.eclipse.search.lastActivation="1" org.eclipse.search.resultpage.layout="2" org.eclipse.search.resultpage.limit="1000" org.eclipse.search.resultpage.sorting="2"/>
-<view IMemento.internal.id="org.eclipse.cdt.ui.pdomSearchViewPage" definitionColumnWidth="150" locationColumnWidth="300" matchColumnWidth="300" org.eclipse.search.lastActivation="2" org.eclipse.search.resultpage.layout="2" showEnclosingDefinitions="true"/>
 </viewState>
 </view>
 <view id="org.eclipse.debug.ui.DebugView" partName="Debug"/>
@@ -336,8 +321,12 @@
 <view id="org.coocox.builder.ui.views.ProjectView"/>
 <view id="org.eclipse.ui.views.ContentOutline"/>
 <view id="org.eclipse.search.ui.views.SearchView"/>
-<view id="org.eclipse.ui.console.ConsoleView"/>
 <fastViewBars>
+<fastViewBar fastViewLocation="1024" id="org.eclipse.ui.internal.ViewStack@1e9308d" orientation="256" selectedTabId="org.eclipse.ui.console.ConsoleView" style="0">
+<fastViews>
+<view id="org.eclipse.ui.console.ConsoleView" ratio="0.47268906"/>
+</fastViews>
+</fastViewBar>
 <fastViewBar fastViewLocation="1024" id="org.eclipse.ui.internal.ViewStack@1bf1a54" orientation="256" selectedTabId="org.eclipse.ui.console.ConsoleView" style="0">
 <fastViews>
 <view id="org.coocox.component.ui.ComponentView" ratio="0.3"/>
@@ -369,8 +358,8 @@
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.11681508" ratioLeft="223" ratioRight="1686" relationship="2" relative="org.eclipse.ui.internal.ViewStack@26e4c9"/>
-<info folder="true" part="org.eclipse.ui.internal.ViewStack@1767241" ratio="0.5855856" ratioLeft="845" ratioRight="598" relationship="2" relative="org.eclipse.ui.editorss">
+<info part="org.eclipse.ui.editorss" ratio="0.21869382" ratioLeft="365" ratioRight="1304" relationship="2" relative="org.eclipse.ui.internal.ViewStack@26e4c9"/>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@1767241" ratio="0.70868564" ratioLeft="922" ratioRight="379" relationship="2" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.search.ui.views.SearchView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
 <page content="org.eclipse.search.ui.views.SearchView" label="Search"/>
@@ -382,12 +371,10 @@
 </presentation>
 </folder>
 </info>
-<info folder="true" part="org.eclipse.ui.internal.ViewStack@1e9308d" ratio="0.75" ratioLeft="684" ratioRight="228" relationship="4" relative="org.eclipse.ui.editorss">
-<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
-<page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
-<part id="0"/>
-</presentation>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@1e9308d" ratio="0.7117712" ratioLeft="647" ratioRight="262" relationship="4" relative="org.eclipse.ui.editorss">
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.ui.console.ConsoleView" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
 </mainWindow>
@@ -486,166 +473,169 @@
 <workingSets/>
 <navigationHistory>
 <editors>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/main.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/can/can.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/stm_lib/src/stm32f10x_gpio.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/stm_lib/src/stm32f10x_can.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/src/mpx_statemachine.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/usb/user/usbd_cdc_vcp.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/usart/usart.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/cmsis_boot/startup/startup_stm32f10x_cl.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/LCD/lcd_screens.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/src/mpx_statemachine.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/devices/src/mpx.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/interrupts/stm32f10x_it.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/GIGA3board/inc/giga3_sr.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/GIGA3board/inc/giga3_cpu_led.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/GIGA3board/src/giga3_cpu_led.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/GIGA3board/src/giga3_sr.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/main.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/cmsis_boot/stm32f10x.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/stm_lib/inc/stm32f10x_spi.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/can/can.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/devices/inc/mpx.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/user_tactkeys/user_tactkeys.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/tests/inc/mpx_statemachine.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/GIGA3/LCD/lcd_screen.h"/>
 </editors>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="43472" y="0"/>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="2105" y="0"/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position/>
+<item historyLabel="can.c" index="1">
+<position info="not_deleted" x="9454" y="0"/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position/>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="2105" y="0"/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="32353" y="0"/>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="1132" y="0"/>
 </item>
-<item historyLabel="mpx.c" index="1">
-<position info="not_deleted" x="8904" y="0"/>
+<item historyLabel="stm32f10x_gpio.c" index="2">
+<position info="not_deleted" x="8909" y="21"/>
 </item>
-<item historyLabel="stm32f10x_it.c" index="2">
-<position info="not_deleted" x="6996" y="0"/>
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="675" y="0"/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position/>
+<item historyLabel="stm32f10x_can.c" index="3">
+<position info="not_deleted" x="41942" y="21"/>
 </item>
-<item historyLabel="giga3_sr.h" index="3">
+<item historyLabel="main.c" index="0">
+<position info="not_deleted" x="675" y="0"/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="4">
+<position info="not_deleted" x="3477" y="0"/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="4">
+<position info="not_deleted" x="32178" y="0"/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="4">
+<position info="not_deleted" x="43941" y="23"/>
+</item>
+<item historyLabel="usbd_cdc_vcp.c" index="5">
 <position info="not_deleted" x="0" y="0"/>
 </item>
-<item historyLabel="giga3_cpu_led.h" index="4">
+<item historyLabel="usart.c" index="6">
+<position info="not_deleted" x="4714" y="0"/>
+</item>
+<item historyLabel="usart.c" index="6">
+<position info="not_deleted" x="2632" y="19"/>
+</item>
+<item historyLabel="usart.c" index="6">
+<position info="not_deleted" x="3094" y="0"/>
+</item>
+<item historyLabel="usart.c" index="6">
+<position info="not_deleted" x="3136" y="25"/>
+</item>
+<item historyLabel="usart.c" index="6">
+<position info="not_deleted" x="3433" y="0"/>
+</item>
+<item historyLabel="usart.c" index="6">
+<position info="not_deleted" x="5328" y="16"/>
+</item>
+<item historyLabel="startup_stm32f10x_cl.c" index="7">
 <position info="not_deleted" x="0" y="0"/>
 </item>
-<item historyLabel="giga3_cpu_led.c" index="5">
-<position info="not_deleted" x="1159" y="0"/>
+<item historyLabel="lcd_screens.c" index="8">
+<position info="not_deleted" x="29928" y="5"/>
 </item>
-<item historyLabel="giga3_sr.c" index="6">
-<position info="not_deleted" x="2544" y="0"/>
-</item>
-<item historyLabel="giga3_sr.h" index="3">
-<position info="not_deleted" x="662" y="10"/>
-</item>
-<item historyLabel="mpx.c" index="1">
-<position info="not_deleted" x="9229" y="12"/>
-</item>
-<item historyLabel="main.c" index="7">
-<position info="not_deleted" x="1648" y="0"/>
-</item>
-<item historyLabel="main.c" index="7">
-<position info="not_deleted" x="1379" y="0"/>
-</item>
-<item historyLabel="mpx.c" index="1">
-<position info="not_deleted" x="9137" y="12"/>
-</item>
-<item historyLabel="main.c" index="7">
-<position info="not_deleted" x="1379" y="0"/>
-</item>
-<item historyLabel="stm32f10x.h" index="8">
-<position info="not_deleted" x="59637" y="4"/>
-</item>
-<item historyLabel="mpx.c" index="1">
-<position info="not_deleted" x="9137" y="12"/>
-</item>
-<item historyLabel="giga3_sr.h" index="3">
-<position info="not_deleted" x="662" y="10"/>
-</item>
-<item historyLabel="stm32f10x_spi.h" index="9">
-<position info="not_deleted" x="14772" y="17"/>
-</item>
-<item historyLabel="giga3_sr.c" index="6">
-<position info="not_deleted" x="2544" y="0"/>
-</item>
-<item historyLabel="mpx.c" index="1">
-<position info="not_deleted" x="9137" y="12"/>
-</item>
-<item historyLabel="giga3_sr.c" index="6">
-<position info="not_deleted" x="2544" y="0"/>
-</item>
-<item historyLabel="giga3_sr.h" index="3">
-<position info="not_deleted" x="662" y="10"/>
-</item>
-<item historyLabel="mpx_statemachine.c" index="0">
+<item historyLabel="mpx_statemachine.c" index="9">
 <position/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="32220" y="14"/>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
 </item>
-<item historyLabel="can.c" index="10">
-<position info="not_deleted" x="7390" y="18"/>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="32208" y="0"/>
+<item historyLabel="lcd_screens.c" index="8">
+<position info="not_deleted" x="16204" y="0"/>
 </item>
-<item historyLabel="main.c" index="7">
-<position info="not_deleted" x="1379" y="0"/>
+<item historyLabel="mpx.c" index="10">
+<position info="not_deleted" x="1451" y="18"/>
 </item>
-<item historyLabel="main.c" index="7">
-<position info="not_deleted" x="508" y="0"/>
-</item>
-<item historyLabel="main.c" index="7">
-<position info="not_deleted" x="590" y="0"/>
-</item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="32208" y="0"/>
-</item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="13305" y="0"/>
-</item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="26930" y="0"/>
-</item>
-<item historyLabel="mpx.c" index="1">
-<position info="not_deleted" x="9137" y="12"/>
-</item>
-<item historyLabel="mpx.c" index="1">
-<position info="not_deleted" x="1410" y="0"/>
-</item>
-<item historyLabel="mpx.c" index="1">
-<position info="not_deleted" x="3457" y="0"/>
-</item>
-<item historyLabel="mpx.h" index="11">
-<position info="not_deleted" x="1085" y="56"/>
-</item>
-<item historyLabel="mpx.c" index="1">
-<position info="not_deleted" x="9146" y="3"/>
-</item>
-<item historyLabel="user_tactkeys.h" index="12">
+<item historyLabel="mpx_statemachine.h" index="11">
 <position info="not_deleted" x="0" y="0"/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
+<item historyLabel="mpx_statemachine.c" index="9">
 <position/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="32493" y="0"/>
+<item historyLabel="lcd_screens.c" index="8">
+<position info="not_deleted" x="16204" y="0"/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="44542" y="0"/>
+<item historyLabel="lcd_screen.h" index="12">
+<position info="not_deleted" x="2812" y="12"/>
 </item>
-<item historyLabel="mpx.c" index="1">
-<position info="not_deleted" x="4286" y="0"/>
+<item historyLabel="lcd_screen.h" index="12">
+<position info="not_deleted" x="1148" y="15"/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="32016" y="0"/>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
 </item>
-<item historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="32012" y="0"/>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
 </item>
-<item active="true" historyLabel="mpx_statemachine.c" index="0">
-<position info="not_deleted" x="32028" y="0"/>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
 </item>
-<item historyLabel="mpx.h" index="11">
-<position info="not_deleted" x="1093" y="7"/>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position/>
+</item>
+<item historyLabel="mpx_statemachine.h" index="11">
+<position info="not_deleted" x="1404" y="9"/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position info="not_deleted" x="4876" y="0"/>
+</item>
+<item historyLabel="mpx_statemachine.c" index="9">
+<position info="not_deleted" x="14399" y="17"/>
+</item>
+<item historyLabel="mpx_statemachine.h" index="11">
+<position info="not_deleted" x="1404" y="9"/>
+</item>
+<item active="true" historyLabel="mpx_statemachine.c" index="9">
+<position info="not_deleted" x="0" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -654,50 +644,50 @@
 <actionBarAdvisor/>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_gpio.h" tooltip="GIGA3/stm_lib/inc/stm32f10x_gpio.h">
-<persistable path="/GIGA3/stm_lib/inc/stm32f10x_gpio.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="mpx_statemachine.c" tooltip="GIGA3/tests/src/mpx_statemachine.c">
+<persistable path="/GIGA3/tests/src/mpx_statemachine.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_gpio.c" tooltip="GIGA3/stm_lib/src/stm32f10x_gpio.c">
-<persistable path="/GIGA3/stm_lib/src/stm32f10x_gpio.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_rcc.c" tooltip="GIGA3/stm_lib/src/stm32f10x_rcc.c">
-<persistable path="/GIGA3/stm_lib/src/stm32f10x_rcc.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_can.h" tooltip="GIGA3/stm_lib/inc/stm32f10x_can.h">
-<persistable path="/GIGA3/stm_lib/inc/stm32f10x_can.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="giga3_cpu_led.h" tooltip="GIGA3/GIGA3board/inc/giga3_cpu_led.h">
-<persistable path="/GIGA3/GIGA3board/inc/giga3_cpu_led.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="giga3_sr.h" tooltip="GIGA3/GIGA3board/inc/giga3_sr.h">
-<persistable path="/GIGA3/GIGA3board/inc/giga3_sr.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="can.h" tooltip="PTC16/can/can.h">
-<persistable path="/PTC16/can/can.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="spi_flash.c" tooltip="PTC16/event_logger/spi_flash.c">
-<persistable path="/PTC16/event_logger/spi_flash.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="keyboard.c" tooltip="PTC16/keyboard/keyboard.c">
-<persistable path="/PTC16/keyboard/keyboard.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="usbd_core.c" tooltip="GIGA3/usb/lib/usbd_core.c">
-<persistable path="/GIGA3/usb/lib/usbd_core.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="usb_conf.h" tooltip="GIGA3/usb/user/usb_conf.h">
-<persistable path="/GIGA3/usb/user/usb_conf.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="usart.c" tooltip="GIGA3/usart/usart.c">
-<persistable path="/GIGA3/usart/usart.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="usbd_usr.c" tooltip="GIGA3/usb/user/usbd_usr.c">
-<persistable path="/GIGA3/usb/user/usbd_usr.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="startup_stm32f10x_cl.c" tooltip="GIGA3/cmsis_boot/startup/startup_stm32f10x_cl.c">
+<persistable path="/GIGA3/cmsis_boot/startup/startup_stm32f10x_cl.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="usbd_cdc_vcp.c" tooltip="GIGA3/usb/user/usbd_cdc_vcp.c">
 <persistable path="/GIGA3/usb/user/usbd_cdc_vcp.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="taco.c" tooltip="PTC/taco/taco.c">
-<persistable path="/PTC/taco/taco.c"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="HD44780.c" tooltip="PTC16/lcd/HD44780.c">
+<persistable path="/PTC16/lcd/HD44780.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="main.c" tooltip="PTC16/main.c">
+<persistable path="/PTC16/main.c"/>
+</file>
+<file factoryID="org.eclipse.ui.ide.FileStoreEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="time.h" tooltip="c:\program files (x86)\gnu tools arm embedded\4.7 2013q3\arm-none-eabi\include\time.h">
+<persistable uri="file:/c:/program%20files%20(x86)/gnu%20tools%20arm%20embedded/4.7%202013q3/arm-none-eabi/include/time.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="lcd_screens.c" tooltip="PTC16/lcd/lcd_screens.c">
+<persistable path="/PTC16/lcd/lcd_screens.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="HD44780.h" tooltip="PTC16/lcd/HD44780.h">
+<persistable path="/PTC16/lcd/HD44780.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="usbh_msc_scsi.c" tooltip="PTC16/usb_dual/lib/USB_Host/usbh_msc_scsi.c">
+<persistable path="/PTC16/usb_dual/lib/USB_Host/usbh_msc_scsi.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ff.c" tooltip="PTC16/usb_dual/3rdParty/ff.c">
+<persistable path="/PTC16/usb_dual/3rdParty/ff.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="usbh_core.c" tooltip="PTC16/usb_dual/lib/USB_Host/usbh_core.c">
+<persistable path="/PTC16/usb_dual/lib/USB_Host/usbh_core.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="fat_fs.c" tooltip="PTC16/usb_dual/lib/USB_Host/fat_fs.c">
+<persistable path="/PTC16/usb_dual/lib/USB_Host/fat_fs.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="usb_dcd.h" tooltip="PTC16/usb_dual/lib/USB_Driver/usb_dcd.h">
+<persistable path="/PTC16/usb_dual/lib/USB_Driver/usb_dcd.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="startup_stm32f10x_cl.c" tooltip="PTC16/cmsis_boot/startup/startup_stm32f10x_cl.c">
+<persistable path="/PTC16/cmsis_boot/startup/startup_stm32f10x_cl.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="stm32f10x_can.c" tooltip="GIGA3/stm_lib/src/stm32f10x_can.c">
+<persistable path="/GIGA3/stm_lib/src/stm32f10x_can.c"/>
 </file>
 </mruList>
 </workbench>
