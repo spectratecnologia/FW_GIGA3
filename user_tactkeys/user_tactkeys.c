@@ -79,7 +79,7 @@ void processKeysAndDeadTime() {
 			tactPressTable[i].elapsedTime += elapsedSinceLastCall;
 			if(tactPressTable[i].elapsedTime > deadTime)
 			{
-				printf("K: %d - t: %d\n", i, tactPressTable[i].elapsedTime);
+				//printf("K: %d - t: %d\n", i, tactPressTable[i].elapsedTime);
 				tactPressTable[i].state = NOT_PRESSED;
 				tactPressTable[i].elapsedTime = 0;
 			}
@@ -89,20 +89,20 @@ void processKeysAndDeadTime() {
 		if(tactPressTable[i].state == PRESSED && (isTactInputPressed(i)==false)) {
 			tactPressTable[i].state = NOT_PRESSED;
 			tactPressTable[i].elapsedTime = 0;
-			printf("K %d - Not Pre\n", i);
+			//printf("K %d - Not Pre\n", i);
 		}
 
 		/* Process pressed keys */
 		if(isTactInputPressed(i)==true && tactPressTable[i].state ==  NOT_PRESSED) {
 			tactPressTable[i].elapsedTime = 0;
 			tactPressTable[i].state = PRESSED;
-			printf("K %d - Pr\n", i);
+			//printf("K %d - Pr\n", i);
 		}
 
 		if(tactPressTable[i].state ==  NOT_PRESSED && (tactPressTable[i].shortDeadTimeScreen > SHORT_DEAD_TIME_SCREEN)) {
 			tactPressTable[i].triggerCounter = 0;
 			tactPressTable[i].shortDeadTimeScreen = 0;
-			printf("rst sdt\n");
+			//printf("rst sdt\n");
 		}
 
 		/* wait for press time to trigger virtual key pressed */
@@ -110,7 +110,7 @@ void processKeysAndDeadTime() {
 			tactPressTable[i].elapsedTime += elapsedSinceLastCall;
 			if(tactPressTable[i].elapsedTime > PRESS_TIME) {
 
-				printf("[TACTS]Tact key %d pressed\n",i);
+				//printf("[TACTS]Tact key %d pressed\n",i);
 
 				//Add tact key status here - This function is only producer, for Someone must consume the key state and change it back to false.
 				setVirtualKeyState(i, 1);

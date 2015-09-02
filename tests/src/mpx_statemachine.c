@@ -795,6 +795,7 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 				MpxTests.testError = true;
 				errorBeep();
 				printTestResult = print_PortTest_CableShortError;
+				printf("	Error Switched LODIN \n");
 				return;
 			}
 			else if (mpx.portInput[i] != 0x00 && mpx.portInput[MpxTests.currentTest - TEST_P0_H] != 0x02)
@@ -803,6 +804,7 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 				MpxTests.testError = true;
 				errorBeep();
 				printTestResult = print_SwitchedPortTest_error;
+				printf("	Error Switched LODIN \n");
 				return;
 			}
 		}
@@ -822,6 +824,7 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 					MpxTests.testError = true;
 					errorBeep();
 					printTestResult = print_PortTest_CableShortError;
+					printf("	Error Switched PP_L \n");
 					return;
 				}
 			}
@@ -832,6 +835,7 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 					MpxTests.testError = true;
 					errorBeep();
 					printTestResult = print_SwitchedPortTest_error;
+					printf("	Error Switched PP_L \n");
 					return;
 				}
 			}
@@ -855,14 +859,17 @@ void mpxTest_vAnalyse_SwitchedPort(void)
 				MpxTests.testError = true;
 				errorBeep();
 				printTestResult = print_PortTest_CableShortError;
+				printf("	Error Short P0H -> P27 \n");
 				return;
 			}
 			else if (value && !myInput)
 			{
-								MpxTests.switchPort = i;
+
+				MpxTests.switchPort = i;
 				MpxTests.testError = true;
 				errorBeep();
 				printTestResult = print_SwitchedPortTest_error;
+				printf("	Error Switched P0H -> P27 \n");
 				return;
 			}
 		}
@@ -886,14 +893,15 @@ void mpxTest_vAnalyse_ID(void)
 		printTestResult = print_IDTest_error;
 		errorBeep();
 		MpxTests.testError = true;
+		printf("Error ID CAN \n");
 	}
 }
 
 void mpxTest_vAnalyse_PP10A(void)
 {
-	bool isMpxPortLow;
-	bool isMpxPortHigh;
-	bool isGiga3HighSideMosfetDrivingCurrent;
+	bool isMpxPortLow = false;
+	bool isMpxPortHigh = false;
+	bool isGiga3HighSideMosfetDrivingCurrent = false;
 
 	if ( (MpxTests.currentTest >= TEST_P0_L) && (MpxTests.currentTest <= TEST_P3_L) )
 	{
@@ -917,6 +925,7 @@ void mpxTest_vAnalyse_PP10A(void)
 		/* is MPX port low? */
 		if (isMpxPortLow)
 		{
+			printf("Error PP_L Ligada\n");
 			/* GIGA3 high side mosfet is driving current? */
 			if (isGiga3HighSideMosfetDrivingCurrent)
 			{
@@ -933,6 +942,7 @@ void mpxTest_vAnalyse_PP10A(void)
 					MpxTests.testError = true;
 					errorBeep();
 					printTestResult = print_PortTest_CableShortError;
+					printf("	Error PP_L Curto\n");
 					return;
 				}
 			}
@@ -942,12 +952,14 @@ void mpxTest_vAnalyse_PP10A(void)
 		/* is MPX port high? */
 		else
 		{
+			printf("Error PP_L Error\n");
 			/* Is MPX device port high? */
 			if (mpx.portInput[MpxTests.currentTest-TEST_P0_L] && 0x01)
 			{
 				MpxTests.testError = true;
 				errorBeep();
-				printTestResult = print_PortTest_FetError;
+				printTestResult = print_PortTest_PortOpenError;
+				printf("	Error PP_L FET Error\n");
 			}
 			/* Is MPX device port low? */
 			else
@@ -955,6 +967,7 @@ void mpxTest_vAnalyse_PP10A(void)
 				MpxTests.testError = true;
 				errorBeep();
 				printTestResult = print_PortTest_PortOpenError;
+				printf("	Error PP_L OPEN Error\n");
 			}
 		}
 	}
@@ -974,24 +987,37 @@ void mpxTest_vAnalyse_PP10A(void)
 		else
 		{
 			MpxTests.testError = true;
-			errorBeep();
-			if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x0D)
+
+
+			printf("Error PP_H \n");
+
+			if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x0D) {
 				printTestResult = print_PortTest_PortOpenError;
-
-			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x09)
-							printTestResult = print_PortTest_PortOpenError;
-
-			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x00)
-				printTestResult = print_PortTest_FetError;
-
-			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] && 0x10)
+				printf("	Error PP_H 0x0D\n");
+			}
+			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x09) {
+				printTestResult = print_PortTest_PortOpenError;
+				printf("	Error PP_H 0x09\n");
+			}
+			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x00) {
+				//printTestResult = &print_PortTest_FetError; /* Don't use this function.
+				printTestResult = print_PortTest_PortOpenError;
+				printf("	Error PP_H 0x00\n");
+			}
+			else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] & 0x10)
 			{
-				printTestResult = print_PortTest_TransistorBitShortError;
+				//printTestResult = print_PortTest_PortOpenError;
+				printTestResult = &print_PortTest_TransistorBitShortError;
 				MpxTests.seriousError = true;
+				printf("	Error PP_H 0x10\n");
 			}
 			else {
-				printTestResult = print_PortTest_FetError;
+				//printTestResult = print_PortTest_PortOpenError;
+				printTestResult = print_PortTest_PortOpenError;
+				printf("Error PP_H 0x??\n");
 			}
+
+			errorBeep();
 		}
 	}
 }
@@ -1014,22 +1040,32 @@ void mpxTest_vAnalyse_BIDI(void)
 		MpxTests.testError = true;
 		errorBeep();
 
-		if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x0D)
+		printf("Error BIDI \n");
+
+		if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x0D) {
 			printTestResult = print_PortTest_PortOpenError;
+			printf("	Error BIDI 0x0D\n");
+		}
 
-		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x00)
-			printTestResult = print_PortTest_FetError;
-
-		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x09)
+		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x00) {
 			printTestResult = print_PortTest_PortOpenError;
+			printf("	Error BIDI 0x00\n");
+		}
 
-		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] && 0x10)
+		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] == 0x09) {
+			printTestResult = print_PortTest_PortOpenError;
+			printf("	Error BIDI 0x09\n");
+		}
+
+		else if (mpx.portInput[MpxTests.currentTest-TEST_P0_H] & 0x10)
 		{
 			printTestResult = print_PortTest_TransistorBitShortError;
 			MpxTests.seriousError = true;
+			printf("	Error BIDI 0x01\n");
 		}
 		else {
-			printTestResult = print_PortTest_FetError;
+			printTestResult = print_PortTest_PortOpenError;
+			printf("	Error BIDI 0x??\n");
 		}
 	}
 }
@@ -1052,6 +1088,7 @@ void mpxTest_vAnalyse_LODIN(void)
 		MpxTests.testError = true;
 		errorBeep();
 		printTestResult = print_PortTest_error;
+		printf("Error LODIN Error\n");
 	}
 }
 
@@ -1066,6 +1103,7 @@ void mpxTest_vAnalyse_LODIN_2(void)
 			MpxTests.testError = true;
 			errorBeep();
 			printTestResult = print_PortTest_CableShortErrorLODIN;
+			printf("Error LODIN2 Error\n");
 			return;
 		}
 	}
@@ -1125,18 +1163,18 @@ void print_WaitMessage(void)
 		{
 			snprintf(TestMessages.lines[0],LINE_SIZE," Teste em Loop  ");
 			if (MpxTests.numberTestDone < 10)
-				sprintf(message, "  Contagem: %d    ", MpxTests.numberTestDone);
+				snprintf(message, LINE_SIZE, "  Contagem: %d    ", MpxTests.numberTestDone);
 			else
-				sprintf(message, " Contagem: %d     ", MpxTests.numberTestDone);
+				snprintf(message, LINE_SIZE, " Contagem: %d     ", MpxTests.numberTestDone);
 		}
 
 		else if (LCD_languageChosen() == SPANISH)
 		{
 			snprintf(TestMessages.lines[0],LINE_SIZE," Prueba en Loop ");
 			if (MpxTests.numberTestDone < 10)
-				sprintf(message, "  Recuento: %d    ", MpxTests.numberTestDone);
+				snprintf(message, LINE_SIZE, "  Recuento: %d    ", MpxTests.numberTestDone);
 			else
-				sprintf(message, " Recuento: %d     ", MpxTests.numberTestDone);
+				snprintf(message, LINE_SIZE, " Recuento: %d     ", MpxTests.numberTestDone);
 		}
 
 		printTestMessage(TestMessages.lines[1], message, 0);
@@ -1147,13 +1185,13 @@ void print_WaitMessage(void)
 		if (LCD_languageChosen() == PORTUGUESE)
 		{
 			snprintf(TestMessages.lines[0], LINE_SIZE, "    Aguarde!    ");
-			sprintf(message, "  Executando");
+			snprintf(message, LINE_SIZE, "  Executando");
 		}
 
 		else if (LCD_languageChosen() == SPANISH)
 		{
 			snprintf(TestMessages.lines[0], LINE_SIZE, "     Espere!    ");
-			sprintf(message, "  Ejecutando");
+			snprintf(message, LINE_SIZE, "  Ejecutando");
 		}
 
 		printTestMessage(TestMessages.lines[1], message, 3);
@@ -1187,13 +1225,13 @@ void print_FlashTest_OK(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Flash: OK  ");
-		sprintf(message, "Pressione Enter");
+		snprintf(message, LINE_SIZE, "Pressione Enter");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba Flash: OK ");
-		sprintf(message, "Presione Enter");
+		snprintf(message, LINE_SIZE, "Presione Enter");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1204,13 +1242,13 @@ void print_FlashTest_error(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Flash:erro");
-		sprintf(message, "Pressione Enter");
+		snprintf(message, LINE_SIZE, "Pressione Enter");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"PruebaFlash erro");
-		sprintf(message, "Presione Enter");
+		snprintf(message, LINE_SIZE, "Presione Enter");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1225,7 +1263,7 @@ void print_SwitchedPortTest_error(void)
 		else if ( (MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P35) )
 			snprintf(TestMessages.lines[0],LINE_SIZE,"Erro: Conect %s ", CN2[MpxTests.currentTest - TEST_P0_H]);
 
-		sprintf(message,"e %s trocados", CN2[MpxTests.switchPort]);
+		snprintf(message, LINE_SIZE, "e %s trocados", CN2[MpxTests.switchPort]);
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
@@ -1235,7 +1273,7 @@ void print_SwitchedPortTest_error(void)
 		else if ( (MpxTests.currentTest >= TEST_P0_H) && (MpxTests.currentTest <= TEST_P35) )
 			snprintf(TestMessages.lines[0],LINE_SIZE,"Error Conect %s ", CN2[MpxTests.currentTest - TEST_P0_H]);
 
-		sprintf(message,"y %s cambiados", CN2[MpxTests.switchPort]);
+		snprintf(message, LINE_SIZE, "y %s cambiados", CN2[MpxTests.switchPort]);
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1246,13 +1284,13 @@ void print_AutoTest_OK(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Auto: Fim ");
-		sprintf(message, "Pressione Enter");
+		snprintf(message, LINE_SIZE, "Pressione Enter");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba Auto: Fin ");
-		sprintf(message, "Presione Enter");
+		snprintf(message, LINE_SIZE, "Presione Enter");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1264,13 +1302,13 @@ void print_IgnTest_OK(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste Ignicao:OK");
-		sprintf(message, "Pressione Enter");
+		snprintf(message, LINE_SIZE, "Pressione Enter");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba Igni: OK");
-		sprintf(message, "Presione Enter");
+		snprintf(message, LINE_SIZE, "Presione Enter");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1281,13 +1319,13 @@ void print_IgnTest_error(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro Ignicao  ");
-		sprintf(message, "Verificar COM7");
+		snprintf(message, LINE_SIZE, "Verificar COM7");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Error Ignicion  ");
-		sprintf(message, "Comprobrar COM7");
+		snprintf(message, LINE_SIZE, "Comprobrar COM7");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 3);
@@ -1310,13 +1348,13 @@ void print_IDTest_OK(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste ID%c: OK     ", ID);
-		sprintf(message, "Pressione Enter", 1);
+		snprintf(message, LINE_SIZE, "Pressione Enter", 1);
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba ID%c: OK     ", ID);
-		sprintf(message, "Presione Enter", 1);
+		snprintf(message, LINE_SIZE, "Presione Enter", 1);
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1354,13 +1392,13 @@ void print_PortTest_OK(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste CN%s: OK  ", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "Pressione Enter", 1);
+		snprintf(message, LINE_SIZE, "Pressione Enter");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba CN%s: OK  ", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "Presione Enter", 1);
+		snprintf(message, LINE_SIZE, "Presione Enter");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1371,13 +1409,13 @@ void print_PortTest_error(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "Pressione Enter", 1);
+		snprintf(message, LINE_SIZE, "Pressione Enter");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "Presione Enter", 1);
+		snprintf(message, LINE_SIZE, "Presione Enter");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1388,13 +1426,13 @@ void print_PortTest_PortOpenError(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "Canal em aberto");
+		snprintf(message, LINE_SIZE, "Canal em aberto");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "Canal abierto");
+		snprintf(message, LINE_SIZE, "Canal abierto");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1405,13 +1443,13 @@ void print_PortTest_TransistorBitShortError(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s     bit", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "curto-circuito ");
-	}
+		snprintf(message, LINE_SIZE, "curto-circuito ");
 
+	}
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s     bit", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "Cortocircuito");
+		snprintf(message, LINE_SIZE, "Cortocircuito");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1422,13 +1460,13 @@ void print_PortTest_CableShortError(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Err CN%s CN%s   ", CN[MpxTests.currentTest - TEST_P0_L], CN2[MpxTests.shortCircuitPort]);
-		sprintf(message, "curto-circuito ");
+		snprintf(message, LINE_SIZE, "curto-circuito ");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Err CN%s CN%s   ", CN[MpxTests.currentTest - TEST_P0_L], CN2[MpxTests.shortCircuitPort]);
-		sprintf(message, "Cortocircuito");
+		snprintf(message, LINE_SIZE, LINE_SIZE, "Cortocircuito");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1439,13 +1477,13 @@ void print_PortTest_CableShortErrorLODIN(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Err CN%s CN%s   ", CN2[MpxTests.currentTest - TEST_P0_H_LDIN], CN2[MpxTests.shortCircuitPort]);
-		sprintf(message, "curto-circuito ");
+		snprintf(message, LINE_SIZE, LINE_SIZE, "curto-circuito ");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Err CN%s CN%s   ", CN2[MpxTests.currentTest - TEST_P0_H_LDIN], CN2[MpxTests.shortCircuitPort]);
-		sprintf(message, "Cortocircuito");
+		snprintf(message, LINE_SIZE,  LINE_SIZE, "Cortocircuito");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1455,14 +1493,19 @@ void print_PortTest_FetError(void)
 {
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
-		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "Problema %s", FET[MpxTests.currentTest - TEST_P0_L]);
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s", CN[MpxTests.currentTest - TEST_P0_L]);
+		snprintf(message, LINE_SIZE, "Problema %s", FET[MpxTests.currentTest - TEST_P0_L]);
+
+		printf("	Error PP_H - ESP\n");
 	}
 
 	else if (LCD_languageChosen() == PORTUGUESE)
 	{
-		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s        ", CN[MpxTests.currentTest - TEST_P0_L]);
-		sprintf(message, "Problema %s", FET[MpxTests.currentTest - TEST_P0_L]);
+		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s", CN[MpxTests.currentTest - TEST_P0_L]);
+		snprintf(message, LINE_SIZE, "Problema %s", FET[MpxTests.currentTest - TEST_P0_L]);
+
+
+		printf("	Error PP_H - PT\n");
 	}
 
 
@@ -1474,13 +1517,13 @@ void print_NTCTest_OK(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste NTC: OK    ");
-		sprintf(message, "Pressione Enter");
+		snprintf(message, LINE_SIZE, "Pressione Enter");
 	}
 
 	if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba NTC: OK    ");
-		sprintf(message, "Presione Enter");
+		snprintf(message, LINE_SIZE, "Presione Enter");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1491,13 +1534,13 @@ void print_NTC_TEMP_Test_error(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste NTC: erro    ");
-		sprintf(message, "Verificar CN5.1");
+		snprintf(message, LINE_SIZE, "Verificar CN5.1");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba NTC: error    ");
-		sprintf(message, "Comprobar CN5.1");
+		snprintf(message, LINE_SIZE, "Comprobar CN5.1");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 3);
@@ -1508,13 +1551,13 @@ void print_NTC_GNDTest_error(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste NTC: erro    ");
-		sprintf(message, "Verificar CN5.2");
+		snprintf(message, LINE_SIZE, "Verificar CN5.2");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba NTC: error    ");
-		sprintf(message, "Comprobar CN5.2");
+		snprintf(message, LINE_SIZE, "Comprobar CN5.2");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 3);
@@ -1523,7 +1566,7 @@ void print_NTC_GNDTest_error(void)
 void print_OnGoing(void)
 {
 	snprintf(TestMessages.lines[0],LINE_SIZE," Em Construcao. ");
-	sprintf(message, "Pressione Enter", 1);
+	snprintf(message, LINE_SIZE, "Pressione Enter", 1);
 	printTestMessage(TestMessages.lines[1], message, 1);
 }
 
