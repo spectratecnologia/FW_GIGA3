@@ -230,8 +230,10 @@ void ptc16_vUpdateTests(void)
 		if (Ptc16Tests.testOk && Ptc16Tests.testFinished)
 		{
 			ptc16_vSetNextEvent(PTC16_EV_FINISH);
+			setBeep(4, 80);
 			Ptc16Tests.testFinished = false;
 			Ptc16Tests.testOk = false;
+
 		}
 	}
 }

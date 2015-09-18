@@ -230,6 +230,7 @@ void ptc24_vUpdateTests(void)
 	{
 		if (Ptc24Tests.testOk && Ptc24Tests.testFinished)
 		{
+			setBeep(4, 80);
 			ptc24_vSetNextEvent(PTC24_EV_FINISH);
 			Ptc24Tests.testFinished = false;
 			Ptc24Tests.testOk = false;

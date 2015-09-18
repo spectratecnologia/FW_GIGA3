@@ -139,6 +139,7 @@ const Transition MpxSMTrans[] =  		//TABELA DE ESTADOS
 };
 
 #define TRANS_COUNT (sizeof(MpxSMTrans)/sizeof(*MpxSMTrans))
+static bool alreadyExecutedFinishBeep = false;
 
 /* ---------------------------------------------------------------------------*/
 /* General state machine functions -------------------------------------------*/
@@ -223,6 +224,7 @@ void mpxTest_vResetTests(void)
 	MpxTests.seriousError = false;
 	MpxTests.numberTestDone = 0;
 	MpxTests.boolEraseFlash = false;
+	alreadyExecutedFinishBeep = false;
 	setBeep(1,0);
 	turnOffMpxPorts();
 	activeMPXIgnition(PORT_LOW);
@@ -252,6 +254,13 @@ void mpxTest_vUpdateTests(void)
 		/* If TEST_END is reached, tests auto must be stopped. */
 		else if (MpxTests.currentTest != TEST_END)
 			MpxTests.currentTest++;
+
+		if(MpxTests.currentTest == TEST_END) {
+			if(MpxTests.finishedTestBeep == false) {
+				MpxTests.finishedTestBeep = true;
+				setBeep(4, 80);
+			}
+		}
 	}
 
 	else if (MpxTests.boolIsLoopTest)
@@ -273,6 +282,8 @@ void mpxTest_vUpdateTests(void)
 			 * a set a beep. */
 			MpxTests.numberTestDone++;
 			MpxTests.finishedTestBeep = false;
+			setBeep(1, 80);
+
 		}
 	}
 }
@@ -348,7 +359,7 @@ void mpxTest_vWait(void)
 
 	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 
-	/* This delay is used to do GIGA3 waits until the MPX be prepared to be analyzed.
+	/* This delay is used to do GIGA3 waits until the MPX be prepared to be !MpxTests.testErrorvAnad.
 	 * Each kind of test (manual, automatic or loop test) has a message to be shown
 	 * while the delay time is not reached.
 	 */
@@ -380,6 +391,8 @@ void mpxTest_vWait(void)
 		mpxTest_vSetNextEvent(MPX_EV_PRINT);
 	}
 }
+
+
 
 /* Analysis ------------------------------------------------------------------*/
 void mpxTest_vAnalyse(void)
@@ -420,6 +433,7 @@ void mpxTest_vAnalyse(void)
 
 	else if ((MpxTests.currentTest == TEST_NTC) && !MpxTests.testError)
 		mpxTest_vAnalyse_NTC();
+
 }
 
 /* Finalize ------------------------------------------------------------------*/
@@ -429,13 +443,14 @@ void mpxTest_vFinalize(void)
 
 	MpxTests.testFinished = true;
 
-	if(MpxTests.testError)
-		MpxTests.finishedTestBeep = false;
-
 	mpxTest_vSetNextEvent(MPX_EV_PRINT);
 
-	if(!MpxTests.testError && (MpxTests.boolIsAutoTest || MpxTests.boolIsLoopTest) )
-	{
+	if(!MpxTests.testError && MpxTests.boolIsAutoTest) {
+		mpxTest_vSetNextEvent(MPX_EV_IDLE);
+		MpxTests.testFinished = false;
+	}
+
+	else if(!MpxTests.testError && MpxTests.boolIsLoopTest) {
 		mpxTest_vSetNextEvent(MPX_EV_IDLE);
 		MpxTests.testFinished = false;
 	}
@@ -447,24 +462,6 @@ void mpxTest_vPrint(void)
 	if (printTestResult)
 		printTestResult();
 
-	/*
-	if (MpxTests.testFinished  && !MpxTests.finishedTestBeep)
-	{
-		if (MpxTests.testError)
-			errorBeep()
-
-		else
-			notErrorBeep()
-
-		MpxTests.finishedTestBeep = true;
-	}
-
-	if (MpxTests.boolIsLoopTest  && !MpxTests.finishedTestBeep)
-	{
-		setBeep(1, 250);
-		MpxTests.finishedTestBeep = true;
-	}*/
-
 	mpxTest_vSetNextEvent(MPX_EV_REFRESH);
 
 	if (!MpxTests.testFinished && !MpxTests.testError && MpxTests.currentTest != TEST_END)
@@ -472,7 +469,6 @@ void mpxTest_vPrint(void)
 
 	if (MpxStateMachine.state == MPX_ST_PRINT_WAIT)
 		mpxTest_vSetNextEvent(MPX_EV_WAIT);
-
 
 }
 
@@ -1293,7 +1289,9 @@ void print_AutoTest_OK(void)
 		snprintf(message, LINE_SIZE, "Presione Enter");
 	}
 
+
 	printTestMessage(TestMessages.lines[1], message, 1);
+
 }
 
 /* Ignition test print functions ---------------------------------------------*/
