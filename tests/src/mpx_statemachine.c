@@ -1492,18 +1492,18 @@ void print_PortTest_FetError(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Erro CN%s", CN[MpxTests.currentTest - TEST_P0_L]);
-		snprintf(message, LINE_SIZE, "Problema %s", FET[MpxTests.currentTest - TEST_P0_L]);
+		snprintf(message, LINE_SIZE, "Problema %s     ", FET[MpxTests.currentTest - TEST_P0_L]);
 
-		printf("	Error PP_H - ESP\n");
+		//printf("	Error PP_H - ESP\n");
 	}
 
 	else if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Error CN%s", CN[MpxTests.currentTest - TEST_P0_L]);
-		snprintf(message, LINE_SIZE, "Problema %s", FET[MpxTests.currentTest - TEST_P0_L]);
+		snprintf(message, LINE_SIZE, "Problema %s    ", FET[MpxTests.currentTest - TEST_P0_L]);
 
 
-		printf("	Error PP_H - PT\n");
+		//printf("	Error PP_H - PT\n");
 	}
 
 
@@ -1521,7 +1521,7 @@ void print_NTCTest_OK(void)
 	if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba NTC: OK    ");
-		snprintf(message, LINE_SIZE, "Presione Enter");
+		snprintf(message, LINE_SIZE, "Presione Enter      ");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 1);
@@ -1532,13 +1532,13 @@ void print_NTC_TEMP_Test_error(void)
 	if (LCD_languageChosen() == PORTUGUESE)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Teste NTC: erro    ");
-		snprintf(message, LINE_SIZE, "Verificar CN5.1");
+		snprintf(message, LINE_SIZE, "Verificar CN5.1     ");
 	}
 
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba NTC: error    ");
-		snprintf(message, LINE_SIZE, "Comprobar CN5.1");
+		snprintf(message, LINE_SIZE, "Comprobar CN5.1      ");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 3);
@@ -1555,7 +1555,7 @@ void print_NTC_GNDTest_error(void)
 	else if (LCD_languageChosen() == SPANISH)
 	{
 		snprintf(TestMessages.lines[0],LINE_SIZE,"Prueba NTC: error    ");
-		snprintf(message, LINE_SIZE, "Comprobar CN5.2");
+		snprintf(message, LINE_SIZE, "Comprobar CN5.2    ");
 	}
 
 	printTestMessage(TestMessages.lines[1], message, 3);
