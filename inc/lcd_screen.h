@@ -104,21 +104,21 @@ typedef struct
 } TestMessagesStruct;
 
 /* Menu Keys */
-#ifndef KEY_UP
-	#define KEY_UP 0
-#endif
-
-#ifndef KEY_DOWN
-	#define KEY_DOWN 1
-#endif
-
-#ifndef KEY_CANCEL
-	#define KEY_CANCEL 2
-#endif
-
-#ifndef KEY_ENTER
-	#define KEY_ENTER 3
-#endif
+//#ifndef KEY_UP
+//	#define KEY_UP 0
+//#endif
+//
+//#ifndef KEY_DOWN
+//	#define KEY_DOWN 1
+//#endif
+//
+//#ifndef KEY_CANCEL
+//	#define KEY_CANCEL 2
+//#endif
+//
+//#ifndef KEY_ENTER
+//	#define KEY_ENTER 3
+//#endif
 
 //typedef enum {
 //	USB_SAVE_MODE_NOT_CHOSEN = 0,

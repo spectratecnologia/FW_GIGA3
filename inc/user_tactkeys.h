@@ -37,8 +37,8 @@ typedef struct {
 enum KEYS {
 	KEY_UP = 0,
 	KEY_DOWN = 1,
-	KEY_ENTER = 2,
-	KEY_CANCEL = 3
+	KEY_CANCEL = 2,
+	KEY_ENTER = 3,
 };
 
 void initKeys();

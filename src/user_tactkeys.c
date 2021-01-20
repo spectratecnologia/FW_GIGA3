@@ -154,7 +154,7 @@ bool isTactInputPressed(uint8_t tactNumber)
 void readCurrentTactsStatus ()
 {
     uint32_t i;
-    for(i=KEY_UP; i<=KEY_CANCEL; i++) {
+    for(i=KEY_UP; i<=KEY_ENTER; i++) {
          tactInputStatus[i] =  GPIO_ReadInputDataBit(IO_TACT_PORT, IO_TACT_UP_PIN << i);
          //printf("K %d - St: %d\n", i, tactInputStatus[i]);
      }
