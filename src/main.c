@@ -32,8 +32,8 @@ SOFTWARE.
 #include <stdbool.h>
 #include "stm32f10x.h"
 #include "usart.h"
-
 #include "rtc.h"
+
 
 /* Private typedef */
 
