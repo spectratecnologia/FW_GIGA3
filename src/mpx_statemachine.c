@@ -1131,7 +1131,8 @@ void mpxTest_vAnalyse_NTC(void)
 		return;
 	}
 
-	if ((mpx.ntcTemperature >= 0x18) && (mpx.ntcTemperature <= 0x25))
+	// no more PWM, PWM_NTC = LO -> NTC circuit sees 10K to GND -> 50C nominal
+	if ((mpx.ntcTemperature >= 47) && (mpx.ntcTemperature <= 53))
 	{
 		printf("NTC - OK\n");
 		MpxTests.testError = false;

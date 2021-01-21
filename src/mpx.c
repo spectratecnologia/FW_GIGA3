@@ -305,13 +305,13 @@ void activeMPXIgnition(FunctionalState_MPXports state)
 		return;
 }
 
-void toogleMPXNTC(void)
-{
-	if(GPIO_ReadOutputDataBit(PWM_NTC_PORT, PWM_NTC))
-		GPIO_ResetBits(PWM_NTC_PORT, PWM_NTC);
-	else
-		GPIO_SetBits(PWM_NTC_PORT, PWM_NTC);
-}
+//void toogleMPXNTC(void)
+//{
+//	if(GPIO_ReadOutputDataBit(PWM_NTC_PORT, PWM_NTC))
+//		GPIO_ResetBits(PWM_NTC_PORT, PWM_NTC);
+//	else
+//		GPIO_SetBits(PWM_NTC_PORT, PWM_NTC);
+//}
 /* ---------------------------------------------------------------------------*/
 /* Active or deactive MPX device ports ---------------------------------------*/
 /* ---------------------------------------------------------------------------*/

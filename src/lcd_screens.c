@@ -530,14 +530,14 @@ void  LCD_vStateMachineLoop(void){ // STATE MACHINE LOOP{
 
 void LCD_vMainScreen(void)
 {
-	char lines[][LINE_SIZE]={"     GIGA 3     "
+	char lines[][LINE_SIZE]={"   GIGA 3 V2    "
 			                ,"      __:__     "
 			                ,"    TESTE MPX   "
 			                ,"  TESTE PTC 24  "
 							,"  TESTE PTC 16  "
 							,"     IDIOMA     "};
 
-	char lines_spanish[][LINE_SIZE]={"     GIGA 3     "
+	char lines_spanish[][LINE_SIZE]={"   GIGA 3 V2    "
 									,"      __:__     "
 									,"   PRUEBA MPX   "
 									,"  PRUEBA PTC24  "

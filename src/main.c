@@ -114,7 +114,7 @@ int main(void)
 
 			executeEveryInterval(6, 5, &sendChangedOutputsToMPXs);
 
-			executeEveryInterval(7, 1, &toogleMPXNTC);
+//			executeEveryInterval(7, 1, &toogleMPXNTC);	// pin will be held LO for MPX V2.x compatibility
 
 			//executeEveryInterval(15, 50, &verifyMpxTimout);
 		}
